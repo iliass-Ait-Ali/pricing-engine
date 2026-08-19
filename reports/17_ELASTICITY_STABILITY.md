@@ -1,0 +1,97 @@
+# 17. Elasticity stability over time
+
+**Question.** Is price sensitivity stable enough over time to justify treating
+one elasticity estimate as persistent?
+
+**Method.** The whole elasticity stack - pooled controlled, UPC x store fixed
+effects, per-UPC with panel-robust standard errors, REML empirical-Bayes
+shrinkage - is re-estimated on five historical windows. Every window lies
+strictly inside the approved training period (weeks 2-257). **The validation
+and test windows are never touched**, and the script raises rather than run if a
+window would exceed the training boundary.
+
+Windows W1/W2/W3 are disjoint thirds, so a per-product comparison between them
+uses non-overlapping data. W4 and W5 are expanding windows and are reported for
+the category-level estimate only.
+
+## 1. Category-level estimates by window
+
+| Window | Weeks | Rows | Pooled | SE (two-way) | FE | tau^2 | Mean w | Usable products | Median shrunk | p10 / p90 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| W1 early (2-87) | 2-87 | 979,559 | -1.903 | 0.223 | -2.279 | 1.016 | 0.663 | 85/259 | -1.90 | [-3.12, -0.98] |
+| W2 middle (88-129) | 88-129 | 545,034 | -2.323 | 0.213 | -3.280 | 1.227 | 0.620 | 87/221 | -2.22 | [-3.35, -1.37] |
+| W3 late (130-257) | 130-257 | 1,681,844 | -2.240 | 0.125 | -2.486 | 1.070 | 0.837 | 218/297 | -2.02 | [-3.17, -0.75] |
+| W4 first half, expanding (2-129) | 2-129 | 1,524,593 | -1.917 | 0.166 | -2.304 | 1.045 | 0.682 | 146/285 | -1.99 | [-3.02, -1.09] |
+| W5 full approved training window (2-257) | 2-257 | 3,206,437 | -2.029 | 0.106 | -2.222 | 0.766 | 0.780 | 239/372 | -1.90 | [-3.05, -0.95] |
+
+The pooled elasticity moves across a range of **0.420** between the
+most extreme windows. Whether that is drift or noise is a testable question, so
+here is the test on the three **disjoint** windows, using each window's own
+two-way clustered standard error:
+
+| Window pair | Pooled A | Pooled B | Difference | SE of difference | z | Significant at 5% |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| W1 vs W2 | -1.903 | -2.323 | +0.420 | 0.309 | +1.36 | no |
+| W1 vs W3 | -1.903 | -2.240 | +0.337 | 0.256 | +1.32 | no |
+| W2 vs W3 | -2.323 | -2.240 | -0.083 | 0.247 | -0.33 | no |
+
+Largest absolute z between disjoint windows: **1.36**.
+No pair differs by more than sampling noise once the panel clustering is admitted, so the category elasticity is stable within the precision this data supports.
+
+## 2. Product-level stability across disjoint windows
+
+| Window pair | Common products | Rank corr (shrunk) | Pearson (shrunk) | Sign stability (raw) | Median abs difference |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| W1 vs W2 | 34 | -0.054 | -0.054 | 100.0% | 0.952 |
+| W1 vs W3 | 34 | +0.350 | +0.294 | 100.0% | 0.753 |
+| W2 vs W3 | 34 | +0.187 | +0.175 | 100.0% | 0.695 |
+
+Median pairwise rank correlation: **+0.187**.
+Median pairwise sign stability: **100.0%** (on the
+34 products that clear the usability screen in *all three*
+disjoint windows - a small and favourably selected set, so treat the sign figure
+as an upper bound).
+
+This is the uncomfortable number. The sign of a product's price response is
+largely reproducible across
+disjoint windows, but the *ordering* of products by elasticity is
+only weakly reproducible. A
+product that looks like the most price-sensitive cereal in one two-year window is
+not reliably the most price-sensitive in the next.
+
+## 3. Verdict
+
+**Stable enough at the category level, unstable at the product level.**
+
+The consequences already built into the shipped system:
+
+* The empirical-Bayes shrinkage is exactly the right response to this: it pulls
+  each product toward the category estimate in proportion to how noisy that
+  product's own coefficient is, and the corrected panel-robust standard errors
+  (`reports/14`, `reports/15`) make it pull harder than Phase L did. The mean
+  weight of 0.78 is the amount of
+  product-specific signal the data actually support.
+* The risk layer already routes thin-evidence contexts to MEDIUM or HIGH risk,
+  and HIGH risk never produces an automatic price change under the default
+  profiles.
+* `POOLED_ELASTICITY_FALLBACK` is emitted as a reason code whenever a product
+  has no usable estimate, so a reader can see which recommendations rest on the
+  category number.
+
+What this rules out: claiming a stable, product-specific price elasticity as a
+durable asset. The defensible claim is a **stable category-level price
+sensitivity** with product-level deviations that are partially identified and
+shrunk accordingly.
+
+## 4. What is NOT tested here
+
+Elasticity drift into the *test* window. Measuring that would require estimating
+on test weeks, which would contaminate the artifact used to price them. The
+out-of-time behaviour of the shipped estimate is measured indirectly instead, by
+its predictive performance on unseen price-change episodes -
+`reports/16_OUT_OF_TIME_PRICE_RESPONSE.md`.
+
+---
+
+*Generated by `scripts/audit_elasticity_stability.py` in 51.3s.
+Per-product data: `artifacts/metrics/elasticity_stability_by_upc.csv`.*

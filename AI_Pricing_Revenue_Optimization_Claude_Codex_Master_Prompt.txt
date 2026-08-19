@@ -1,0 +1,1945 @@
+MASTER BUILD PROMPT — AI PRICING & REVENUE OPTIMIZATION ENGINE
+==============================================================
+
+ROLE
+----
+You are the principal Data Scientist + ML Engineer + Pricing Scientist + Backend Engineer responsible for building this project end-to-end inside the CURRENT repository.
+
+This repository starts FROM SCRATCH.
+
+Do not assume there is existing code.
+Do not assume there is existing data.
+Do not ask me to choose basic implementation details that can be decided professionally.
+Do not stop after writing a roadmap.
+Do not create a huge empty architecture and call it progress.
+Implement in verified stages, run tests, inspect outputs, fix failures, and keep evidence.
+
+The project must be technically strong enough for a serious Data Scientist / ML Engineer portfolio and scientifically honest enough that I can defend every major choice in an interview.
+
+The final project is:
+
+AI PRICING & REVENUE OPTIMIZATION ENGINE
+
+Its core business question is:
+
+    "Given a product, store, week, current commercial context, and feasible price range,
+     what price should we recommend to maximize expected gross profit or revenue,
+     while respecting business and scientific guardrails?"
+
+The system should ultimately implement:
+
+    Real retail scanner data
+        -> data validation
+        -> pricing EDA
+        -> demand modeling
+        -> price-response analysis
+        -> counterfactual price simulation
+        -> revenue / gross-profit calculation
+        -> constrained price optimization
+        -> historical backtesting / offline evaluation
+        -> FastAPI
+        -> interactive dashboard
+        -> tests + documentation + reproducibility
+
+IMPORTANT:
+This is NOT a "generate random fake data and train XGBoost" project.
+The MAIN project must use REAL Dominick's retail scanner data from the University of Chicago Booth Kilts Center.
+
+Synthetic data may be used ONLY for deterministic unit tests and mathematical optimizer tests,
+not as the main portfolio dataset.
+
+======================================================================
+0. SCIENTIFIC AND ENGINEERING RULES
+======================================================================
+
+These rules override shortcuts.
+
+1. Never fabricate real-world data.
+2. Never label simulated values as observed historical values.
+3. Never call observational associations causal effects unless the identification strategy supports that claim.
+4. Never call model-estimated uplift "realized uplift".
+5. Never use random train/test splitting as the main evaluation method for time-indexed retail data.
+6. Never use target leakage or future information.
+7. Never silently drop suspicious data.
+8. Never silently replace the official data source with a random mirror.
+9. Never claim "production ready" when components are only demo-grade.
+10. Never hardcode impressive output numbers.
+11. All metrics shown in README/dashboard/reports must come from actual executions.
+12. A phase is complete only when:
+    - implemented,
+    - executed,
+    - inspected,
+    - tested where appropriate,
+    - documented,
+    - and integrated.
+
+Use small, verified increments.
+
+After each stage:
+    implement -> test -> inspect -> fix -> record evidence -> continue.
+
+Do not weaken tests simply to make them pass.
+
+======================================================================
+1. OFFICIAL DATASET — SOURCE OF TRUTH
+======================================================================
+
+PRIMARY DATASET:
+Dominick's Finer Foods Store-Level Scanner Dataset
+Provider:
+Kilts Center for Marketing
+University of Chicago Booth School of Business
+
+OFFICIAL LANDING PAGE:
+https://www.chicagobooth.edu/research/kilts/research-data/dominicks
+
+OFFICIAL DATA MANUAL / CODEBOOK:
+https://www.chicagobooth.edu/research/kilts/research-data/-/media/enterprise/centers/kilts/datasets/dominicks-dataset/dominicks-manual-and-codebook_kiltscenter.pdf
+
+START WITH ONE CATEGORY ONLY:
+CEREALS
+
+OFFICIAL CEREALS UPC METADATA CSV:
+https://www.chicagobooth.edu/research/kilts/research-data/-/media/enterprise/centers/kilts/datasets/dominicks-dataset/upc_csv-files/upccer.csv
+
+OFFICIAL CEREALS MOVEMENT CSV ZIP:
+https://www.chicagobooth.edu/research/kilts/research-data/-/media/enterprise/centers/kilts/datasets/dominicks-dataset/movement_csv-files/wcer.zip
+
+The ZIP is expected to contain the Cereals weekly movement CSV.
+
+IMPORTANT DATA POLICY:
+The official Kilts Center page states that the Dominick's data are for academic research purposes
+and users must acknowledge the Kilts Center in working papers/publications.
+
+Do not commit the raw Dominick's data into Git.
+Add raw data directories to .gitignore.
+Document the source, attribution, and academic-use restriction.
+
+Do not upload or redistribute the raw dataset as part of the public repository.
+
+======================================================================
+2. DOWNLOAD POLICY
+======================================================================
+
+The repository starts with NO data.
+
+Your first job is to acquire the official Cereals data.
+
+Create:
+
+    scripts/download_dominicks.py
+
+It must:
+
+- create required directories,
+- download ONLY official Kilts Center URLs,
+- download files only if missing unless --force is explicitly used,
+- use streaming for large files,
+- use timeouts,
+- validate HTTP status,
+- validate non-zero file size,
+- save temporary downloads atomically then rename,
+- unzip the movement ZIP safely,
+- protect against zip-slip paths,
+- locate the actual CSV inside the archive,
+- give clear error messages,
+- record source URLs and download timestamps,
+- avoid hardcoded absolute machine paths.
+
+Expected raw structure:
+
+    data/
+      raw/
+        dominicks/
+          cereals/
+            upccer.csv
+            wcer.csv
+            SOURCE.json
+
+If the ZIP contains a slightly different filename/case,
+normalize it to wcer.csv while recording the original archive member name.
+
+If automated download is blocked by the website/network:
+
+- DO NOT invent data,
+- DO NOT silently switch to Kaggle,
+- DO NOT silently switch to synthetic data,
+- print exact manual download instructions,
+- keep the rest of the code ready to ingest the files once manually placed,
+- clearly mark data acquisition as BLOCKED.
+
+You may retry official URLs with normal HTTP tooling.
+Do not scrape around security protections.
+
+======================================================================
+3. INITIAL PROJECT STRUCTURE
+======================================================================
+
+Create only useful directories and expand structure as components are built.
+
+Initial structure:
+
+    README.md
+    pyproject.toml
+    .gitignore
+    .env.example
+    Makefile
+
+    docs/
+    reports/
+    artifacts/
+    configs/
+
+    data/
+      raw/
+      interim/
+      processed/
+
+    src/
+      pricing_engine/
+        __init__.py
+        config.py
+        data/
+
+    scripts/
+    tests/
+
+Later, as phases are actually implemented, expand to:
+
+    src/pricing_engine/
+      data/
+      features/
+      economics/
+      models/
+      simulation/
+      optimization/
+      backtesting/
+      monitoring/
+      utils/
+
+    api/
+    dashboard/
+
+Do NOT create dozens of empty placeholder modules before they are needed.
+
+Use Python 3.11+.
+
+Preferred stack unless environment constraints require an alternative:
+
+Core:
+- pandas
+- numpy
+- scipy
+- scikit-learn
+- statsmodels
+- pyarrow
+- pyyaml
+
+Modeling:
+- scikit-learn HistGradientBoosting OR XGBoost/LightGBM/CatBoost if justified and stable
+
+Visualization:
+- matplotlib
+- plotly
+
+API:
+- FastAPI
+- Pydantic
+- Uvicorn
+
+Dashboard:
+- Streamlit
+
+Testing:
+- pytest
+- pytest-cov if useful
+
+Quality:
+- ruff
+
+Packaging:
+- pyproject.toml
+
+Do not install heavy packages unless they provide clear value.
+
+======================================================================
+4. PROJECT CONTROL DOCUMENTS
+======================================================================
+
+Create and maintain:
+
+    ROADMAP.md
+    STATUS.md
+    DECISIONS.md
+    KNOWN_LIMITATIONS.md
+
+Statuses:
+
+    NOT STARTED
+    IN PROGRESS
+    IMPLEMENTED
+    TESTED
+    VALIDATED
+    BLOCKED
+    LIMITED
+
+ROADMAP.md:
+- phases,
+- acceptance criteria,
+- dependencies,
+- current status.
+
+STATUS.md:
+- component,
+- status,
+- evidence,
+- remaining issue.
+
+DECISIONS.md:
+Record meaningful choices:
+- dataset,
+- unit of analysis,
+- formula definitions,
+- target,
+- split strategy,
+- selected model,
+- optimizer objective,
+- price grid,
+- extrapolation limits,
+- margin interpretation,
+- promotion treatment.
+
+KNOWN_LIMITATIONS.md:
+Maintain scientific limitations throughout the project.
+
+======================================================================
+5. UNDERSTAND DOMINICK'S BEFORE MODELING
+======================================================================
+
+Treat the official manual as schema source of truth.
+
+Relevant movement fields include:
+
+    upc
+    store
+    week
+    move
+    price
+    qty
+    profit
+    sale
+    ok
+
+From the official manual:
+
+- move = number of individual units sold
+- price can be the total price of a bundle
+- qty = number of items in the bundle
+- total dollar sales = price * move / qty
+- profit = gross margin percentage
+- sale codes:
+      B = Bonus Buy
+      C = Coupon
+      S = simple price reduction
+- promotion coding is incomplete:
+      if a code is present it indicates promotion,
+      but missing code does NOT prove that no promotion occurred
+- ok = 1 valid, 0 suspect/trash according to the data documentation
+
+The wholesale/accounting cost underlying the margin is Average Acquisition Cost (AAC),
+not necessarily economic replacement cost.
+
+Therefore use precise derived names:
+
+    effective_unit_price = price / qty
+
+    revenue = effective_unit_price * move
+
+    gross_margin_rate = profit / 100
+
+    estimated_unit_aac =
+        effective_unit_price * (1 - gross_margin_rate)
+
+    gross_profit =
+        revenue * gross_margin_rate
+
+Never rename estimated_unit_aac to a generic "true_unit_cost".
+
+Document explicitly:
+AAC is an accounting inventory acquisition measure and can differ from the economically relevant replacement cost.
+
+======================================================================
+6. PHASE A — DATA FOUNDATION
+======================================================================
+
+GOAL:
+Produce one validated, reproducible canonical Cereals table before any ML.
+
+Create:
+
+    src/pricing_engine/data/loader.py
+    src/pricing_engine/data/validator.py
+    src/pricing_engine/data/cleaning.py
+    src/pricing_engine/data/schema.py
+
+    scripts/download_dominicks.py
+    scripts/build_dataset.py
+    scripts/validate_data.py
+
+    docs/DATA_SOURCE.md
+    docs/DATA_DICTIONARY.md
+    reports/01_DATA_AUDIT.md
+
+DATA SOURCE DOCUMENT:
+Include:
+- dataset/provider,
+- official URLs,
+- files used,
+- usage restriction,
+- required acknowledgment,
+- historical nature,
+- why Dominick's is suitable for pricing,
+- major limitations.
+
+RAW AUDIT:
+Before cleaning, compute:
+
+- rows,
+- columns,
+- dtypes,
+- null counts,
+- duplicate exact rows,
+- duplicate logical keys,
+- number of UPCs,
+- stores,
+- weeks,
+- price distribution,
+- qty distribution,
+- move distribution,
+- profit distribution,
+- sale codes,
+- ok values.
+
+Investigate logical grain:
+
+    UPC × store × week
+
+Do NOT assume it is unique before checking.
+
+PRODUCT METADATA:
+Read upccer.csv.
+
+Expected fields include:
+    upc
+    com_code
+    nitem
+    descrip
+    size
+    case
+
+Join metadata to movement using UPC.
+
+Validate:
+- duplicate metadata UPCs,
+- movement UPCs with no metadata,
+- metadata UPCs with no movement,
+- whether merge multiplies rows.
+
+Do not silently drop mismatches.
+
+VALIDITY:
+Use ok according to official documentation.
+
+Main modeling dataset should use valid rows.
+
+Preserve counts of excluded rows and reasons.
+
+Investigate:
+- price <= 0
+- qty <= 0
+- move < 0
+- missing UPC/store/week
+- missing price
+- missing move
+- missing profit
+- unexpected profit values
+- malformed promotion codes
+
+Do NOT invent arbitrary outlier cutoffs just to make plots look nice.
+
+Every exclusion must be documented with:
+- rule,
+- number of rows,
+- percentage.
+
+PROMOTION:
+Create:
+
+    recorded_promotion_flag
+    recorded_promotion_type
+
+Use careful naming because missing sale code does not prove no promotion.
+
+TIME:
+Decode week into proper chronological information using the official manual/week mapping.
+
+Create fields such as:
+    week_start_date
+    year
+    month
+    quarter
+    week_of_year
+
+Do not treat the raw week number as an arbitrary continuous ML feature before decoding.
+
+CANONICAL TABLE:
+Save:
+
+    data/processed/dominicks_cereals.parquet
+
+Conceptual grain:
+one valid UPC × store × week observation.
+
+The processed table should include at minimum:
+
+    upc
+    store
+    week
+    week_start_date
+    move
+    price
+    qty
+    effective_unit_price
+    profit
+    gross_margin_rate
+    estimated_unit_aac
+    revenue
+    gross_profit
+    sale
+    recorded_promotion_flag
+    recorded_promotion_type
+    ok
+
+plus joined product metadata and safe calendar features.
+
+TESTS:
+Write deterministic pytest tests for:
+
+1. effective_unit_price = price / qty
+2. revenue = price * move / qty
+3. gross_margin_rate = profit / 100
+4. estimated_unit_aac formula
+5. gross_profit formula
+6. invalid qty does not divide by zero silently
+7. ok=0 rows are excluded from canonical modeling table
+8. UPC merge does not unexpectedly multiply rows
+9. chronological field is valid
+10. downloader unzip path is safe
+11. raw data is ignored by Git
+
+DATA AUDIT REPORT:
+reports/01_DATA_AUDIT.md must contain ACTUAL results:
+- raw rows
+- processed rows
+- rows removed + reasons
+- UPC count
+- store count
+- week count
+- date range
+- missingness
+- pricing stats
+- movement stats
+- gross margin stats
+- promotion-code stats
+- metadata join quality
+- suspicious observations
+- formula checks
+
+PHASE A ACCEPTANCE GATE:
+Do not proceed until:
+- official Cereals files were acquired OR clearly marked blocked,
+- canonical parquet was actually generated,
+- tests pass,
+- report contains actual numbers.
+
+If data acquisition is blocked, stop the implementation path requiring data and report the blocker accurately.
+
+======================================================================
+7. PHASE B — EDA AND PRICING ECONOMICS
+======================================================================
+
+Proceed only after Phase A is validated.
+
+Build a serious pricing EDA, not a gallery of meaningless charts.
+
+Create:
+    notebooks/01_pricing_eda.ipynb
+    reports/02_PRICING_EDA.md
+    artifacts/figures/
+
+Questions to answer:
+
+1. What is the historical scale?
+   - total units
+   - total revenue
+   - total gross profit
+   - average effective unit price
+   - average gross margin
+
+2. Which products drive:
+   - units
+   - revenue
+   - gross profit
+
+3. How much price variation exists per UPC?
+   Compute:
+   - number of distinct prices
+   - min/max
+   - standard deviation
+   - coefficient of variation
+   - number of price-change weeks
+   - percentage change distribution
+
+4. Which products have enough within-product price variation for elasticity analysis?
+
+5. How does price vary across stores?
+
+6. How does demand vary across:
+   - time,
+   - store,
+   - UPC,
+   - recorded promotions?
+
+7. How often are bundle quantities > 1?
+
+8. How stable is estimated AAC over time?
+
+9. Are gross margins mechanically or structurally related to price changes?
+
+10. Are there suspicious jumps or data-quality artifacts?
+
+Create reusable economics module:
+
+    src/pricing_engine/economics/metrics.py
+
+Implement:
+- revenue
+- gross profit
+- unit gross margin
+- gross margin rate
+- price change %
+- price index relative to product/store historical reference where useful
+
+Add tests.
+
+IMPORTANT:
+Do not interpret raw price-sales correlation causally.
+
+======================================================================
+8. PHASE C — FEATURE AVAILABILITY AND LEAKAGE AUDIT
+======================================================================
+
+Before training models, create:
+
+    docs/FEATURE_AVAILABILITY.md
+    docs/DATA_LEAKAGE_AUDIT.md
+
+For every feature classify:
+
+    KNOWN BEFORE PRICING DECISION
+    KNOWN AT DECISION TIME
+    KNOWN ONLY AFTER OUTCOME
+    UNCERTAIN / REQUIRES ASSUMPTION
+
+TARGET:
+Demand target is observed weekly units sold:
+
+    y = move
+
+Do not use:
+    revenue
+    gross_profit
+or any quantity-derived metric as demand predictors.
+
+Be careful with contemporaneous `profit` / AAC-derived values.
+
+For pricing optimization, cost information may be needed as decision context,
+but do not allow future accounting information to leak into demand prediction.
+
+Create an explicit assumption for what AAC/cost value is available at recommendation time.
+Prefer a lagged/latest-known AAC if necessary.
+
+Document this decision.
+
+LAG FEATURES:
+Any lag/rolling features must use only past observations.
+
+Examples:
+    lag_move_1
+    lag_move_2
+    lag_move_4
+    rolling_mean_move_4
+    rolling_mean_move_8
+    lag_price_1
+
+All rolling windows must be shifted to prevent target leakage.
+
+Tests must verify lag alignment.
+
+======================================================================
+9. PHASE D — PRICING / ELASTICITY ANALYSIS
+======================================================================
+
+Create:
+
+    src/pricing_engine/economics/elasticity.py
+    notebooks/02_elasticity.ipynb
+    reports/03_ELASTICITY_ANALYSIS.md
+
+Implement descriptive midpoint/arc elasticity:
+
+    E =
+      ((Q2-Q1)/((Q1+Q2)/2))
+      /
+      ((P2-P1)/((P1+P2)/2))
+
+Handle:
+- equal prices,
+- zero midpoint,
+- invalid quantities,
+- tiny changes.
+
+Do not present pairwise elasticity as causal truth.
+
+Then build interpretable log-log models.
+
+Start with:
+
+    log(move) ~ log(effective_unit_price)
+
+Then controlled versions with:
+- UPC fixed effects or product controls,
+- store controls,
+- week/time controls,
+- recorded promotion controls,
+- trend/seasonality.
+
+When zeros in move exist, handle them explicitly and document method.
+Do not blindly take log(0).
+
+Compare:
+- naive coefficient
+- controlled coefficient
+- uncertainty / standard errors
+- stability across products/categories/stores where feasible
+
+The project must explicitly explain:
+
+    P(Q | Price, X)
+
+is not necessarily:
+
+    P(Q | do(Price))
+
+because price may be endogenous.
+
+Create:
+    docs/CAUSAL_LIMITATIONS.md
+
+Discuss:
+- promotions
+- seasonality
+- retailer anticipatory pricing
+- store heterogeneity
+- product heterogeneity
+- missing promotion coding
+- possible randomized experiments in the broader Dominick's research program
+
+IMPORTANT:
+The official dataset description says randomized experiments were conducted in many categories,
+but do NOT claim that the specific Cereals observations used here identify a randomized treatment
+unless experiment assignment/windows can actually be recovered and verified.
+
+======================================================================
+10. PHASE E — DEMAND MODELING
+======================================================================
+
+Goal:
+
+    Q_hat = f(price, product, store, time, past demand, recorded promotion, context)
+
+Create:
+
+    src/pricing_engine/features/
+    src/pricing_engine/models/
+
+Use temporal evaluation.
+
+No random primary split.
+
+Use:
+- train = earlier time
+- validation = later time
+- test = final unseen period
+
+Or expanding-window evaluation.
+
+Models:
+
+MODEL 0 — Naive baseline
+Examples:
+- product-store historical mean
+- lagged moving average
+- seasonal naive if justified
+
+MODEL 1 — Interpretable regression
+Examples:
+- linear/log demand
+- regularized regression with encoded categorical/time features
+
+MODEL 2 — Strong nonlinear model
+Use one stable implementation:
+- HistGradientBoosting
+- CatBoost
+- LightGBM
+- XGBoost
+
+Choose based on environment and categorical handling.
+Do not install multiple boosting libraries just for appearance.
+
+FEATURES may include:
+- effective_unit_price
+- UPC/product identity
+- store
+- calendar
+- recorded promotion
+- lag demand
+- lag price
+- rolling historical demand
+- product metadata
+
+Do not use:
+- contemporaneous revenue
+- contemporaneous gross profit
+- target-derived features
+
+MODEL METRICS:
+At minimum:
+- MAE
+- RMSE
+- WAPE
+
+Use MAPE only cautiously because move may be zero.
+
+Evaluate:
+- global
+- by store
+- by high-volume UPC
+- by recorded promotion
+- by price-variation bucket
+
+Create:
+    reports/04_MODEL_COMPARISON.md
+    artifacts/metrics/model_metrics.json
+
+Select model based on validation performance + business suitability,
+not training score.
+
+Record:
+- training window
+- validation window
+- test window
+- features
+- model parameters
+- seed
+- metrics
+
+Serialize selected model safely to:
+    artifacts/models/
+
+======================================================================
+11. DEMAND CURVE / PRICE-RESPONSE SANITY CHECK
+======================================================================
+
+Before optimization, inspect model behavior.
+
+For selected UPC-store-week contexts:
+- hold non-price context fixed,
+- vary candidate price,
+- recompute price-derived features consistently,
+- predict demand.
+
+Create curves:
+
+    candidate price -> predicted demand
+
+Flag:
+- sharply increasing demand with higher price,
+- discontinuities,
+- extreme extrapolation,
+- impossible negative demand.
+
+Do not silently trust a high-performing demand model for pricing.
+
+If supported and scientifically defensible,
+consider monotonic constraints on price effect,
+but do NOT impose them blindly without documenting the assumption.
+
+Create:
+    reports/05_PRICE_RESPONSE_VALIDATION.md
+
+======================================================================
+12. PHASE F — COUNTERFACTUAL PRICE SIMULATION
+======================================================================
+
+Create:
+
+    src/pricing_engine/simulation/price_grid.py
+    src/pricing_engine/simulation/counterfactual.py
+
+Inputs:
+- UPC
+- store
+- decision week/context
+- current price
+- known cost/AAC context
+- candidate range
+- business policy
+
+Generate a vectorized price grid.
+
+For every candidate:
+- change price,
+- recompute all price-derived features,
+- hold appropriate non-price context fixed,
+- predict demand,
+- compute expected revenue,
+- compute expected gross profit.
+
+Important:
+Historical margin `profit` is NOT itself a fixed counterfactual margin.
+For candidate price simulation, use a fixed known AAC/cost assumption:
+
+    expected_gross_profit(p)
+      = (p - known_aac) * predicted_units(p)
+
+Do not reuse the observed historical margin percentage unchanged when changing candidate price.
+That would be mechanically wrong.
+
+Define the decision-time cost as:
+- latest known / lagged estimated AAC,
+or another explicitly documented cost rule.
+
+Create tests proving cost is held fixed across a candidate price simulation
+unless a scenario explicitly changes cost.
+
+======================================================================
+13. PHASE G — CONSTRAINED PRICE OPTIMIZATION
+======================================================================
+
+Create:
+
+    src/pricing_engine/optimization/objective.py
+    src/pricing_engine/optimization/constraints.py
+    src/pricing_engine/optimization/optimizer.py
+    src/pricing_engine/optimization/policies.py
+
+OBJECTIVES:
+
+Revenue:
+    R(p) = p * Q_hat(p)
+
+Gross profit:
+    GP(p) = (p - c) * Q_hat(p)
+
+Primary objective:
+    maximize expected gross profit
+
+Secondary supported objective:
+    maximize expected revenue
+
+Candidate constraints:
+
+1. minimum price
+2. maximum price
+3. price >= known AAC unless loss-leading explicitly allowed
+4. minimum gross margin
+5. maximum change from current price
+6. historical extrapolation guardrail
+7. configurable price rounding
+8. materiality threshold
+9. optional cool-down / price stability rule
+
+EXTRAPOLATION:
+By default do not recommend prices far outside the historical support for that UPC/store.
+
+Define configurable rule such as:
+    within observed range expanded by small tolerance
+or
+    within ±X% of current price
+whichever is more conservative.
+
+Do not use a universal magic number without config and documentation.
+
+MATERIALITY:
+If the best estimated improvement is below a configurable threshold,
+recommend NO CHANGE.
+
+The optimizer must sometimes return:
+    KEEP_CURRENT_PRICE
+
+REASON CODES:
+Implement explicit codes:
+
+    KEEP_CURRENT_OPTIMAL
+    LOW_CONFIDENCE
+    INSUFFICIENT_HISTORY
+    INSUFFICIENT_PRICE_VARIATION
+    OUTSIDE_EXTRAPOLATION_RANGE
+    COST_UNAVAILABLE
+    MARGIN_CONSTRAINT
+    PRICE_CHANGE_LIMIT
+    PROFIT_UPLIFT_POSITIVE
+    REVENUE_UPLIFT_POSITIVE
+
+Every recommendation should include:
+- current price
+- recommended price
+- price change %
+- predicted demand current
+- predicted demand recommended
+- expected revenue current/recommended
+- expected gross profit current/recommended
+- model-estimated uplift
+- risk/confidence flag
+- reason codes
+
+======================================================================
+14. ANALYTICAL OPTIMIZER TESTS
+======================================================================
+
+Create deterministic mathematical fixtures.
+
+Example linear demand:
+
+    Q(p) = a - b p
+
+Profit:
+
+    Pi(p) = (p - c)(a - b p)
+
+Analytical optimum:
+
+    p* = (a + b c) / (2 b)
+
+Test that the price-grid optimizer selects the correct or nearest feasible candidate.
+
+Also test:
+- minimum price constraint,
+- max price constraint,
+- minimum margin,
+- max price change,
+- no-change materiality,
+- negative demand protection,
+- missing cost behavior,
+- rounding.
+
+Add a constant-elasticity educational fixture where appropriate.
+
+======================================================================
+15. PHASE H — OFFLINE / HISTORICAL EVALUATION
+======================================================================
+
+Create:
+
+    src/pricing_engine/backtesting/
+    scripts/backtest.py
+    reports/06_BACKTEST.md
+
+Important scientific rule:
+
+For historical weeks, we observe the outcome only at the price actually charged.
+We do NOT directly observe demand at all alternative prices.
+
+Therefore do not claim:
+    "the optimized price would have actually increased profit by X%"
+
+unless a valid experimental/counterfactual identification method supports it.
+
+Use terminology:
+    model-estimated profit uplift
+    offline policy estimate
+    simulated counterfactual outcome
+
+Backtesting should evaluate at least:
+
+1. demand prediction quality through time
+2. recommendation stability
+3. distance from historical support
+4. frequency of no-change recommendations
+5. constraint activation
+6. model-estimated policy economics
+
+Compare policies:
+
+    HistoricalPricePolicy
+    SimpleMarginPolicy
+    ElasticityBaselinePolicy
+    MLPricingPolicy
+
+Clearly separate predictive accuracy from pricing policy quality.
+
+======================================================================
+16. PHASE I — RISK / CONFIDENCE
+======================================================================
+
+Create a practical recommendation reliability layer.
+
+Factors may include:
+- number of historical observations
+- within-product price variation
+- extrapolation distance
+- local prediction error
+- elasticity stability
+- promotion ambiguity
+
+Output:
+    HIGH
+    MEDIUM
+    LOW
+
+Do NOT call it statistically calibrated confidence unless it actually is.
+
+Low-confidence products should default toward:
+    KEEP CURRENT PRICE
+or conservative constraints.
+
+======================================================================
+17. PHASE J — API
+======================================================================
+
+Build FastAPI.
+
+Create:
+    api/main.py
+    api/schemas.py
+    api/routes/
+
+Endpoints:
+
+    GET /health
+    GET /model/info
+    POST /predict-demand
+    POST /simulate-prices
+    POST /recommend-price
+
+Pydantic validation:
+Reject invalid values:
+- negative price
+- negative cost
+- invalid objective
+- invalid min/max range
+- impossible config
+
+Example recommendation response:
+
+{
+  "upc": "...",
+  "store": 12,
+  "decision_week": "...",
+  "objective": "gross_profit",
+  "model_version": "...",
+  "current_price": 3.99,
+  "recommended_price": 4.09,
+  "predicted_units_current": ...,
+  "predicted_units_recommended": ...,
+  "expected_revenue_current": ...,
+  "expected_revenue_recommended": ...,
+  "expected_gross_profit_current": ...,
+  "expected_gross_profit_recommended": ...,
+  "model_estimated_profit_uplift_pct": ...,
+  "risk_level": "MEDIUM",
+  "reason_codes": [...]
+}
+
+Load the model once, not on every request.
+
+Add API tests.
+
+======================================================================
+18. PHASE K — DASHBOARD
+======================================================================
+
+Build a polished Streamlit dashboard.
+
+Pages:
+
+1. Executive Overview
+2. Product / Store Explorer
+3. Pricing & Demand
+4. Elasticity Analysis
+5. Price Simulator
+6. Recommendation Engine
+7. Model Performance
+8. Data Quality
+9. Methodology & Limitations
+
+EXECUTIVE OVERVIEW:
+Show:
+- historical revenue
+- historical gross profit
+- products/stores analyzed
+- selected model WAPE
+- eligible recommendations
+- model-estimated uplift clearly labeled
+
+PRODUCT EXPLORER:
+Allow UPC/store selection.
+Show:
+- product description
+- price history
+- unit sales history
+- recorded promotion weeks
+- historical margin/AAC
+- revenue/profit
+
+PRICE SIMULATOR:
+User changes candidate price.
+Show:
+- predicted demand
+- expected revenue
+- expected gross profit
+- constraint status
+- extrapolation warning
+
+OPTIMIZATION:
+Show:
+- current vs recommended price
+- demand curve
+- revenue curve
+- gross-profit curve
+- optimum
+- constraints
+- risk level
+- reason codes
+
+MODEL PERFORMANCE:
+Show:
+- model comparison
+- temporal metrics
+- actual vs predicted
+- residuals
+- segment errors
+
+LIMITATIONS PAGE:
+Make scientific limitations visible.
+Do not bury them.
+
+======================================================================
+19. PHASE L — CLI AND DEMO
+======================================================================
+
+Create commands/scripts:
+
+    python scripts/download_dominicks.py
+    python scripts/build_dataset.py
+    python scripts/validate_data.py
+    python scripts/train.py
+    python scripts/evaluate.py
+    python scripts/optimize.py --upc ... --store ...
+    python scripts/backtest.py
+    python scripts/run_demo.py
+
+Makefile targets where useful:
+
+    make data
+    make validate
+    make train
+    make test
+    make demo
+    make api
+    make dashboard
+
+The demo command should use real processed Dominick's data and actual trained artifacts.
+
+Do not hardcode fake demo recommendations.
+
+======================================================================
+20. PHASE M — MONITORING BASICS
+======================================================================
+
+Only after the core system works.
+
+Implement lightweight:
+- data schema checks
+- feature drift checks
+- prediction distribution checks
+- actual-vs-predicted performance when outcomes become available
+
+Do not overengineer a fake production MLOps platform.
+
+Create:
+    reports/MONITORING_DESIGN.md
+
+If implementing PSI/KS-style drift metrics,
+document interpretation and limitations.
+
+======================================================================
+21. DOCUMENTATION
+======================================================================
+
+Create and maintain:
+
+    README.md
+    docs/DATA_SOURCE.md
+    docs/DATA_DICTIONARY.md
+    docs/METRICS.md
+    docs/PRICING_SCIENCE.md
+    docs/FEATURE_AVAILABILITY.md
+    docs/DATA_LEAKAGE_AUDIT.md
+    docs/CAUSAL_LIMITATIONS.md
+    docs/MODEL_CARD.md
+    docs/TECHNICAL_DESIGN.md
+    docs/BUSINESS_CASE.md
+    docs/INTERVIEW_GUIDE.md
+    docs/USING_YOUR_OWN_DATA.md
+
+README must include:
+
+- business problem
+- dataset
+- official data acquisition instructions
+- architecture
+- equations
+- modeling approach
+- optimizer
+- actual metrics
+- actual example recommendation
+- limitations
+- install
+- data build
+- training
+- tests
+- API
+- dashboard
+- demo
+
+Include official Dominick's attribution.
+
+Do not put fabricated example metrics into the final Results section.
+
+======================================================================
+22. MODEL CARD
+======================================================================
+
+docs/MODEL_CARD.md should include:
+
+- intended use
+- out-of-scope use
+- target
+- training data
+- time range
+- features
+- evaluation strategy
+- model metrics
+- uncertainty
+- known failure modes
+- price-response risks
+- retraining/monitoring guidance
+
+======================================================================
+23. PRICING SCIENCE DOCUMENT
+======================================================================
+
+docs/PRICING_SCIENCE.md should teach:
+
+Demand:
+    Q = f(P, X)
+
+Revenue:
+    R(P) = P Q(P)
+
+Gross Profit:
+    GP(P) = (P - C) Q(P)
+
+Elasticity:
+    E = (% change Q) / (% change P)
+
+Explain:
+- elastic vs inelastic demand
+- revenue vs profit optimum
+- cost/AAC caveat
+- promotions
+- endogeneity
+- correlation vs causality
+- why temporal split matters
+- why an accurate forecasting model can still be unsafe for price optimization
+- price-response sanity checks
+- extrapolation risks
+
+======================================================================
+24. A/B TEST / REAL-WORLD VALIDATION DESIGN
+======================================================================
+
+Create:
+    docs/PRICING_EXPERIMENT.md
+
+Design a hypothetical production experiment.
+
+Primary metric example:
+    gross profit per eligible store-week / customer / exposure unit
+
+Secondary metrics:
+- revenue
+- unit sales
+- average selling price
+- margin
+
+Guardrails:
+- customer complaints
+- extreme price changes
+- stock availability if known
+- cancellations/refunds if applicable in a real system
+- fairness/legal constraints
+
+Discuss:
+- randomization unit
+- duration
+- sample size/power concept
+- spillovers
+- seasonality
+- multiple testing
+- rollout safety
+
+Do not invent experiment results.
+
+======================================================================
+25. RESPONSIBLE PRICING
+======================================================================
+
+Create:
+    docs/RESPONSIBLE_PRICING.md
+
+Discuss:
+- price gouging risk
+- discriminatory personalized pricing
+- protected/sensitive attributes
+- customer trust
+- legal/regulatory obligations
+- emergency constraints
+- human approval
+
+The demo should optimize product/store/time context,
+not sensitive personal characteristics.
+
+======================================================================
+26. HUMAN-IN-THE-LOOP DESIGN
+======================================================================
+
+Document recommendation lifecycle:
+
+    GENERATED
+    REVIEWED
+    APPROVED
+    REJECTED
+    PUBLISHED
+
+The demo does not need to integrate with a live commerce system.
+
+But every recommendation should be auditable.
+
+Create a lightweight recommendation log with:
+- timestamp
+- UPC
+- store
+- model version
+- inputs
+- current price
+- recommended price
+- objective
+- constraints
+- expected outcomes
+- risk
+- reason codes
+
+SQLite or Parquet/CSV is acceptable.
+
+======================================================================
+27. CODE QUALITY
+======================================================================
+
+Use:
+- type hints
+- clear docstrings
+- small focused modules
+- deterministic seeds
+- explicit exceptions
+- domain-aware errors
+- configuration instead of magic numbers
+
+Good error:
+    "Gross-profit optimization requires an available AAC estimate for UPC X at store Y."
+
+Bad error:
+    "KeyError: cost"
+
+Use vectorized price-grid scoring.
+
+Do not call model.predict once per row when a single batch prediction can do it.
+
+======================================================================
+28. CONFIGURATION
+======================================================================
+
+Create configuration for:
+- random seed
+- paths
+- temporal split
+- candidate price step
+- max price change
+- min margin
+- extrapolation policy
+- materiality threshold
+- model hyperparameters
+- objective
+- rounding
+
+Create demo profiles:
+
+conservative:
+    tighter price movement
+    stronger extrapolation guardrail
+    higher materiality threshold
+
+standard:
+    moderate values
+
+aggressive:
+    broader values
+
+Explicitly label these as DEMO POLICY SETTINGS,
+not universal best-practice thresholds.
+
+======================================================================
+29. TEST SUITE
+======================================================================
+
+Tests should cover:
+
+DATA:
+- formulas
+- joins
+- valid rows
+- week decoding
+- downloader
+- archive safety
+
+FEATURES:
+- no future leakage
+- lag alignment
+- rolling shift
+- candidate price recomputation
+
+ECONOMICS:
+- revenue
+- gross profit
+- margin
+- elasticity
+
+MODEL:
+- train
+- predict
+- serialization/reload
+- nonnegative postprocessing if used
+
+SIMULATION:
+- fixed context
+- changed price
+- price-derived features recomputed
+- cost held fixed
+
+OPTIMIZER:
+- analytical optimum
+- constraints
+- extrapolation
+- no-change
+- materiality
+- rounding
+- missing cost
+
+API:
+- health
+- model info
+- valid request
+- invalid request
+
+INTEGRATION:
+    raw/fixture
+      -> processed
+      -> features
+      -> model
+      -> simulation
+      -> optimization
+
+Do not chase 100% code coverage artificially.
+Prioritize decision-critical code.
+
+======================================================================
+30. CI / DOCKER
+======================================================================
+
+After the project works locally:
+
+Create:
+    Dockerfile
+    docker-compose.yml if useful
+    .github/workflows/ci.yml
+
+CI should:
+- install
+- lint
+- run tests
+- smoke import
+
+Do NOT make CI depend on downloading the full licensed/academic-use dataset from a public build service if that would violate data-use expectations.
+
+Use deterministic small fixtures for CI tests.
+
+The API Docker image should load a model artifact supplied/mounted appropriately.
+
+======================================================================
+31. REPRODUCIBILITY
+======================================================================
+
+Record:
+- Python version
+- package versions
+- random seeds
+- dataset source
+- processed dataset fingerprint/checksum
+- model metadata
+- training window
+- Git commit when available
+
+Model metadata should include:
+- model version
+- training timestamp
+- feature columns
+- training range
+- validation/test range
+- metrics
+- data fingerprint
+
+======================================================================
+32. FINAL REPORTS
+======================================================================
+
+Generate:
+
+    reports/01_DATA_AUDIT.md
+    reports/02_PRICING_EDA.md
+    reports/03_ELASTICITY_ANALYSIS.md
+    reports/04_MODEL_COMPARISON.md
+    reports/05_PRICE_RESPONSE_VALIDATION.md
+    reports/06_BACKTEST.md
+    reports/07_RECOMMENDATION_SUMMARY.md
+    reports/VALIDATION_SUMMARY.md
+
+All numbers must be generated from actual execution.
+
+Recommendation summary should include columns like:
+
+    UPC
+    store
+    product_description
+    current_price
+    recommended_price
+    price_change_pct
+    predicted_units_current
+    predicted_units_recommended
+    expected_revenue_current
+    expected_revenue_recommended
+    expected_gross_profit_current
+    expected_gross_profit_recommended
+    model_estimated_profit_uplift_pct
+    risk_level
+    decision
+    reason_codes
+
+======================================================================
+33. FINAL VALIDATION
+======================================================================
+
+At the end, run a complete clean verification as far as environment allows:
+
+1. install package
+2. verify data exists or run official downloader
+3. build processed dataset
+4. run data validation
+5. run unit tests
+6. train models
+7. evaluate selected model
+8. save model
+9. reload model
+10. generate demand curves
+11. run optimizer on one real UPC/store context
+12. run batch recommendations
+13. run backtest
+14. run API tests
+15. smoke-test dashboard
+16. lint
+17. Docker build if environment supports it
+
+Create:
+    reports/VALIDATION_SUMMARY.md
+
+Include exact commands and exact results:
+
+    Data download: PASS / BLOCKED
+    Data build: PASS / FAIL
+    Data validation: PASS / FAIL
+    Unit tests: N passed / N failed
+    Integration tests: ...
+    Model training: PASS / FAIL
+    Selected model: ...
+    Test MAE: ...
+    Test RMSE: ...
+    Test WAPE: ...
+    Price-response checks: ...
+    Analytical optimizer tests: ...
+    API tests: ...
+    Dashboard smoke test: ...
+    Docker: PASS / FAIL / NOT TESTED
+
+Do not hide open issues.
+
+======================================================================
+34. CLAIMS POLICY
+======================================================================
+
+Allowed wording:
+- "historical observed revenue"
+- "historical observed gross margin"
+- "predicted demand"
+- "model-estimated counterfactual revenue"
+- "model-estimated gross-profit uplift"
+- "offline policy simulation"
+- "observational price-response estimate"
+
+Do NOT use without evidence:
+- "causal profit uplift"
+- "actual uplift"
+- "proven optimal price"
+- "scientifically validated causal engine"
+- "production ready"
+
+If experimental identification is not established,
+say so.
+
+======================================================================
+35. PORTFOLIO QUALITY
+======================================================================
+
+A recruiter should understand within 5 minutes:
+
+1. business problem
+2. dataset
+3. data grain
+4. why price-response modeling is difficult
+5. models compared
+6. temporal evaluation
+7. optimization objective
+8. constraints
+9. example recommendation
+10. test evidence
+11. limitations
+12. how to run it
+
+The project should demonstrate:
+- Python
+- pandas
+- SQL-like/data engineering thinking
+- statistics
+- econometrics/pricing reasoning
+- ML
+- feature engineering
+- time-aware evaluation
+- optimization
+- FastAPI
+- dashboarding
+- testing
+- software design
+- scientific honesty
+
+======================================================================
+36. USER COMMUNICATION
+======================================================================
+
+When reporting progress to me:
+- explain important decisions in Moroccan Arabic Darija,
+- keep technical names in English,
+- be concise,
+- provide actual test/metric evidence,
+- explain blockers honestly.
+
+Example:
+
+    "دابا data pipeline validated: حملنا Cereals من Kilts Center،
+     بنينا UPC×store×week table، وحيدنا غير ok=0 حسب الـmanual.
+     18 tests passed. مازال ما بديناش ML حيث خاصنا نراجع price variation."
+
+Do NOT repeatedly ask:
+    "Should I continue?"
+
+Continue automatically when the previous stage acceptance gate passes.
+
+If you encounter a genuinely blocking human decision, document it and continue with all non-blocked work.
+
+======================================================================
+37. EXECUTION ORDER
+======================================================================
+
+Execute in this order:
+
+PHASE A
+- initialize repository
+- create control docs
+- download official data
+- read manual
+- canonical data pipeline
+- data audit
+- tests
+
+GATE A
+
+PHASE B
+- pricing EDA
+- economics module
+- price variation eligibility analysis
+
+GATE B
+
+PHASE C
+- feature availability
+- leakage audit
+- lag features
+
+GATE C
+
+PHASE D
+- descriptive elasticity
+- controlled interpretable models
+- causal limitations
+
+GATE D
+
+PHASE E
+- demand baselines
+- ML models
+- temporal validation
+- model selection
+
+GATE E
+
+PHASE F
+- price-response curves
+- sanity checks
+- counterfactual simulator
+
+GATE F
+
+PHASE G
+- revenue / gross-profit optimization
+- constraints
+- analytical tests
+- reason codes
+- confidence/risk
+
+GATE G
+
+PHASE H
+- historical/offline evaluation
+- policy comparison
+
+GATE H
+
+PHASE I
+- FastAPI
+- API tests
+
+GATE I
+
+PHASE J
+- Streamlit dashboard
+
+GATE J
+
+PHASE K
+- monitoring basics
+- Docker
+- CI
+- final docs
+- final verification
+
+Do not skip gates.
+
+======================================================================
+38. VERY IMPORTANT FIRST ACTION
+======================================================================
+
+START NOW.
+
+First do exactly this:
+
+1. inspect current directory
+2. inspect git status
+3. initialize minimal project structure
+4. create ROADMAP.md / STATUS.md / DECISIONS.md / KNOWN_LIMITATIONS.md
+5. create data/raw/dominicks/cereals/
+6. add raw data to .gitignore
+7. implement scripts/download_dominicks.py using the official URLs above
+8. download upccer.csv
+9. download and safely extract wcer.zip
+10. read the official manual sections for UPC and movement data
+11. inspect raw schemas and actual values
+12. build the canonical data pipeline
+13. write data tests
+14. run the tests
+15. generate reports/01_DATA_AUDIT.md
+16. verify all Phase A acceptance criteria
+17. only then continue to Phase B
+
+Do not start XGBoost, FastAPI, Streamlit, Docker, or optimization before Phase A is proven.
+
+======================================================================
+39. FINAL RESPONSE TO ME AFTER THE FULL BUILD
+======================================================================
+
+At the end, give me a structured Darija summary:
+
+1. شنو تبنا
+2. شنو هي data الحقيقية اللي استعملنا
+3. dataset dimensions
+4. أهم data quality findings
+5. EDA findings
+6. elasticity findings
+7. models compared
+8. selected model
+9. actual test metrics
+10. how price simulation works
+11. how optimization works
+12. actual example recommendation
+13. constraints and risk controls
+14. backtesting/offline findings
+15. API endpoints
+16. dashboard pages
+17. exact test results
+18. limitations
+19. exact commands to reproduce everything
+20. 15 interview questions I must personally understand
+
+Most important:
+Do not optimize for appearing finished.
+Optimize for being correct, reproducible, tested, defensible, and explainable.
+
+BEGIN IMPLEMENTATION NOW.
