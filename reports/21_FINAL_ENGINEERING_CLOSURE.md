@@ -441,7 +441,7 @@ than no audit.
 | --- | --- |
 | `python -m pytest` | **519 passed, 0 failed, 0 skipped, 0 xfailed**, 15.9 s |
 | `python -m ruff check .` | **All checks passed** |
-| `python scripts/audit_claims.py --strict` | SAFE 351 / NEEDS_QUALIFICATION 39 / **UNSUPPORTED 0** |
+| `python scripts/audit_claims.py --strict` | SAFE 352 / NEEDS_QUALIFICATION 39 / **UNSUPPORTED 0** |
 | `python scripts/audit_metric_consistency.py --strict` | 25 metrics, 214 statements, **0 mismatches** |
 | `python scripts/update_readme_metrics.py --check` | README metrics match the artifacts |
 | `python scripts/render_mermaid.py` | 10 of 10 diagrams rendered |
@@ -513,6 +513,69 @@ rows — unchanged from the recorded fingerprint.
 | `src/pricing_engine/__init__.py` | `__version__ = "1.0.0"` |
 | FastAPI app | now **imports** `__version__` instead of repeating it |
 | report edition | `REPORT_VERSION = "1.0"`, printed on the cover from the artifacts |
+
+---
+
+## 11b. Git history
+
+The repository had **no commits at all** when this phase began. Reconstructing
+a plausible sequence of back-dated commits would have misrepresented when the
+work happened — the same category of dishonesty the rest of this project
+spends twenty reports avoiding. The work was therefore imported now and split
+into coherent commits by component. Every commit carries today's date; the
+phase-by-phase history lives in `ROADMAP.md` and `DECISIONS.md`, where it is
+documented rather than simulated.
+
+| # | commit | scope |
+| --- | --- | --- |
+| 1 | `chore: initialize repository with packaging, config and licence-safe gitignore` | pyproject, config, Makefile, Dockerfile, compose, CI workflow, `.gitignore` |
+| 2 | `feat: build validated Dominicks pricing data pipeline` | acquisition, cleaning, validation, feature layer |
+| 3 | `feat: add demand forecasting and elasticity estimation` | baselines, ridge log-log, HGB, elasticity ladder, estimator + shrinkage, hybrid response |
+| 4 | `feat: implement hybrid constrained pricing engine` | simulation, constraints, risk, optimizer (single and vectorised batch), audit log, monitoring |
+| 5 | `feat: add FastAPI service and Streamlit dashboard` | API, 9-page dashboard, smoke test |
+| 6 | `feat: add the scientific audit suite that interrogates the engine` | the twelve Phase M audits and the attribution replica |
+| 7 | `test: add scientific, leakage and decision-state validation suite` | 519 tests |
+| 8 | `chore: add generated metrics, model diagnostics and report figures` | `artifacts/metrics/*.json`, per-UPC elasticity tables, 23 figures, 10 diagrams |
+| 9 | `docs: add the full technical report and portfolio documentation` | the 247-page report, reports 01-21, `docs/`, STATUS/ROADMAP/DECISIONS/KNOWN_LIMITATIONS |
+| 10 | `build: generate the report editions from the Markdown source` | figure, diagram, DOCX and PDF builders |
+| 11 | `chore: finalize v1.0 reproducibility and documentation consistency` | batch benchmark, generated README metrics, numeric consistency audit, FUTURE_WORK |
+| 12 | `chore: regenerate the claim audit at the v1.0 freeze` | final audit run |
+
+### 11b.1 What was kept out of Git, and why
+
+| excluded | reason |
+| --- | --- |
+| `data/raw/`, `data/interim/`, `data/processed/`, `*.zip` | the licensed Dominick's panel |
+| `artifacts/metrics/price_change_episodes.csv` (25 MB), `constraint_attribution.csv` (8.6 MB), `price_variation_upc_store.csv` (4.8 MB) | generated, but every row still carries the licensed weekly prices, units and costs — derived extracts are treated exactly like the raw files |
+| `artifacts/recommendation_log.csv`, `…__schema_pre_phase_m.csv` | same reason, and an append-only local log would churn on every run |
+| `artifacts/models/*` | large regenerable binaries (the `.gitkeep` is kept) |
+| `artifacts/report_figures/mermaid/mermaid.min.js` | vendored third-party library, fetched once by the render script |
+| `~$*.docx`, `.venv*/`, caches | Word lock files, local environments, tooling caches |
+
+Verified before committing: no `data/` path, no `.parquet`, no `.zip` and no
+row-level extract is tracked; a secret scan over every staged text file found
+nothing (the only hits were the word "token" inside a LaTeX parser);
+`.env.example` is a template with no values. Tracked tree: **230 files, 26 MB**,
+of which the report PDF (9.6 MB) and DOCX (6.5 MB) are the two largest — they
+are the deliverable.
+
+### 11b.2 Tag
+
+```
+$ git tag -a v1.0.0 -m "AI Pricing & Revenue Optimization Engine — portfolio v1.0"
+$ git rev-parse v1.0.0^{commit}
+```
+
+The annotated tag `v1.0.0` was created **after** the full verification gauntlet
+below passed, on the final commit of this repository. The verification in §9
+was executed at commit `32f4653`
+(`32f4653159846dc78804d2dadd032eda0f7a25ff`); this record is the
+commit that follows it, and the tag was moved onto it so that the tagged tree
+contains its own release record.
+
+**Nothing was pushed.** No remote is configured, and neither the commits nor
+the tag were published: that is the repository owner's decision, not this
+phase's.
 
 ---
 

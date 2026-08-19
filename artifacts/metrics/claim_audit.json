@@ -1,10 +1,10 @@
 {
   "n_files_scanned": 53,
-  "n_occurrences": 390,
+  "n_occurrences": 391,
   "counts": {
     "UNSUPPORTED": 0,
     "NEEDS QUALIFICATION": 39,
-    "SAFE": 351
+    "SAFE": 352
   },
   "unsupported": [],
   "needs_qualification": [
@@ -360,5 +360,5 @@
       "verdict": "NEEDS QUALIFICATION"
     }
   ],
-  "runtime_seconds": 1.6
+  "runtime_seconds": 1.3
 }

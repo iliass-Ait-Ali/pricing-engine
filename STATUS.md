@@ -1,6 +1,7 @@
 # Status
 
 **Version: 1.0.0 — scientific development FROZEN.**
+Tagged `v1.0.0` (annotated, local only — nothing was pushed).
 Last full verification: **2026-08-19**, the final engineering closure
 (`reports/21_FINAL_ENGINEERING_CLOSURE.md`), on top of the Phase M scientific
 audit (`reports/11`-`reports/20`, `reports/VALIDATION_SUMMARY.md`).

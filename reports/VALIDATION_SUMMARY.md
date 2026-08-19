@@ -176,6 +176,18 @@ field-by-field equivalence result), `metric_consistency.json` (every checked
 statement and its source of truth), `test_suite.json` (the collected test
 count), `report_build.json` (DOCX/PDF page, word and heading counts).
 
+## Freeze record
+
+| item | value |
+| --- | --- |
+| version | **1.0.0** (`pyproject.toml`, `src/pricing_engine/__init__.py`, and the FastAPI app which imports it) |
+| Git history | 12 commits; the repository had **no commits** before this phase, and none were fabricated or back-dated |
+| verified commit | `32f4653` — the tree at which the gauntlet in this file was executed |
+| tag | annotated **`v1.0.0`**, created after the gauntlet passed; read the target with `git rev-parse v1.0.0^{commit}` |
+| pushed? | **no** — no remote is configured, and neither commits nor tag were published |
+| working tree | clean |
+| licensed data in Git | none: no `data/` path, no `.parquet`, no `.zip`, no row-level derived extract |
+
 ## Open issues (not hidden)
 
 Freezing v1.0 closed none of these.
