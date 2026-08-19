@@ -1,0 +1,211 @@
+{
+  "training_weeks": [
+    2,
+    257
+  ],
+  "evaluation_weeks": [
+    258,
+    399
+  ],
+  "n_episodes": 154899,
+  "n_dropped_zero_baseline": 3,
+  "min_abs_price_change": 0.05,
+  "max_abs_price_change": 0.6,
+  "share_with_recorded_promotion": 0.7333100923827784,
+  "pooled_elasticity_used": -2.028859937952365,
+  "median_observed_implied_elasticity": -2.452370497919079,
+  "median_observed_implied_elasticity_no_promo": -1.862275180749707,
+  "results": {
+    "all episodes": {
+      "null (baseline only, epsilon = 0)": {
+        "n": 154899,
+        "wape": 0.8086006984588724,
+        "mae": 45.431087653688586,
+        "bias": -37.26332755755864,
+        "sign_accuracy_vs_baseline": NaN,
+        "median_abs_error_in_log_demand_change": 0.6972158398477487,
+        "spearman_rank_corr": NaN
+      },
+      "pooled elasticity": {
+        "n": 154899,
+        "wape": 0.6248833945950015,
+        "mae": 35.10896333293723,
+        "bias": -29.34876088145028,
+        "sign_accuracy_vs_baseline": 0.8174165101130414,
+        "median_abs_error_in_log_demand_change": 0.4361706297144939,
+        "spearman_rank_corr": 0.7955543781072137
+      },
+      "shrunk product elasticity": {
+        "n": 154899,
+        "wape": 0.5853091030699282,
+        "mae": 32.885488742159744,
+        "bias": -24.990434938999677,
+        "sign_accuracy_vs_baseline": 0.8174165101130414,
+        "median_abs_error_in_log_demand_change": 0.43686800126482417,
+        "spearman_rank_corr": 0.7843762458542513
+      },
+      "native ML price response": {
+        "n": 154899,
+        "wape": 0.6041962721401207,
+        "mae": 33.94666100579167,
+        "bias": -26.06784413349549,
+        "sign_accuracy_vs_baseline": 0.81742296593264,
+        "median_abs_error_in_log_demand_change": 0.4586116983919875,
+        "spearman_rank_corr": 0.7860825100955139
+      }
+    },
+    "no recorded promotion": {
+      "null (baseline only, epsilon = 0)": {
+        "n": 41310,
+        "wape": 0.715163489473542,
+        "mae": 24.047740216001284,
+        "bias": -18.33253449221487,
+        "sign_accuracy_vs_baseline": NaN,
+        "median_abs_error_in_log_demand_change": 0.43976584304905414,
+        "spearman_rank_corr": NaN
+      },
+      "pooled elasticity": {
+        "n": 41310,
+        "wape": 0.5943874520151103,
+        "mae": 19.986583828870234,
+        "bias": -14.765249049262097,
+        "sign_accuracy_vs_baseline": 0.6831517792302106,
+        "median_abs_error_in_log_demand_change": 0.3915679510244928,
+        "spearman_rank_corr": 0.5534007085847298
+      },
+      "shrunk product elasticity": {
+        "n": 41310,
+        "wape": 0.5595707036720017,
+        "mae": 18.815852755983233,
+        "bias": -12.756743268182694,
+        "sign_accuracy_vs_baseline": 0.6831517792302106,
+        "median_abs_error_in_log_demand_change": 0.3959783946497884,
+        "spearman_rank_corr": 0.5428519819296727
+      },
+      "native ML price response": {
+        "n": 41310,
+        "wape": 0.5877358745013869,
+        "mae": 19.76292111337791,
+        "bias": -13.288401834477376,
+        "sign_accuracy_vs_baseline": 0.6831759864439603,
+        "median_abs_error_in_log_demand_change": 0.43587773645884703,
+        "spearman_rank_corr": 0.5433763017560616
+      }
+    },
+    "recorded promotion in either week": {
+      "null (baseline only, epsilon = 0)": {
+        "n": 113589,
+        "wape": 0.8263464661953671,
+        "mae": 53.20777450409542,
+        "bias": -44.1480704598586,
+        "sign_accuracy_vs_baseline": NaN,
+        "median_abs_error_in_log_demand_change": 0.819073742275348,
+        "spearman_rank_corr": NaN
+      },
+      "pooled elasticity": {
+        "n": 113589,
+        "wape": 0.6306752404752995,
+        "mae": 40.60866398452328,
+        "bias": -34.65248636356293,
+        "sign_accuracy_vs_baseline": 0.8662458512708097,
+        "median_abs_error_in_log_demand_change": 0.45416119892549756,
+        "spearman_rank_corr": 0.8183743233832403
+      },
+      "shrunk product elasticity": {
+        "n": 113589,
+        "wape": 0.5901973875401595,
+        "mae": 38.00232807157502,
+        "bias": -29.43957880787298,
+        "sign_accuracy_vs_baseline": 0.8662458512708097,
+        "median_abs_error_in_log_demand_change": 0.45351201598321855,
+        "spearman_rank_corr": 0.8095451629438012
+      },
+      "native ML price response": {
+        "n": 113589,
+        "wape": 0.6073224613373301,
+        "mae": 39.104997596091906,
+        "bias": -30.715466362518,
+        "sign_accuracy_vs_baseline": 0.8662458512708097,
+        "median_abs_error_in_log_demand_change": 0.4673141317685951,
+        "spearman_rank_corr": 0.8118680139112632
+      }
+    },
+    "price increases": {
+      "null (baseline only, epsilon = 0)": {
+        "n": 66623,
+        "wape": 0.6766556123087276,
+        "mae": 10.751809150356538,
+        "bias": 6.57006252796224,
+        "sign_accuracy_vs_baseline": NaN,
+        "median_abs_error_in_log_demand_change": 0.5125490363711498,
+        "spearman_rank_corr": NaN
+      },
+      "pooled elasticity": {
+        "n": 66623,
+        "wape": 0.4109459544447072,
+        "mae": 6.529780279550361,
+        "bias": -2.199672417268985,
+        "sign_accuracy_vs_baseline": 0.7857946955255692,
+        "median_abs_error_in_log_demand_change": 0.3534711965442377,
+        "spearman_rank_corr": 0.39794807318450065
+      },
+      "shrunk product elasticity": {
+        "n": 66623,
+        "wape": 0.4188541014846221,
+        "mae": 6.655437831426733,
+        "bias": -2.854265237511374,
+        "sign_accuracy_vs_baseline": 0.7857946955255692,
+        "median_abs_error_in_log_demand_change": 0.3695877383241864,
+        "spearman_rank_corr": 0.37706137220163344
+      },
+      "native ML price response": {
+        "n": 66623,
+        "wape": 0.4379048845295888,
+        "mae": 6.958147776838189,
+        "bias": -3.9185717416646946,
+        "sign_accuracy_vs_baseline": 0.7858097053570089,
+        "median_abs_error_in_log_demand_change": 0.41247177724619133,
+        "spearman_rank_corr": 0.33496195229065956
+      }
+    },
+    "price decreases": {
+      "null (baseline only, epsilon = 0)": {
+        "n": 88276,
+        "wape": 0.8268728734897693,
+        "mae": 71.60397237578171,
+        "bias": -70.34493464972024,
+        "sign_accuracy_vs_baseline": NaN,
+        "median_abs_error_in_log_demand_change": 0.938878875293724,
+        "spearman_rank_corr": NaN
+      },
+      "pooled elasticity": {
+        "n": 88276,
+        "wape": 0.6545101314909847,
+        "mae": 56.678029812680236,
+        "bias": -49.83851710906763,
+        "sign_accuracy_vs_baseline": 0.841281888622049,
+        "median_abs_error_in_log_demand_change": 0.5244551334712092,
+        "spearman_rank_corr": 0.6836065590348693
+      },
+      "shrunk product elasticity": {
+        "n": 88276,
+        "wape": 0.6083603209097036,
+        "mae": 52.6816358469874,
+        "bias": -41.69687875183959,
+        "sign_accuracy_vs_baseline": 0.841281888622049,
+        "median_abs_error_in_log_demand_change": 0.5025473615290095,
+        "spearman_rank_corr": 0.6539594119944788
+      },
+      "native ML price response": {
+        "n": 88276,
+        "wape": 0.627224832196482,
+        "mae": 54.315229097374534,
+        "bias": -42.78417671042401,
+        "sign_accuracy_vs_baseline": 0.841281888622049,
+        "median_abs_error_in_log_demand_change": 0.502377786516092,
+        "spearman_rank_corr": 0.6747494409243018
+      }
+    }
+  },
+  "runtime_seconds": 5.7
+}

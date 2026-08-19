@@ -1,0 +1,72 @@
+{
+  "training_weeks": [
+    2,
+    257
+  ],
+  "thresholds": {
+    "min_obs_per_upc": 200,
+    "min_distinct_prices_per_upc": 10,
+    "max_se_for_product_estimate": 1.5
+  },
+  "funnel": [
+    {
+      "stage": "UPCs in the processed dataset",
+      "n_upcs": 489,
+      "reason": "every cereal UPC that survived the raw data audit"
+    },
+    {
+      "stage": "... present in the modelling table",
+      "n_upcs": 476,
+      "reason": "needs at least one lagged price and one lagged demand observation"
+    },
+    {
+      "stage": "... observed in the training weeks",
+      "n_upcs": 372,
+      "reason": "elasticity estimation is restricted to weeks 2-257 (no validation or test outcomes)"
+    },
+    {
+      "stage": "... with positive-sales training weeks",
+      "n_upcs": 372,
+      "reason": "log demand is undefined at zero units (dropped 0 zero-sales rows (0.00%))"
+    },
+    {
+      "stage": "... with >= 200 training observations",
+      "n_upcs": 330,
+      "reason": "a per-product regression on fewer rows is not worth reporting"
+    },
+    {
+      "stage": "... and >= 10 distinct prices",
+      "n_upcs": 272,
+      "reason": "the price coefficient is identified from price variation; without it there is nothing to fit"
+    },
+    {
+      "stage": "... successfully estimated",
+      "n_upcs": 272,
+      "reason": "the regression converged and produced a finite coefficient and standard error"
+    },
+    {
+      "stage": "... after removing wrong-signed coefficients",
+      "n_upcs": 248,
+      "reason": "a positive price coefficient is evidence of endogeneity, not of upward-sloping demand"
+    },
+    {
+      "stage": "... after removing imprecise coefficients",
+      "n_upcs": 239,
+      "reason": "panel-robust standard error must be <= 1.5"
+    }
+  ],
+  "rejections": {
+    "insufficient observations or price variation": 100,
+    "wrong sign": 24,
+    "standard error too large": 9
+  },
+  "decision_week": 399,
+  "n_decision_contexts": 13964,
+  "elasticity_source_counts": {
+    "shrunk_product": 8962,
+    "pooled_fallback": 5002
+  },
+  "share_shrunk_product": 0.6417931824692066,
+  "share_pooled_fallback": 0.3582068175307935,
+  "runtime_seconds": 10.1
+}

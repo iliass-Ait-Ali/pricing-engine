@@ -1,0 +1,17 @@
+{
+  "source_markdown": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+  "docx": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.docx",
+  "pdf": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.pdf",
+  "pages": 247,
+  "words_word_count": 77448,
+  "headings": {
+    "heading_1": 29,
+    "heading_2": 132,
+    "heading_3": 690
+  },
+  "docx_bytes": 6817384,
+  "pdf_bytes": 10044566,
+  "markdown_lines": 12321,
+  "generated_at_utc": "2026-08-19T04:17:36+00:00",
+  "note": "Generated from the Markdown source of truth: scripts/build_report_docx.py then scripts/export_report_pdf.py. The DOCX and PDF are never edited by hand."
+}

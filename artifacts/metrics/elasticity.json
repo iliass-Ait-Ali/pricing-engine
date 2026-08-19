@@ -1,0 +1,96 @@
+{
+  "arc": {
+    "n_consecutive_week_pairs": 4509599,
+    "n_usable_pairs": 716858,
+    "pct_pairs_undefined": 84.1037307308255,
+    "median": -2.821860776150312,
+    "mean_trimmed_1_99": -4.678552464044243,
+    "p25": -8.505714285714278,
+    "p75": 0.2560424332090466,
+    "share_negative": 0.7027779560247637,
+    "share_below_minus_one": 0.677220593199769
+  },
+  "loglog": [
+    {
+      "model": "M1 naive pooled",
+      "price_elasticity": -0.3480001640309078,
+      "std_error": 0.003214727627812834,
+      "ci_low": -0.35430091440152683,
+      "ci_high": -0.3416994136602887,
+      "n_obs": 1200000,
+      "r_squared": 0.012603878017901193,
+      "controls": "none",
+      "zero_handling": "drop (dropped 0 zero-sales rows (0.00%); fitted on a random subsample of 1,200,000 rows (seed=42))"
+    },
+    {
+      "model": "M2 + UPC fixed effects",
+      "price_elasticity": -2.2894092344521177,
+      "std_error": 0.0072118809371920795,
+      "ci_low": -2.3035442613498054,
+      "ci_high": -2.27527420755443,
+      "n_obs": 1200000,
+      "r_squared": 0.13154321915127976,
+      "controls": "FE:upc",
+      "zero_handling": "drop (dropped 0 zero-sales rows (0.00%); fitted on a random subsample of 1,200,000 rows (seed=42))"
+    },
+    {
+      "model": "M3 + UPC x store fixed effects",
+      "price_elasticity": -2.41874511259247,
+      "std_error": 0.07114641328259928,
+      "ci_low": -2.5581895202555667,
+      "ci_high": -2.279300704929373,
+      "n_obs": 1200000,
+      "r_squared": 0.1966224686565724,
+      "controls": "FE:upc, FE:store",
+      "zero_handling": "drop (dropped 0 zero-sales rows (0.00%); fitted on a random subsample of 1,200,000 rows (seed=42))"
+    },
+    {
+      "model": "M4 + promo + seasonality + trend",
+      "price_elasticity": -1.9092974189661303,
+      "std_error": 0.06899250610089734,
+      "ci_low": -2.044520246127049,
+      "ci_high": -1.7740745918052114,
+      "n_obs": 1200000,
+      "r_squared": 0.22677008944203958,
+      "controls": "recorded_promotion_flag, sin52, cos52, trend, FE:upc, FE:store",
+      "zero_handling": "drop (dropped 0 zero-sales rows (0.00%); fitted on a random subsample of 1,200,000 rows (seed=42))"
+    }
+  ],
+  "heterogeneity": {
+    "n_upcs_estimated": 355,
+    "upc_elasticity_median": -2.3580407466428435,
+    "upc_elasticity_p10": -4.094351259129901,
+    "upc_elasticity_p90": -0.23992789780049803,
+    "share_upcs_negative": 0.9295774647887324,
+    "share_upcs_elastic": 0.8084507042253521,
+    "share_upcs_wrong_sign_significant": 0.05070422535211268,
+    "n_stores_estimated": 93,
+    "store_elasticity_median": -0.38549421768624287,
+    "store_elasticity_min": -0.9469538068968196,
+    "store_elasticity_max": 0.29708818065420356
+  },
+  "promotion_split": {
+    "recorded promo": {
+      "model": "recorded promo",
+      "price_elasticity": -2.661696564973658,
+      "std_error": 0.0074200084284325235,
+      "ci_low": -2.6762395142583695,
+      "ci_high": -2.647153615688947,
+      "n_obs": 345945,
+      "r_squared": 0.2999311380759071,
+      "controls": "FE:upc, FE:store",
+      "zero_handling": "drop (dropped 0 zero-sales rows (0.00%))"
+    },
+    "no recorded promo": {
+      "model": "no recorded promo",
+      "price_elasticity": -1.8300352929952826,
+      "std_error": 0.007770052208102171,
+      "ci_low": -1.8452643154811588,
+      "ci_high": -1.8148062705094063,
+      "n_obs": 1200000,
+      "r_squared": 0.09873592508559548,
+      "controls": "FE:upc, FE:store",
+      "zero_handling": "drop (dropped 0 zero-sales rows (0.00%); fitted on a random subsample of 1,200,000 rows (seed=42))"
+    }
+  }
+}

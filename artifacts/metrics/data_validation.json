@@ -1,0 +1,80 @@
+{
+  "rows": 4707776,
+  "checks": [
+    {
+      "name": "non_empty",
+      "passed": true,
+      "detail": "4,707,776 rows"
+    },
+    {
+      "name": "grain_unique",
+      "passed": true,
+      "detail": "0 duplicated upc x store x week rows"
+    },
+    {
+      "name": "only_ok_rows",
+      "passed": true,
+      "detail": "0 rows with ok != 1"
+    },
+    {
+      "name": "formula_effective_unit_price",
+      "passed": true,
+      "detail": "max abs deviation 0.000e+00"
+    },
+    {
+      "name": "formula_revenue",
+      "passed": true,
+      "detail": "max abs deviation 1.421e-14"
+    },
+    {
+      "name": "formula_gross_margin_rate",
+      "passed": true,
+      "detail": "max abs deviation 0.000e+00"
+    },
+    {
+      "name": "formula_estimated_unit_aac",
+      "passed": true,
+      "detail": "max abs deviation 0.000e+00"
+    },
+    {
+      "name": "formula_gross_profit",
+      "passed": true,
+      "detail": "max abs deviation 0.000e+00"
+    },
+    {
+      "name": "positive_price",
+      "passed": true,
+      "detail": "all bundle prices are strictly positive"
+    },
+    {
+      "name": "positive_qty",
+      "passed": true,
+      "detail": "all bundle quantities are strictly positive"
+    },
+    {
+      "name": "non_negative_move",
+      "passed": true,
+      "detail": "no negative unit movement"
+    },
+    {
+      "name": "no_infinite_unit_price",
+      "passed": true,
+      "detail": "effective_unit_price is finite everywhere (no silent divide-by-zero)"
+    },
+    {
+      "name": "week_date_mapping_unique",
+      "passed": true,
+      "detail": "each Dominick's week index maps to exactly one calendar date"
+    },
+    {
+      "name": "date_range_plausible",
+      "passed": true,
+      "detail": "1989-09-14 .. 1997-05-01"
+    },
+    {
+      "name": "promotion_flag_binary",
+      "passed": true,
+      "detail": "recorded promotion share = 0.0735"
+    }
+  ]
+}

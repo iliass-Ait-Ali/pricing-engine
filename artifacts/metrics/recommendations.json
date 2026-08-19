@@ -1,0 +1,51 @@
+{
+  "decision_week": 399,
+  "policy_profile": "standard",
+  "objective": "gross_profit",
+  "price_response_method": "shrunk",
+  "model_version": "ridge_loglog-20260818-132847",
+  "n_contexts": 3000,
+  "decision_counts": {
+    "RECOMMEND_CHANGE": 1766,
+    "KEEP_CURRENT": 923,
+    "REVIEW_REQUIRED": 311
+  },
+  "n_actionable": 1766,
+  "share_actionable": 0.5886666666666667,
+  "share_review_required": 0.10366666666666667,
+  "share_keep_current": 0.30766666666666664,
+  "median_abs_price_change_pct": 0.08389261744966436,
+  "share_price_increases": 0.912797281993205,
+  "risk_distribution": {
+    "LOW": 1175,
+    "HIGH": 1039,
+    "MEDIUM": 786
+  },
+  "high_risk_contexts": 1039,
+  "high_risk_actionable": 0,
+  "elasticity_source_counts": {
+    "shrunk_product": 1904,
+    "pooled_fallback": 1096
+  },
+  "median_elasticity_used": -2.028859937952365,
+  "reason_code_counts": {
+    "PRICE_CHANGE_LIMIT": 2216,
+    "PROFIT_UPLIFT_POSITIVE": 2077,
+    "KEEP_CURRENT_OPTIMAL": 923,
+    "INSUFFICIENT_PRICE_VARIATION": 668,
+    "INSUFFICIENT_HISTORY": 567,
+    "POOLED_ELASTICITY_FALLBACK": 523,
+    "OUTSIDE_EXTRAPOLATION_RANGE": 465,
+    "MEDIUM_RISK_CONSERVATIVE": 416,
+    "LOW_CONFIDENCE": 311,
+    "HIGH_RISK_REVIEW_REQUIRED": 311,
+    "MARGIN_CONSTRAINT": 208,
+    "NON_MATERIAL_UPLIFT": 136,
+    "NO_FEASIBLE_PRICE": 37
+  },
+  "portfolio_expected_gross_profit_current": 37580.81892209922,
+  "portfolio_expected_gross_profit_if_applied": 40700.96028077397,
+  "portfolio_model_internal_estimated_profit_uplift_pct": 0.08302483682280726,
+  "median_internal_uplift_pct_among_actionable": 0.13327691763898902,
+  "runtime_seconds": 2.3
+}

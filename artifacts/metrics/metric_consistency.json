@@ -1,0 +1,370 @@
+{
+  "n_checks": 25,
+  "n_statements_verified": 214,
+  "n_mismatches": 0,
+  "documents_scanned": [
+    "DECISIONS.md",
+    "FUTURE_WORK.md",
+    "KNOWN_LIMITATIONS.md",
+    "README.md",
+    "ROADMAP.md",
+    "STATUS.md",
+    "docs/BUSINESS_CASE.md",
+    "docs/INTERVIEW_GUIDE.md",
+    "docs/INTERVIEW_RED_TEAM.md",
+    "docs/MODEL_CARD.md",
+    "docs/PRICING_SCIENCE.md",
+    "docs/TECHNICAL_DESIGN.md",
+    "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+    "reports/VALIDATION_SUMMARY.md"
+  ],
+  "checks": [
+    {
+      "metric": "canonical rows",
+      "source_of_truth": "dataset_fingerprint.json:rows",
+      "expected": 4707776.0,
+      "unit": "",
+      "tolerance": 0.5,
+      "statements_found": 7,
+      "statements_agreeing": 7,
+      "files": [
+        "docs/MODEL_CARD.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md"
+      ]
+    },
+    {
+      "metric": "observed revenue",
+      "source_of_truth": "eda_summary.json:scale.total_revenue",
+      "expected": 262008582.29500017,
+      "unit": "",
+      "tolerance": 1.0,
+      "statements_found": 10,
+      "statements_agreeing": 10,
+      "files": [
+        "README.md",
+        "docs/BUSINESS_CASE.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md"
+      ]
+    },
+    {
+      "metric": "observed gross profit",
+      "source_of_truth": "eda_summary.json:scale.total_gross_profit",
+      "expected": 40091143.486800715,
+      "unit": "",
+      "tolerance": 1.0,
+      "statements_found": 8,
+      "statements_agreeing": 8,
+      "files": [
+        "README.md",
+        "docs/BUSINESS_CASE.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md"
+      ]
+    },
+    {
+      "metric": "validation WAPE (selected model)",
+      "source_of_truth": "model_metrics.json:results[M1 ridge log-log].valid.wape",
+      "expected": 0.41345926697946545,
+      "unit": "",
+      "tolerance": 0.0001,
+      "statements_found": 5,
+      "statements_agreeing": 5,
+      "files": [
+        "README.md",
+        "docs/INTERVIEW_GUIDE.md",
+        "docs/MODEL_CARD.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md"
+      ]
+    },
+    {
+      "metric": "test WAPE (selected model)",
+      "source_of_truth": "evaluation.json:test_metrics.wape",
+      "expected": 0.45649432400768286,
+      "unit": "",
+      "tolerance": 0.0001,
+      "statements_found": 8,
+      "statements_agreeing": 8,
+      "files": [
+        "README.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md"
+      ]
+    },
+    {
+      "metric": "pooled elasticity",
+      "source_of_truth": "elasticity_estimation.json:pooled_elasticity",
+      "expected": -2.028859937952365,
+      "unit": "",
+      "tolerance": 0.0006,
+      "statements_found": 0,
+      "statements_agreeing": 0,
+      "files": []
+    },
+    {
+      "metric": "two-way clustered CI, lower bound",
+      "source_of_truth": "elasticity_estimation.json:pooled_ci_low_two_way",
+      "expected": -2.2363139518319612,
+      "unit": "",
+      "tolerance": 0.006,
+      "statements_found": 8,
+      "statements_agreeing": 8,
+      "files": [
+        "README.md",
+        "docs/MODEL_CARD.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md"
+      ]
+    },
+    {
+      "metric": "two-way clustered CI, upper bound",
+      "source_of_truth": "elasticity_estimation.json:pooled_ci_high_two_way",
+      "expected": -1.8214059240726415,
+      "unit": "",
+      "tolerance": 0.006,
+      "statements_found": 8,
+      "statements_agreeing": 8,
+      "files": [
+        "README.md",
+        "docs/MODEL_CARD.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md"
+      ]
+    },
+    {
+      "metric": "usable product elasticities",
+      "source_of_truth": "elasticity_estimation.json:n_products_usable",
+      "expected": 239.0,
+      "unit": "",
+      "tolerance": 0.5,
+      "statements_found": 12,
+      "statements_agreeing": 12,
+      "files": [
+        "README.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md"
+      ]
+    },
+    {
+      "metric": "products without a usable own elasticity",
+      "source_of_truth": "elasticity_estimation.json:n_products - n_products_usable",
+      "expected": 133.0,
+      "unit": "",
+      "tolerance": 0.5,
+      "statements_found": 5,
+      "statements_agreeing": 5,
+      "files": [
+        "KNOWN_LIMITATIONS.md",
+        "STATUS.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+        "reports/VALIDATION_SUMMARY.md"
+      ]
+    },
+    {
+      "metric": "products entering per-UPC estimation",
+      "source_of_truth": "elasticity_estimation.json:n_products",
+      "expected": 372.0,
+      "unit": "",
+      "tolerance": 0.5,
+      "statements_found": 10,
+      "statements_agreeing": 10,
+      "files": [
+        "KNOWN_LIMITATIONS.md",
+        "STATUS.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+        "reports/VALIDATION_SUMMARY.md"
+      ]
+    },
+    {
+      "metric": "UPCs entering the elasticity funnel",
+      "source_of_truth": "elasticity_funnel.json:funnel[0].n_upcs",
+      "expected": 489.0,
+      "unit": "",
+      "tolerance": 0.5,
+      "statements_found": 1,
+      "statements_agreeing": 1,
+      "files": [
+        "README.md"
+      ]
+    },
+    {
+      "metric": "empirical-Bayes tau squared",
+      "source_of_truth": "elasticity_estimation.json:tau2_between_product_variance",
+      "expected": 0.7661347873069484,
+      "unit": "",
+      "tolerance": 0.0006,
+      "statements_found": 10,
+      "statements_agreeing": 10,
+      "files": [
+        "README.md",
+        "docs/MODEL_CARD.md",
+        "docs/PRICING_SCIENCE.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md"
+      ]
+    },
+    {
+      "metric": "mean shrinkage weight",
+      "source_of_truth": "elasticity_estimation.json:mean_shrinkage_weight",
+      "expected": 0.7797418185141279,
+      "unit": "",
+      "tolerance": 0.006,
+      "statements_found": 11,
+      "statements_agreeing": 11,
+      "files": [
+        "README.md",
+        "docs/INTERVIEW_GUIDE.md",
+        "docs/PRICING_SCIENCE.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md"
+      ]
+    },
+    {
+      "metric": "out-of-time price-change episodes",
+      "source_of_truth": "out_of_time_price_response.json:n_episodes",
+      "expected": 154899.0,
+      "unit": "",
+      "tolerance": 0.5,
+      "statements_found": 18,
+      "statements_agreeing": 18,
+      "files": [
+        "DECISIONS.md",
+        "KNOWN_LIMITATIONS.md",
+        "README.md",
+        "ROADMAP.md",
+        "STATUS.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+        "reports/VALIDATION_SUMMARY.md"
+      ]
+    },
+    {
+      "metric": "recommendations: actionable share",
+      "source_of_truth": "recommendations.json:share_actionable",
+      "expected": 58.86666666666667,
+      "unit": "%",
+      "tolerance": 0.06,
+      "statements_found": 2,
+      "statements_agreeing": 2,
+      "files": [
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md"
+      ]
+    },
+    {
+      "metric": "recommendations: contexts scored",
+      "source_of_truth": "recommendations.json:n_contexts",
+      "expected": 3000.0,
+      "unit": "",
+      "tolerance": 0.5,
+      "statements_found": 10,
+      "statements_agreeing": 10,
+      "files": [
+        "KNOWN_LIMITATIONS.md",
+        "README.md",
+        "docs/INTERVIEW_GUIDE.md",
+        "docs/TECHNICAL_DESIGN.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md"
+      ]
+    },
+    {
+      "metric": "HIGH-risk contexts that auto-changed a price",
+      "source_of_truth": "recommendations.json:high_risk_actionable",
+      "expected": 0.0,
+      "unit": "",
+      "tolerance": 0.5,
+      "statements_found": 7,
+      "statements_agreeing": 7,
+      "files": [
+        "README.md",
+        "docs/BUSINESS_CASE.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md"
+      ]
+    },
+    {
+      "metric": "constraint attribution: contexts",
+      "source_of_truth": "constraint_attribution.json:n_contexts",
+      "expected": 13964.0,
+      "unit": "",
+      "tolerance": 0.5,
+      "statements_found": 24,
+      "statements_agreeing": 24,
+      "files": [
+        "DECISIONS.md",
+        "README.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+        "reports/VALIDATION_SUMMARY.md"
+      ]
+    },
+    {
+      "metric": "share decided by the learned signal",
+      "source_of_truth": "constraint_attribution.json:share_determined_by_learned_signal",
+      "expected": 2.864508736751647,
+      "unit": "%",
+      "tolerance": 0.06,
+      "statements_found": 22,
+      "statements_agreeing": 22,
+      "files": [
+        "DECISIONS.md",
+        "FUTURE_WORK.md",
+        "KNOWN_LIMITATIONS.md",
+        "README.md",
+        "STATUS.md",
+        "docs/BUSINESS_CASE.md",
+        "docs/INTERVIEW_RED_TEAM.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+        "reports/VALIDATION_SUMMARY.md"
+      ]
+    },
+    {
+      "metric": "learned-signal contexts",
+      "source_of_truth": "constraint_attribution.json:final_determinant_counts",
+      "expected": 400.0,
+      "unit": "",
+      "tolerance": 0.5,
+      "statements_found": 0,
+      "statements_agreeing": 0,
+      "files": []
+    },
+    {
+      "metric": "decision agreement: ml vs pooled",
+      "source_of_truth": "price_response_comparison.json:ml vs pooled",
+      "expected": 79.66666666666666,
+      "unit": "%",
+      "tolerance": 0.06,
+      "statements_found": 0,
+      "statements_agreeing": 0,
+      "files": []
+    },
+    {
+      "metric": "decision agreement: ml vs shrunk",
+      "source_of_truth": "price_response_comparison.json:ml vs shrunk",
+      "expected": 86.66666666666667,
+      "unit": "%",
+      "tolerance": 0.06,
+      "statements_found": 2,
+      "statements_agreeing": 2,
+      "files": [
+        "KNOWN_LIMITATIONS.md",
+        "docs/INTERVIEW_GUIDE.md"
+      ]
+    },
+    {
+      "metric": "decision agreement: pooled vs shrunk",
+      "source_of_truth": "price_response_comparison.json:pooled vs shrunk",
+      "expected": 91.66666666666666,
+      "unit": "%",
+      "tolerance": 0.06,
+      "statements_found": 0,
+      "statements_agreeing": 0,
+      "files": []
+    },
+    {
+      "metric": "test count",
+      "source_of_truth": "test_suite.json:collected_tests",
+      "expected": 519.0,
+      "unit": "",
+      "tolerance": 0.5,
+      "statements_found": 26,
+      "statements_agreeing": 26,
+      "files": [
+        "ROADMAP.md",
+        "STATUS.md",
+        "docs/TECHNICAL_DESIGN.md",
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+        "reports/VALIDATION_SUMMARY.md"
+      ]
+    }
+  ],
+  "mismatches": []
+}

@@ -1,0 +1,107 @@
+{
+  "decision_week": 399,
+  "n_contexts": 13964,
+  "price_response_method": "shrunk",
+  "elasticity_scenarios": [
+    -1.5,
+    -1.9,
+    -2.4,
+    -3.1
+  ],
+  "layers": {
+    "A research (cost floor only)": {
+      "note": "every optional guardrail off; only p >= cost and p >= $0.01 remain",
+      "profile": "standard",
+      "disabled_constraints": [
+        "EXTRAPOLATION",
+        "HISTORICAL_SUPPORT",
+        "MATERIALITY",
+        "MAX_PRICE_CHANGE",
+        "MIN_MARGIN",
+        "RISK_GATE"
+      ],
+      "median_price_change_pct": 0.49128919860627174,
+      "p10_price_change_pct": -0.04682274247491647,
+      "p90_price_change_pct": 1.7442922374429224,
+      "share_recommend_change": 0.9918361501002578,
+      "share_keep_current": 0.008163849899742195,
+      "share_review_required": 0.0,
+      "share_elasticity_scenario_changes_price": 0.9999283872815812,
+      "median_price_variation_across_scenarios_pct": 0.7977207977207976,
+      "p90_price_variation_across_scenarios_pct": 0.8038585209003215,
+      "share_constraint_moves_unconstrained_optimum": 0.0
+    },
+    "B extrapolation only": {
+      "note": "stay inside the observed price support (+/- 5%), nothing else",
+      "profile": "standard",
+      "disabled_constraints": [
+        "HISTORICAL_SUPPORT",
+        "MATERIALITY",
+        "MAX_PRICE_CHANGE",
+        "MIN_MARGIN",
+        "RISK_GATE"
+      ],
+      "median_price_change_pct": 0.10810810810810811,
+      "p10_price_change_pct": -0.046979865771812124,
+      "p90_price_change_pct": 0.34170854271356776,
+      "share_recommend_change": 0.9828845602979089,
+      "share_keep_current": 0.01711543970209109,
+      "share_review_required": 0.0,
+      "share_elasticity_scenario_changes_price": 0.6102119736465196,
+      "median_price_variation_across_scenarios_pct": 0.06596306068601583,
+      "p90_price_variation_across_scenarios_pct": 0.3852327447833065,
+      "share_constraint_moves_unconstrained_optimum": 0.7460613004869665
+    },
+    "C price change + extrapolation": {
+      "note": "support band plus the +/-10% change cap",
+      "profile": "standard",
+      "disabled_constraints": [
+        "HISTORICAL_SUPPORT",
+        "MATERIALITY",
+        "MIN_MARGIN",
+        "RISK_GATE"
+      ],
+      "median_price_change_pct": 0.07537688442211055,
+      "p10_price_change_pct": -0.03759398496240607,
+      "p90_price_change_pct": 0.09600000000000009,
+      "share_recommend_change": 0.9851045545688915,
+      "share_keep_current": 0.014895445431108566,
+      "share_review_required": 0.0,
+      "share_elasticity_scenario_changes_price": 0.30621598395875105,
+      "median_price_variation_across_scenarios_pct": 0.0,
+      "p90_price_variation_across_scenarios_pct": 0.1694915254237289,
+      "share_constraint_moves_unconstrained_optimum": 0.9027499283872816
+    },
+    "D standard (default policy)": {
+      "note": "the shipped default: change cap, support, 5% margin floor, 1% materiality, risk gate, eligibility screen",
+      "profile": "standard",
+      "disabled_constraints": [],
+      "median_price_change_pct": 0.03746397694524495,
+      "p10_price_change_pct": 0.0,
+      "p90_price_change_pct": 0.0926640926640927,
+      "share_recommend_change": 0.5918791177313091,
+      "share_keep_current": 0.31122887424806644,
+      "share_review_required": 0.09689200802062446,
+      "share_elasticity_scenario_changes_price": 0.2134775136064165,
+      "median_price_variation_across_scenarios_pct": 0.0,
+      "p90_price_variation_across_scenarios_pct": 0.14527845036319614,
+      "share_constraint_moves_unconstrained_optimum": 0.9590375250644515
+    },
+    "E conservative": {
+      "note": "+/-5% cap, 2% support tolerance, 10% margin floor, 2% materiality, HIGH risk -> KEEP_CURRENT",
+      "profile": "conservative",
+      "disabled_constraints": [],
+      "median_price_change_pct": 0.0,
+      "p10_price_change_pct": 0.0,
+      "p90_price_change_pct": 0.04402515723270439,
+      "share_recommend_change": 0.45502721283299913,
+      "share_keep_current": 0.5449727871670008,
+      "share_review_required": 0.0,
+      "share_elasticity_scenario_changes_price": 0.20166141506731597,
+      "median_price_variation_across_scenarios_pct": 0.0,
+      "p90_price_variation_across_scenarios_pct": 0.04093567251461992,
+      "share_constraint_moves_unconstrained_optimum": 0.9848897164136351
+    }
+  },
+  "runtime_seconds": 28.8
+}

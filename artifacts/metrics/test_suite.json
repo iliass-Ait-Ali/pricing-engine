@@ -1,0 +1,4 @@
+{
+  "collected_tests": 519,
+  "command": "python -m pytest -o addopts= --collect-only -q"
+}

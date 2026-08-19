@@ -1,0 +1,364 @@
+{
+  "n_files_scanned": 53,
+  "n_occurrences": 390,
+  "counts": {
+    "UNSUPPORTED": 0,
+    "NEEDS QUALIFICATION": 39,
+    "SAFE": 351
+  },
+  "unsupported": [],
+  "needs_qualification": [
+    {
+      "file": "README.md",
+      "line": 23,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "-> validated canonical panel (4,707,776 UPC x store x week rows)",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "README.md",
+      "line": 274,
+      "pattern": "\\bguarantee[sd]?\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "make features        # modelling table with decision-time guarantees",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/01_DATA_AUDIT.md",
+      "line": 4,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "**Status:** VALIDATED",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 129,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "\u2192 validated canonical panel (4,707,776 UPC \u00d7 store \u00d7 week rows)",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 201,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "materiality threshold. The optimizer is validated against closed-form optima",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 792,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "This is implemented in `pricing_engine.data.cleaning.decode_week` and validated",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 1668,
+      "pattern": "\\bguarantee[sd]?\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "weekly counts and guarantees non-negative predictions.",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 1697,
+      "pattern": "\\bguarantee[sd]?\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "split guarantees a large PSI. Reporting them anyway is deliberate: a drift",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 2563,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "**validated against statsmodels to machine precision**",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 3420,
+      "pattern": "\\bguarantee[sd]?\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| `loss` | **poisson** | the right likelihood for weekly counts; guarantees `Q\u0302 \u2265 0` by construction |",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 4498,
+      "pattern": "\\bguarantee[sd]?\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "monotonicity is guaranteed by construction for `\u03b5 < 0`; the diagnostics remain",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 4499,
+      "pattern": "\\bguarantee[sd]?\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "because the `ml` method is still selectable and because guarantees that are also",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 4500,
+      "pattern": "\\bguarantee[sd]?\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "checked are worth more than guarantees that are only asserted.",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 4743,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "The optimizer is validated against problems whose answers are known in closed",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 7509,
+      "pattern": "profit uplift",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "pre-existing. All are uses of *validated*, *guarantees* or *profit uplift*",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 7509,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "pre-existing. All are uses of *validated*, *guarantees* or *profit uplift*",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 7509,
+      "pattern": "\\bguarantee[sd]?\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "pre-existing. All are uses of *validated*, *guarantees* or *profit uplift*",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 7510,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "either as pipeline-stage labels (`**Status:** VALIDATED`,",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 9714,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "The pipeline runs from an official download through a validated canonical table,",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 10044,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "90.1% to **75.2%**. The estimators were validated against statsmodels to machine",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 10412,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "seven covariance assumptions, validated against statsmodels \u2192 find two-way",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 10448,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "> 1997. About 6.6 million raw rows became 4.7 million validated observations at a",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 10544,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "> Dominick's Cereals panel, 4.7 million validated store-week observations.",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 10552,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "> elasticity fitted on training weeks only. A grid optimizer validated against",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 10575,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "> constrained optimizer validated against closed-form optima, and a risk gate",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 10602,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "* *\"Built a validated canonical panel of **4,707,776** UPC \u00d7 store \u00d7 week",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 10645,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "validated against statsmodels.\"*",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 10754,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "> * Built an end-to-end retail price-recommendation system on **4.7M validated",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 10761,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": ">   constrained grid optimizer validated against **closed-form optima**, and a",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 10786,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": ">   empirical-Bayes shrinkage, constrained optimizer validated against",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 10853,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| **econometrics** | log-log elasticity; **fixed-effects absorption** by within transformation; **HC1, one-way and two-way clustered covariance** validated agai",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 10883,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| **real, licensed, documented data** | 4,707,776 validated observations from official Kilts Center sources, with provenance hashes |",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 10886,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| **defensible econometrics** | fixed effects, panel-robust and two-way clustered inference validated against statsmodels, REML empirical-Bayes shrinkage, forma",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "ROADMAP.md",
+      "line": 18,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| **C. Feature availability + leakage audit** | Decision-time classification of every feature; shifted lag/rolling features | B | `docs/FEATURE_AVAILABILITY.md`",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "ROADMAP.md",
+      "line": 19,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| **D. Elasticity analysis** | Arc elasticity, log-log naive vs controlled, causal limitations | B, C | `reports/03_ELASTICITY_ANALYSIS.md`; `docs/CAUSAL_LIMITA",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "ROADMAP.md",
+      "line": 20,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| **E. Demand modelling** | Naive baselines, interpretable regression, gradient boosting; strict temporal split | C | `reports/04_MODEL_COMPARISON.md`; `artifac",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "ROADMAP.md",
+      "line": 21,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| **F. Price-response validation + simulation** | Demand curves at fixed context, monotonicity/extrapolation checks, vectorised counterfactual simulator | E | `",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "scripts/build_dataset.py",
+      "line": 146,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "**Status:** {\"VALIDATED\" if all_pass else \"FAILED CHECKS - see below\"}",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "scripts/build_features.py",
+      "line": 1,
+      "pattern": "\\bguarantee[sd]?\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "\"\"\"Phase C - build the modelling feature table with decision-time guarantees.",
+      "verdict": "NEEDS QUALIFICATION"
+    }
+  ],
+  "runtime_seconds": 1.7
+}

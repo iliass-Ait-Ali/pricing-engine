@@ -1,0 +1,133 @@
+{
+  "raw_rows": 6602582,
+  "zero_price_rows": 1851380,
+  "zero_price_share": 0.2804024243848846,
+  "zero_price_and_move_gt_0": 677,
+  "zero_price_and_move_eq_0": 1850703,
+  "zero_price_and_move_gt_0_share_of_zero": 0.00036567317352461406,
+  "nonzero_price_and_move_eq_0": 0,
+  "zero_price_by_ok": {
+    "1": 1753521,
+    "0": 97859
+  },
+  "ok_distribution_all_rows": {
+    "1": 6461297,
+    "0": 141285
+  },
+  "zero_price_by_sale_code": {
+    "<NA>": 1850770,
+    "B": 523,
+    "S": 63,
+    "G": 17,
+    "C": 7
+  },
+  "zero_price_profit_nonzero": 0,
+  "zero_price_qty_gt_1": 0,
+  "by_week": {
+    "min_zero_share": 0.19979483466087375,
+    "max_zero_share": 1.0,
+    "mean_zero_share": 0.2795444137650887,
+    "std_zero_share": 0.06895230827620698,
+    "first_week_zero_share": 0.4233989721083328,
+    "last_week_zero_share": 0.2820985756737371,
+    "weeks_above_50pct": 1,
+    "n_weeks": 367
+  },
+  "by_upc": {
+    "n_upcs": 490,
+    "median_zero_share": 0.4068935515773352,
+    "p10_zero_share": 0.04750175664172896,
+    "p90_zero_share": 0.9302948580152157,
+    "n_upcs_above_80pct_zero": 112,
+    "n_upcs_below_5pct_zero": 57,
+    "top10_zero_share": [
+      {
+        "upc": 3000043316,
+        "descrip": "QUAKER CLUB PACK CAP",
+        "rows": 116,
+        "zero_share": 1.0
+      },
+      {
+        "upc": 3800000640,
+        "descrip": "~KELL COMPLETE BRAN",
+        "rows": 4800,
+        "zero_share": 0.9997916666666666
+      },
+      {
+        "upc": 3000006400,
+        "descrip": "QUAKER JUMBO OAT SQU",
+        "rows": 70,
+        "zero_share": 0.9857142857142858
+      },
+      {
+        "upc": 3800000000,
+        "descrip": "RICE KRISPIES HOLIDA",
+        "rows": 70,
+        "zero_share": 0.9857142857142858
+      },
+      {
+        "upc": 3800001211,
+        "descrip": "KELLOGGS HONEY SMACK",
+        "rows": 278,
+        "zero_share": 0.9856115107913669
+      },
+      {
+        "upc": 4117314002,
+        "descrip": "DOM OAT HONEY",
+        "rows": 128,
+        "zero_share": 0.984375
+      },
+      {
+        "upc": 1600000000,
+        "descrip": "BERRY KIX/WHT TOTAL/",
+        "rows": 120,
+        "zero_share": 0.9833333333333333
+      },
+      {
+        "upc": 1780015260,
+        "descrip": "RALSTON/WHEAT CHEX",
+        "rows": 300,
+        "zero_share": 0.9833333333333333
+      },
+      {
+        "upc": 2480000119,
+        "descrip": "KRETSCHMER WHEAT GER",
+        "rows": 60,
+        "zero_share": 0.9833333333333333
+      },
+      {
+        "upc": 9166910113,
+        "descrip": "SPIDERMAN CEREAL",
+        "rows": 560,
+        "zero_share": 0.9821428571428571
+      }
+    ]
+  },
+  "by_store": {
+    "n_stores": 93,
+    "median_zero_share": 0.2667916634779725,
+    "min_zero_share": 0.08088962108731466,
+    "max_zero_share": 0.43010588280264517,
+    "std_zero_share": 0.05852414638849638
+  },
+  "position_within_series": {
+    "leading_run_before_first_price": 291284,
+    "trailing_run_after_last_price": 1068024,
+    "interior_gap": 485204,
+    "series_never_priced": 6868,
+    "share_leading": 0.15733344856269377,
+    "share_trailing": 0.576879949011008,
+    "share_interior": 0.2620769372035995,
+    "share_never_priced": 0.0037096652226987436,
+    "interior_gap_with_sales": 660
+  },
+  "selection_probe": {
+    "n_series": 36620,
+    "n_series_zero_share_gt_50pct": 12529,
+    "n_series_zero_share_le_10pct": 11139,
+    "mean_price_heavy_zero_series": 2.717340749260406,
+    "mean_price_light_zero_series": 3.2276256098219047,
+    "mean_units_heavy_zero_series": 3.05289684730195,
+    "mean_units_light_zero_series": 20.999317204552025
+  }
+}

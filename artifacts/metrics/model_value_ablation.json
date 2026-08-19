@@ -1,0 +1,107 @@
+{
+  "decision_week": 399,
+  "policy_profile": "standard",
+  "price_response_method": "shrunk",
+  "n_contexts": 13964,
+  "model": {
+    "decision_counts": {
+      "RECOMMEND_CHANGE": 8265,
+      "KEEP_CURRENT": 4346,
+      "REVIEW_REQUIRED": 1353
+    },
+    "median_price_change_pct_when_actionable": 0.08361204013377921
+  },
+  "rules": {
+    "R0 keep current price": {
+      "description": "never move a price; the only policy whose outcome was actually observed",
+      "share_final_price_differs": 0.5972500716127184,
+      "share_final_price_differs_more_than_one_grid_step": 0.5908049269550272,
+      "mean_abs_price_difference": 0.1406498398654513,
+      "median_abs_price_difference": 0.13000000000000034,
+      "mean_abs_price_difference_pct": 0.04367003857598156,
+      "median_abs_price_difference_pct": 0.04332129963898921,
+      "share_same_decision_state": 0.3070753365797766,
+      "share_model_keeps_rule_changes": 0.005370953881409338,
+      "share_model_changes_rule_keeps": 0.590518476081352,
+      "decision_counts": {
+        "KEEP_CURRENT": 13868,
+        "RECOMMEND_CHANGE": 94,
+        "REVIEW_REQUIRED": 2
+      },
+      "median_price_change_pct_when_actionable": 0.07842101856725048
+    },
+    "R1 hold historical margin": {
+      "description": "p = c / (1 - m), m = that series' median historical gross-margin rate",
+      "share_final_price_differs": 0.6144371240332283,
+      "share_final_price_differs_more_than_one_grid_step": 0.5152535090232025,
+      "mean_abs_price_difference": 0.21536350615869376,
+      "median_abs_price_difference": 0.1200000000000001,
+      "mean_abs_price_difference_pct": 0.06505862213572255,
+      "median_abs_price_difference_pct": 0.04225352112676071,
+      "share_same_decision_state": 0.9004583213978803,
+      "share_model_keeps_rule_changes": 0.05657404755084503,
+      "share_model_changes_rule_keeps": 0.039888284159266686,
+      "decision_counts": {
+        "RECOMMEND_CHANGE": 8498,
+        "KEEP_CURRENT": 4120,
+        "REVIEW_REQUIRED": 1346
+      },
+      "median_price_change_pct_when_actionable": -0.050000000000000044
+    },
+    "R2 cost-plus 25% margin": {
+      "description": "p = c / (1 - 0.25), one fixed category margin target",
+      "share_final_price_differs": 0.5969636207390433,
+      "share_final_price_differs_more_than_one_grid_step": 0.34932684044686335,
+      "mean_abs_price_difference": 0.1069789816671441,
+      "median_abs_price_difference": 0.029999999999999805,
+      "mean_abs_price_difference_pct": 0.03349092750110995,
+      "median_abs_price_difference_pct": 0.010067114093959667,
+      "share_same_decision_state": 0.8882841592666858,
+      "share_model_keeps_rule_changes": 0.05564308221140075,
+      "share_model_changes_rule_keeps": 0.03824119163563449,
+      "decision_counts": {
+        "RECOMMEND_CHANGE": 8508,
+        "KEEP_CURRENT": 3977,
+        "REVIEW_REQUIRED": 1479
+      },
+      "median_price_change_pct_when_actionable": 0.04800000000000004
+    },
+    "R3 nearest historical modal price": {
+      "description": "snap to the most frequent historical price of that series",
+      "share_final_price_differs": 0.622099684904039,
+      "share_final_price_differs_more_than_one_grid_step": 0.4947006588370095,
+      "mean_abs_price_difference": 0.17892472839272078,
+      "median_abs_price_difference": 0.050000000000000044,
+      "mean_abs_price_difference_pct": 0.05490311065091665,
+      "median_abs_price_difference_pct": 0.024623115577889414,
+      "share_same_decision_state": 0.7888857061014036,
+      "share_model_keeps_rule_changes": 0.046046977943282726,
+      "share_model_changes_rule_keeps": 0.07576625608708107,
+      "decision_counts": {
+        "RECOMMEND_CHANGE": 7850,
+        "KEEP_CURRENT": 6004,
+        "REVIEW_REQUIRED": 110
+      },
+      "median_price_change_pct_when_actionable": -0.02010050251256279
+    },
+    "R4 always take the max allowed increase": {
+      "description": "p = p0 * (1 + effective change cap); no demand model at all",
+      "share_final_price_differs": 0.5923804067602406,
+      "share_final_price_differs_more_than_one_grid_step": 0.1745201947865941,
+      "mean_abs_price_difference": 0.060480342308794136,
+      "median_abs_price_difference": 0.01949999999999985,
+      "mean_abs_price_difference_pct": 0.01911999117221072,
+      "median_abs_price_difference_pct": 0.006148867313915899,
+      "share_same_decision_state": 0.8995989687768547,
+      "share_model_keeps_rule_changes": 0.05635920939558866,
+      "share_model_changes_rule_keeps": 0.04182182755657405,
+      "decision_counts": {
+        "RECOMMEND_CHANGE": 8468,
+        "KEEP_CURRENT": 3528,
+        "REVIEW_REQUIRED": 1968
+      },
+      "median_price_change_pct_when_actionable": 0.10000000000000009
+    }
+  },
+  "runtime_seconds": 9.6
+}

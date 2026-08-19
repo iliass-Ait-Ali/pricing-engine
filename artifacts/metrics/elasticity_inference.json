@@ -1,0 +1,224 @@
+{
+  "training_weeks": [
+    2,
+    257
+  ],
+  "n_training_rows": 3206437,
+  "n_loglog_rows": 3206437,
+  "pooled_specifications": [
+    {
+      "coefficient": -2.0288599379523014,
+      "n_obs": 1200000,
+      "k": 6,
+      "n_absorbed": 26413,
+      "r_squared": 0.17180350479061235,
+      "specifications": {
+        "classical": {
+          "std_error": 0.006519111178308984,
+          "t_stat": -311.21726297641925,
+          "ci_low": -2.041637174250714,
+          "ci_high": -2.0160827016538887,
+          "ratio_to_classical": 1.0,
+          "n_clusters": null
+        },
+        "hc1 (heteroskedasticity-robust)": {
+          "std_error": 0.011614448754015318,
+          "t_stat": -174.68413533194064,
+          "ci_low": -2.0516238626878747,
+          "ci_high": -2.006096013216728,
+          "ratio_to_classical": 1.7816000427573675,
+          "n_clusters": null
+        },
+        "clustered by UPC": {
+          "std_error": 0.08369012595999166,
+          "t_stat": -24.24252460705107,
+          "ci_low": -2.1928897398665126,
+          "ci_high": -1.8648301360380903,
+          "ratio_to_classical": 12.837658949344739,
+          "n_clusters": 369
+        },
+        "clustered by store": {
+          "std_error": 0.030454885678166187,
+          "t_stat": -66.61853731425556,
+          "ci_low": -2.0885504785962197,
+          "ci_high": -1.9691693973083828,
+          "ratio_to_classical": 4.671631583688682,
+          "n_clusters": 86
+        },
+        "clustered by week": {
+          "std_error": 0.08121252753903539,
+          "t_stat": -24.982105586814978,
+          "ci_low": -2.1880337311850737,
+          "ci_high": -1.869686144719529,
+          "ratio_to_classical": 12.457607382008387,
+          "n_clusters": 255
+        },
+        "clustered by UPC x store panel": {
+          "std_error": 0.015333864505503687,
+          "t_stat": -132.31236895461646,
+          "ci_low": -2.05891379112274,
+          "ci_high": -1.9988060847818625,
+          "ratio_to_classical": 2.352140358723134,
+          "n_clusters": 26413
+        },
+        "two-way (UPC, week)": {
+          "std_error": 0.10584572041106889,
+          "t_stat": -19.16808662714843,
+          "ci_low": -2.2363139518319612,
+          "ci_high": -1.8214059240726415,
+          "ratio_to_classical": 16.236219557544743,
+          "n_clusters": null
+        }
+      },
+      "name": "A. pooled controlled (UPC x store FE + promo/season/trend), 1.2M subsample",
+      "controls": "recorded_promotion_flag, sin52, cos52, trend"
+    },
+    {
+      "coefficient": -2.2217183627440966,
+      "n_obs": 1200000,
+      "k": 2,
+      "n_absorbed": 26413,
+      "r_squared": 0.14532783329044618,
+      "specifications": {
+        "classical": {
+          "std_error": 0.004973442607917955,
+          "t_stat": -446.7163970500064,
+          "ci_low": -2.2314661411880627,
+          "ci_high": -2.2119705843001305,
+          "ratio_to_classical": 1.0,
+          "n_clusters": null
+        },
+        "hc1 (heteroskedasticity-robust)": {
+          "std_error": 0.007408779573988855,
+          "t_stat": -299.8764291144828,
+          "ci_low": -2.236239318854548,
+          "ci_high": -2.2071974066336453,
+          "ratio_to_classical": 1.4896682555849197,
+          "n_clusters": null
+        },
+        "clustered by UPC": {
+          "std_error": 0.08491941459369434,
+          "t_stat": -26.162666963428048,
+          "ci_low": -2.388157528591265,
+          "ci_high": -2.055279196896928,
+          "ratio_to_classical": 17.07457415081027,
+          "n_clusters": 369
+        },
+        "clustered by store": {
+          "std_error": 0.049195727267195635,
+          "t_stat": -45.16079924334339,
+          "ci_low": -2.3181403158248335,
+          "ci_high": -2.1252964096633598,
+          "ratio_to_classical": 9.891684924417087,
+          "n_clusters": 86
+        },
+        "clustered by week": {
+          "std_error": 0.05640823801894566,
+          "t_stat": -39.386416608118395,
+          "ci_low": -2.3322765917156727,
+          "ci_high": -2.1111601337725205,
+          "ratio_to_classical": 11.3418898066987,
+          "n_clusters": 255
+        },
+        "clustered by UPC x store panel": {
+          "std_error": 0.01315915503136391,
+          "t_stat": -168.8344242049576,
+          "ci_low": -2.247509859272341,
+          "ci_high": -2.1959268662158524,
+          "ratio_to_classical": 2.64588456503226,
+          "n_clusters": 26413
+        },
+        "two-way (UPC, week)": {
+          "std_error": 0.09710141018319658,
+          "t_stat": -22.880392350146995,
+          "ci_low": -2.4120338258310863,
+          "ci_high": -2.031402899657107,
+          "ratio_to_classical": 19.523983252286165,
+          "n_clusters": null
+        }
+      },
+      "name": "B. UPC x store fixed effects only, 1.2M subsample",
+      "controls": "none"
+    },
+    {
+      "coefficient": -2.044258658147088,
+      "n_obs": 3206437,
+      "k": 6,
+      "n_absorbed": 27105,
+      "r_squared": 0.17219171739413242,
+      "specifications": {
+        "classical": {
+          "std_error": 0.003955157237097778,
+          "t_stat": -516.859011058465,
+          "ci_low": -2.0520106268361555,
+          "ci_high": -2.0365066894580206,
+          "ratio_to_classical": 1.0,
+          "n_clusters": null
+        },
+        "hc1 (heteroskedasticity-robust)": {
+          "std_error": 0.007205088638269724,
+          "t_stat": -283.72428998153305,
+          "ci_low": -2.058380377759633,
+          "ci_high": -2.030136938534543,
+          "ratio_to_classical": 1.821694614486853,
+          "n_clusters": null
+        },
+        "clustered by UPC": {
+          "std_error": 0.08261049540234756,
+          "t_stat": -24.74574989764552,
+          "ci_low": -2.2061723155209902,
+          "ci_high": -1.8823450007731857,
+          "ratio_to_classical": 20.886779071004934,
+          "n_clusters": 372
+        },
+        "clustered by store": {
+          "std_error": 0.030598635756506842,
+          "t_stat": -66.80881704709249,
+          "ci_low": -2.1042309050372463,
+          "ci_high": -1.9842864112569296,
+          "ratio_to_classical": 7.736389205845976,
+          "n_clusters": 86
+        },
+        "clustered by week": {
+          "std_error": 0.08026031603175347,
+          "t_stat": -25.4703539584658,
+          "ci_low": -2.2015660468438174,
+          "ci_high": -1.8869512694503587,
+          "ratio_to_classical": 20.292572765235253,
+          "n_clusters": 255
+        },
+        "clustered by UPC x store panel": {
+          "std_error": 0.012176552851023124,
+          "t_stat": -167.88484254600192,
+          "ci_low": -2.068124272276546,
+          "ci_high": -2.0203930440176303,
+          "ratio_to_classical": 3.078652028498886,
+          "n_clusters": 27105
+        },
+        "two-way (UPC, week)": {
+          "std_error": 0.1046899547182756,
+          "t_stat": -19.526789018566884,
+          "ci_low": -2.2494472770530405,
+          "ci_high": -1.8390700392411357,
+          "ratio_to_classical": 26.469226997178794,
+          "n_clusters": null
+        }
+      },
+      "name": "C. pooled controlled, FULL training sample",
+      "controls": "recorded_promotion_flag, sin52, cos52, trend"
+    }
+  ],
+  "per_upc": {
+    "n_products": 262,
+    "median_se_hc1": 0.107140195761684,
+    "median_se_cluster_store": 0.14451142243663184,
+    "median_se_cluster_week": 0.38321141582609586,
+    "median_ratio_store": 1.1774961064393137,
+    "median_ratio_week": 3.3816878328208384,
+    "median_ratio_robust": 3.3816878328208384,
+    "p90_ratio_robust": 6.828228161296165,
+    "share_significant_hc1": 0.9007633587786259,
+    "share_significant_robust": 0.7519083969465649
+  },
+  "runtime_seconds": 22.3
+}

@@ -1,0 +1,148 @@
+{
+  "approved_training_window": [
+    2,
+    257
+  ],
+  "windows": {
+    "W1 early (2-87)": {
+      "weeks": [
+        2,
+        87
+      ],
+      "n_rows": 979559,
+      "pooled": -1.9032087868864425,
+      "pooled_se_two_way": 0.22323666580551915,
+      "fe": -2.2791832211225724,
+      "tau2": 1.015558772385572,
+      "mean_weight": 0.662591770618664,
+      "n_products": 259,
+      "n_usable": 85,
+      "share_usable": 0.3281853281853282,
+      "median_shrunk": -1.9032428697410646,
+      "p10_shrunk": -3.123616004209411,
+      "p90_shrunk": -0.9832758854810438,
+      "share_wrong_sign": 0.10424710424710425
+    },
+    "W2 middle (88-129)": {
+      "weeks": [
+        88,
+        129
+      ],
+      "n_rows": 545034,
+      "pooled": -2.3230496402086644,
+      "pooled_se_two_way": 0.21305990138488448,
+      "fe": -3.2804915606633713,
+      "tau2": 1.227322645608422,
+      "mean_weight": 0.6199972083466346,
+      "n_products": 221,
+      "n_usable": 87,
+      "share_usable": 0.3936651583710407,
+      "median_shrunk": -2.2160218730827594,
+      "p10_shrunk": -3.3508141715124475,
+      "p90_shrunk": -1.372714727245003,
+      "share_wrong_sign": 0.06787330316742081
+    },
+    "W3 late (130-257)": {
+      "weeks": [
+        130,
+        257
+      ],
+      "n_rows": 1681844,
+      "pooled": -2.2403539629127946,
+      "pooled_se_two_way": 0.12537628729299302,
+      "fe": -2.4863140202506644,
+      "tau2": 1.0698140314864675,
+      "mean_weight": 0.8369903483793346,
+      "n_products": 297,
+      "n_usable": 218,
+      "share_usable": 0.734006734006734,
+      "median_shrunk": -2.0236960280229086,
+      "p10_shrunk": -3.1679794886328607,
+      "p90_shrunk": -0.748553953963688,
+      "share_wrong_sign": 0.050505050505050504
+    },
+    "W4 first half, expanding (2-129)": {
+      "weeks": [
+        2,
+        129
+      ],
+      "n_rows": 1524593,
+      "pooled": -1.9172601418719948,
+      "pooled_se_two_way": 0.16583241648127534,
+      "fe": -2.303590295241891,
+      "tau2": 1.0445380173204606,
+      "mean_weight": 0.6819042771842067,
+      "n_products": 285,
+      "n_usable": 146,
+      "share_usable": 0.512280701754386,
+      "median_shrunk": -1.9944716241129796,
+      "p10_shrunk": -3.0248274507243598,
+      "p90_shrunk": -1.0895438222572529,
+      "share_wrong_sign": 0.06666666666666667
+    },
+    "W5 full approved training window (2-257)": {
+      "weeks": [
+        2,
+        257
+      ],
+      "n_rows": 3206437,
+      "pooled": -2.028859937952365,
+      "pooled_se_two_way": 0.10584572041106889,
+      "fe": -2.221718362744423,
+      "tau2": 0.7661347873069484,
+      "mean_weight": 0.7797418185141279,
+      "n_products": 372,
+      "n_usable": 239,
+      "share_usable": 0.6424731182795699,
+      "median_shrunk": -1.897971077461381,
+      "p10_shrunk": -3.050369800312567,
+      "p90_shrunk": -0.9545249194433699,
+      "share_wrong_sign": 0.06451612903225806
+    }
+  },
+  "pairwise": {
+    "W1 vs W2": {
+      "n_common_products": 34,
+      "spearman_rank_corr_shrunk": -0.05362872421695951,
+      "pearson_corr_shrunk": -0.05392910129517032,
+      "sign_stability_raw": 1.0,
+      "median_abs_difference_shrunk": 0.9523187787286052
+    },
+    "W1 vs W3": {
+      "n_common_products": 34,
+      "spearman_rank_corr_shrunk": 0.3497593409245024,
+      "pearson_corr_shrunk": 0.29433511052756894,
+      "sign_stability_raw": 1.0,
+      "median_abs_difference_shrunk": 0.75325902108351
+    },
+    "W2 vs W3": {
+      "n_common_products": 34,
+      "spearman_rank_corr_shrunk": 0.18672167523361377,
+      "pearson_corr_shrunk": 0.1746709535774503,
+      "sign_stability_raw": 1.0,
+      "median_abs_difference_shrunk": 0.6949942765352352
+    }
+  },
+  "pooled_elasticity_range_across_windows": 0.419840853322222,
+  "pairwise_pooled_z_tests": {
+    "W1 vs W2": {
+      "difference": 0.419840853322222,
+      "se_of_difference": 0.3085921751083487,
+      "z": 1.3605038856698592
+    },
+    "W1 vs W3": {
+      "difference": 0.3371451760263522,
+      "se_of_difference": 0.25603480696057745,
+      "z": 1.316794306323607
+    },
+    "W2 vs W3": {
+      "difference": -0.0826956772958698,
+      "se_of_difference": 0.247211923243018,
+      "z": -0.3345133042574854
+    }
+  },
+  "max_abs_z_between_disjoint_windows": 1.3605038856698592,
+  "median_pairwise_rank_correlation": 0.18672167523361377,
+  "median_pairwise_sign_stability": 1.0,
+  "runtime_seconds": 51.3
+}

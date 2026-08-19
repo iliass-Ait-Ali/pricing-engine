@@ -1,0 +1,91 @@
+{
+  "scale": {
+    "rows": 4707776,
+    "upcs": 489,
+    "stores": 93,
+    "weeks": 366,
+    "date_min": "1989-09-14",
+    "date_max": "1997-05-01",
+    "total_units": 90766941.0,
+    "total_revenue": 262008582.29500017,
+    "total_gross_profit": 40091143.486800715,
+    "overall_gross_margin_pct": 15.301461935190114,
+    "mean_effective_unit_price": 3.1157172903138326,
+    "median_effective_unit_price": 3.15,
+    "mean_gross_margin_rate": 0.17418907170882653,
+    "share_zero_move_rows": 0.0,
+    "share_bundle_rows": 0.0010506022376595657,
+    "share_recorded_promotion_rows": 0.07348374264196088
+  },
+  "concentration": {
+    "n_upcs": 489,
+    "upcs_for_80pct_revenue": 121,
+    "top10_revenue_share_pct": 14.146994760754186,
+    "top10_gross_profit_share_pct": 12.677315164071874,
+    "n_upcs_negative_gross_profit": 6
+  },
+  "price_variation": {
+    "upc_level": {
+      "median_distinct_prices": 51.0,
+      "median_price_cv": 0.08071927147428969,
+      "median_price_range_pct": 0.6060777337033316,
+      "share_upcs_cv_below_5pct": 0.28016359918200406
+    },
+    "upc_store_series": {
+      "n_series": 36443,
+      "median_n_obs": 78.0,
+      "median_distinct_prices": 8.0,
+      "median_price_cv": 0.07910114154523631,
+      "median_price_change_rate": 0.13802816901408452,
+      "n_eligible": 19707,
+      "pct_eligible": 54.07622863101281,
+      "criteria": {
+        "min_observations": 40,
+        "min_distinct_prices": 5,
+        "min_price_cv": 0.05
+      }
+    }
+  },
+  "store_price_dispersion": {
+    "median_cross_store_spread_pct": 13.626936308394086,
+    "p90_cross_store_spread_pct": 27.451829693094673,
+    "median_cross_store_cv": 0.03068640693753629
+  },
+  "promotion": {
+    "mean_units_with_recorded_promo": 54.462376967437024,
+    "mean_units_without_recorded_promo": 16.48985345832977,
+    "mean_price_with_recorded_promo": 2.543605133069754,
+    "mean_price_without_recorded_promo": 3.161092578865314
+  },
+  "bundles": {
+    "share_rows_qty_gt_1": 0.0010506022376595657,
+    "qty_value_counts": {
+      "1.0": 4702830,
+      "2.0": 3241,
+      "4.0": 1137,
+      "3.0": 568
+    }
+  },
+  "aac_stability": {
+    "n_series": 28970,
+    "median_within_series_aac_cv": 0.08839617650843719,
+    "p90_within_series_aac_cv": 0.15284428363443137,
+    "share_rows_nonpositive_aac": 0.0,
+    "share_rows_margin_implausible": 0.0
+  },
+  "margin_mechanics": {
+    "corr_price_vs_margin_rate": -0.014268209727670603,
+    "n_price_change_events": 766384,
+    "share_price_changes_that_are_cuts": 0.42590398546942526,
+    "mean_margin_change_on_price_cut": -0.08107821285248741,
+    "mean_aac_change_pct_on_price_cut": -0.09159337871087722
+  },
+  "artefacts": {
+    "share_week_over_week_price_jumps_gt_50pct": 0.10067016012860394,
+    "n_jumps_gt_50pct": 77152,
+    "max_observed_unit_price": 26.02,
+    "min_observed_unit_price": 0.05,
+    "share_rows_unit_price_above_10": 6.372435731861499e-07,
+    "n_upc_store_weeks_with_zero_sales": 0
+  }
+}

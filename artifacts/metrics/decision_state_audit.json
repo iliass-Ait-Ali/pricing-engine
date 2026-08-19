@@ -1,0 +1,89 @@
+{
+  "decision_week": 399,
+  "n_contexts": 13964,
+  "profiles": {
+    "standard": {
+      "decision_counts": {
+        "RECOMMEND_CHANGE": 8265,
+        "KEEP_CURRENT": 4346,
+        "REVIEW_REQUIRED": 1353
+      },
+      "risk_counts": {
+        "LOW": 5511,
+        "HIGH": 4760,
+        "MEDIUM": 3693
+      },
+      "n_high_risk": 4760,
+      "n_high_risk_actionable": 0,
+      "n_actionable": 8265,
+      "n_proposal_suppressed": 1353
+    },
+    "conservative": {
+      "decision_counts": {
+        "KEEP_CURRENT": 7610,
+        "RECOMMEND_CHANGE": 6354
+      },
+      "risk_counts": {
+        "LOW": 7163,
+        "HIGH": 4760,
+        "MEDIUM": 2041
+      },
+      "n_high_risk": 4760,
+      "n_high_risk_actionable": 0,
+      "n_actionable": 6354,
+      "n_proposal_suppressed": 0
+    },
+    "aggressive": {
+      "decision_counts": {
+        "RECOMMEND_CHANGE": 9885,
+        "KEEP_CURRENT": 4079
+      },
+      "risk_counts": {
+        "HIGH": 8102,
+        "LOW": 4032,
+        "MEDIUM": 1830
+      },
+      "n_high_risk": 8102,
+      "n_high_risk_actionable": 4717,
+      "n_actionable": 9885,
+      "n_proposal_suppressed": 0
+    }
+  },
+  "invariant_violations": {
+    "standard": {
+      "HIGH risk is never actionable": 0,
+      "actionable iff RECOMMEND_CHANGE": 0,
+      "REVIEW_REQUIRED keeps the current price": 0,
+      "KEEP_CURRENT keeps the current price": 0,
+      "KEEP_CURRENT proposes nothing": 0,
+      "RECOMMEND_CHANGE actually changes the price": 0
+    },
+    "conservative": {
+      "HIGH risk is never actionable": 0,
+      "actionable iff RECOMMEND_CHANGE": 0,
+      "REVIEW_REQUIRED keeps the current price": 0,
+      "KEEP_CURRENT keeps the current price": 0,
+      "KEEP_CURRENT proposes nothing": 0,
+      "RECOMMEND_CHANGE actually changes the price": 0
+    },
+    "aggressive": {
+      "HIGH risk is never actionable": 4717,
+      "actionable iff RECOMMEND_CHANGE": 0,
+      "REVIEW_REQUIRED keeps the current price": 0,
+      "KEEP_CURRENT keeps the current price": 0,
+      "KEEP_CURRENT proposes nothing": 0,
+      "RECOMMEND_CHANGE actually changes the price": 0
+    }
+  },
+  "high_risk_decision_split": {
+    "KEEP_CURRENT": 3407,
+    "REVIEW_REQUIRED": 1353
+  },
+  "high_risk_keep_current_causes": {
+    "screened out by the eligibility rules (never reaches the optimizer)": 3349,
+    "no feasible price inside the guardrails": 41,
+    "the optimum IS the current price": 3391,
+    "estimated uplift below the materiality threshold": 16
+  },
+  "runtime_seconds": 6.4
+}

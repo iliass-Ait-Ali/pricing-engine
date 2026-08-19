@@ -1,0 +1,123 @@
+{
+  "decision_week": 399,
+  "policy_profile": "standard",
+  "price_response_method": "shrunk",
+  "n_contexts": 13964,
+  "decision_counts": {
+    "RECOMMEND_CHANGE": 8265,
+    "KEEP_CURRENT": 4346,
+    "REVIEW_REQUIRED": 1353
+  },
+  "n_unconstrained_optimum_inside_bounds": 968,
+  "share_unconstrained_optimum_inside_bounds": 0.06932111142938986,
+  "n_proposal_matches_unconstrained_optimum": 638,
+  "share_proposal_matches_unconstrained_optimum": 0.04568891435118877,
+  "n_model_optimum_survives_policy": 635,
+  "share_model_optimum_survives_policy": 0.0454740761959324,
+  "median_rounding_distance_dollars": 0.0249999999999857,
+  "p90_rounding_distance_dollars": 0.042679521661047604,
+  "first_binding_constraint_counts": {
+    "MAX_PRICE_CHANGE": 6222,
+    "HISTORICAL_SUPPORT": 3373,
+    "NONE": 1924,
+    "EXTRAPOLATION": 1877,
+    "MATERIALITY": 565,
+    "RISK_GATE": 3
+  },
+  "median_unconstrained_price_change_pct": 0.48997134670487097,
+  "p10_unconstrained_price_change_pct": -0.04682274247491647,
+  "p90_unconstrained_price_change_pct": 1.7461321514907346,
+  "median_final_price_change_pct": 0.03746397694524495,
+  "share_unconstrained_optimum_above_current": 0.8668003437410484,
+  "per_constraint": {
+    "MAX_PRICE_CHANGE": {
+      "present": 13964,
+      "contexts_removing_candidates": 13964,
+      "median_candidates_removed_when_active": 293.0,
+      "binding_at_optimum": 10329,
+      "changed_decision_state": 166,
+      "changed_final_price": 7874
+    },
+    "MIN_PRICE": {
+      "present": 13964,
+      "contexts_removing_candidates": 0,
+      "median_candidates_removed_when_active": 0.0,
+      "binding_at_optimum": 0,
+      "changed_decision_state": 0,
+      "changed_final_price": 0
+    },
+    "MAX_PRICE": {
+      "present": 0,
+      "contexts_removing_candidates": 0,
+      "median_candidates_removed_when_active": 0.0,
+      "binding_at_optimum": 0,
+      "changed_decision_state": 0,
+      "changed_final_price": 0
+    },
+    "MIN_MARGIN": {
+      "present": 13964,
+      "contexts_removing_candidates": 13964,
+      "median_candidates_removed_when_active": 39.0,
+      "binding_at_optimum": 982,
+      "changed_decision_state": 78,
+      "changed_final_price": 802
+    },
+    "COST_FLOOR": {
+      "present": 13964,
+      "contexts_removing_candidates": 13964,
+      "median_candidates_removed_when_active": 36.0,
+      "binding_at_optimum": 0,
+      "changed_decision_state": 0,
+      "changed_final_price": 0
+    },
+    "EXTRAPOLATION": {
+      "present": 13964,
+      "contexts_removing_candidates": 13964,
+      "median_candidates_removed_when_active": 264.0,
+      "binding_at_optimum": 2103,
+      "changed_decision_state": 1166,
+      "changed_final_price": 1165
+    },
+    "ROUNDING": {
+      "present": 13964,
+      "contexts_removing_candidates": 0,
+      "median_candidates_removed_when_active": 0.0,
+      "binding_at_optimum": 6978,
+      "changed_decision_state": 0,
+      "changed_final_price": 6978
+    },
+    "MATERIALITY": {
+      "present": 13964,
+      "contexts_removing_candidates": 0,
+      "median_candidates_removed_when_active": 0.0,
+      "binding_at_optimum": 716,
+      "changed_decision_state": 716,
+      "changed_final_price": 700
+    },
+    "RISK_GATE": {
+      "present": 13964,
+      "contexts_removing_candidates": 0,
+      "median_candidates_removed_when_active": 0.0,
+      "binding_at_optimum": 3370,
+      "changed_decision_state": 1354,
+      "changed_final_price": 2988
+    },
+    "HISTORICAL_SUPPORT": {
+      "present": 13964,
+      "contexts_removing_candidates": 0,
+      "median_candidates_removed_when_active": 0.0,
+      "binding_at_optimum": 3373,
+      "changed_decision_state": 2668,
+      "changed_final_price": 24
+    }
+  },
+  "runtime_seconds": 15.8,
+  "final_determinant_counts": {
+    "guardrail corner (optimum outside the feasible interval)": 7967,
+    "screened out before optimisation (eligibility / cost)": 3528,
+    "risk gate (REVIEW_REQUIRED, not actionable)": 1353,
+    "materiality threshold (KEEP_CURRENT)": 716,
+    "learned signal (interior optimum, actionable)": 400
+  },
+  "share_determined_by_learned_signal": 0.028645087367516472
+}

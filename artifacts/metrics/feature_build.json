@@ -1,0 +1,94 @@
+{
+  "rows_total": 4707776,
+  "rows_usable_for_training": 4671333,
+  "rows_dropped_insufficient_history": 36443,
+  "n_features": 29,
+  "features": [
+    "effective_unit_price",
+    "log_price",
+    "price_vs_last_week",
+    "price_vs_series_reference",
+    "price_vs_recent_mean",
+    "store",
+    "upc",
+    "com_code",
+    "week_of_year",
+    "month",
+    "quarter",
+    "time_index",
+    "recorded_promotion_flag",
+    "lag_move_1",
+    "lag_move_2",
+    "lag_move_3",
+    "lag_move_4",
+    "roll_mean_move_4",
+    "roll_mean_move_8",
+    "roll_mean_move_13",
+    "roll_std_move_4",
+    "lag_price_1",
+    "lag_price_2",
+    "roll_mean_price_4",
+    "series_reference_price",
+    "decision_time_unit_cost",
+    "lag_promotion_1",
+    "series_age_weeks",
+    "package_size_oz"
+  ],
+  "categorical_features": [
+    "store",
+    "upc",
+    "com_code"
+  ],
+  "missing_share_by_feature": {
+    "price_vs_last_week": 0.0077410225125409534,
+    "price_vs_series_reference": 0.0077410225125409534,
+    "price_vs_recent_mean": 0.0077410225125409534,
+    "lag_move_1": 0.0077410225125409534,
+    "lag_move_2": 0.015362030818798516,
+    "lag_move_3": 0.022823515817235143,
+    "lag_move_4": 0.030165199023912778,
+    "roll_mean_move_4": 0.015362030818798516,
+    "roll_mean_move_8": 0.015362030818798516,
+    "roll_mean_move_13": 0.015362030818798516,
+    "roll_std_move_4": 0.015362030818798516,
+    "lag_price_1": 0.0077410225125409534,
+    "lag_price_2": 0.015362030818798516,
+    "roll_mean_price_4": 0.0077410225125409534,
+    "series_reference_price": 0.0077410225125409534,
+    "decision_time_unit_cost": 0.0077410225125409534,
+    "lag_promotion_1": 0.0077410225125409534,
+    "package_size_oz": 0.00705152496635354
+  },
+  "split": {
+    "n_weeks": 365,
+    "train_weeks": [
+      2,
+      257
+    ],
+    "valid_weeks": [
+      258,
+      342
+    ],
+    "test_weeks": [
+      343,
+      399
+    ],
+    "train_dates": [
+      "1989-09-21",
+      "1994-08-11"
+    ],
+    "valid_dates": [
+      "1994-08-18",
+      "1996-03-28"
+    ],
+    "test_dates": [
+      "1996-04-04",
+      "1997-05-01"
+    ],
+    "n_train": 3206437,
+    "n_valid": 715856,
+    "n_test": 749040
+  },
+  "fingerprint": "b4b3928a8791a63c01bdf960c6849508f3841dee62ceeff99bdc76bb6d7753ae",
+  "build_seconds": 73.4
+}

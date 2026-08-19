@@ -1,0 +1,140 @@
+{
+  "movement": {
+    "rows": 6602582,
+    "columns": [
+      "store",
+      "upc",
+      "week",
+      "move",
+      "qty",
+      "price",
+      "sale",
+      "profit",
+      "ok"
+    ],
+    "dtypes": {
+      "store": "int32",
+      "upc": "int64",
+      "week": "int32",
+      "move": "float64",
+      "qty": "float64",
+      "price": "float64",
+      "sale": "string",
+      "profit": "float64",
+      "ok": "int8"
+    },
+    "null_counts": {
+      "store": 0,
+      "upc": 0,
+      "week": 0,
+      "move": 0,
+      "qty": 0,
+      "price": 0,
+      "sale": 6242568,
+      "profit": 0,
+      "ok": 0
+    },
+    "exact_duplicate_rows": 0,
+    "duplicate_grain_rows": 0,
+    "n_upc": 490,
+    "n_store": 93,
+    "n_week": 367,
+    "week_min": 1,
+    "week_max": 399,
+    "ok_value_counts": {
+      "1": 6461297,
+      "0": 141285
+    },
+    "sale_code_counts": {
+      "<NA>": 6242568,
+      "B": 254261,
+      "S": 91259,
+      "G": 11075,
+      "C": 3418,
+      "L": 1
+    },
+    "profile": {
+      "price": {
+        "count": 6602582,
+        "missing": 0,
+        "mean": 2.2411508718040656,
+        "std": 1.5419365747083664,
+        "min": 0.0,
+        "p01": 0.0,
+        "p25": 0.0,
+        "median": 2.79,
+        "p75": 3.39,
+        "p99": 4.75,
+        "max": 26.02,
+        "n_zero": 1851380,
+        "n_negative": 0
+      },
+      "qty": {
+        "count": 6602582,
+        "missing": 0,
+        "mean": 1.0012013481998405,
+        "std": 0.04929840832215003,
+        "min": 1.0,
+        "p01": 1.0,
+        "p25": 1.0,
+        "median": 1.0,
+        "p75": 1.0,
+        "p99": 1.0,
+        "max": 4.0,
+        "n_zero": 0,
+        "n_negative": 0
+      },
+      "move": {
+        "count": 6602582,
+        "missing": 0,
+        "mean": 14.081185057603223,
+        "std": 50.58521969745437,
+        "min": 0.0,
+        "p01": 0.0,
+        "p25": 0.0,
+        "median": 8.0,
+        "p75": 17.0,
+        "p99": 103.0,
+        "max": 18688.0,
+        "n_zero": 1850703,
+        "n_negative": 0
+      },
+      "profit": {
+        "count": 6602582,
+        "missing": 0,
+        "mean": 12.522181412560931,
+        "std": 11.439987657669036,
+        "min": -99.69,
+        "p01": 0.0,
+        "p25": 0.0,
+        "median": 13.74,
+        "p75": 18.61,
+        "p99": 46.21,
+        "max": 99.99,
+        "n_zero": 1852626,
+        "n_negative": 53057
+      }
+    }
+  },
+  "upc_metadata": {
+    "rows": 490,
+    "columns": [
+      "com_code",
+      "upc",
+      "descrip",
+      "size",
+      "case",
+      "nitem"
+    ],
+    "n_upc": 490,
+    "duplicate_upc": 0,
+    "null_counts": {
+      "com_code": 0,
+      "upc": 0,
+      "descrip": 0,
+      "size": 0,
+      "case": 0,
+      "nitem": 0
+    }
+  }
+}

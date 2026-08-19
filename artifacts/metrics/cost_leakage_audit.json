@@ -1,0 +1,25 @@
+{
+  "price_response_method": "shrunk",
+  "identity_check": {
+    "rows_compared": 4671333,
+    "mismatches": 0,
+    "share_equal_to_same_week_aac": 0.5543997845267065,
+    "passed": true
+  },
+  "poisoning_check": {
+    "series_poisoned": 25,
+    "poisoned_from_week": 398,
+    "rows_compared_before_poison": 5537,
+    "decision_time_cost_unchanged_at_or_before_poison": true,
+    "next_week_cost_changed_as_expected": true,
+    "passed": true
+  },
+  "recommendation_check": {
+    "compare_week": 397,
+    "series_compared": 19,
+    "recommendations_changed_by_future_cost": 0,
+    "passed": true
+  },
+  "all_passed": true,
+  "runtime_seconds": 12.8
+}
