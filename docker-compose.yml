@@ -1,0 +1,14 @@
+services:
+  api:
+    build: .
+    image: pricing-engine:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      # Model artifact and processed data stay OUTSIDE the image: the
+      # Dominick's data are academic-use only and must not be redistributed.
+      - ./artifacts:/app/artifacts:ro
+      - ./data/processed:/app/data/processed:ro
+    environment:
+      PRICING_ENGINE_POLICY_PROFILE: standard
+    restart: unless-stopped

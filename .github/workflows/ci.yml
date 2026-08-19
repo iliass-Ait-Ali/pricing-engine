@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[api,dev]"
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Smoke import
+        run: |
+          python -c "import pricing_engine; print(pricing_engine.__version__)"
+          python -c "from pricing_engine.optimization.optimizer import optimize_price; print('optimizer ok')"
+          python -c "import api.main; print('api module ok')"
+
+      - name: README generated metrics are current
+        run: python scripts/update_readme_metrics.py --check
+
+      - name: Tests
+        # CI never downloads the licensed Dominick's dataset. Tests that need
+        # the real artifacts skip themselves; everything else runs on the
+        # deterministic synthetic fixtures.
+        run: pytest -q
+
+      - name: Docker build
+        if: matrix.python-version == '3.11'
+        run: docker build -t pricing-engine:ci .

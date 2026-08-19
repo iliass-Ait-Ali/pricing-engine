@@ -1,0 +1,147 @@
+# ---------------------------------------------------------------------------
+# AI Pricing & Revenue Optimization Engine — central configuration.
+# Every threshold used anywhere in the codebase should come from here.
+# ---------------------------------------------------------------------------
+
+project:
+  name: pricing-engine
+  random_seed: 42
+  category: cereals
+
+paths:
+  raw_dir: data/raw/dominicks/cereals
+  interim_dir: data/interim
+  processed_dir: data/processed
+  processed_table: data/processed/dominicks_cereals.parquet
+  features_table: data/processed/dominicks_cereals_features.parquet
+  artifacts_dir: artifacts
+  models_dir: artifacts/models
+  metrics_dir: artifacts/metrics
+  figures_dir: artifacts/figures
+  reports_dir: reports
+  recommendation_log: artifacts/recommendation_log.csv
+
+data:
+  # Dominick's week 1 starts on 1989-09-14 (Thursday) per the Kilts Center
+  # manual; store weeks run Thursday -> Wednesday.
+  week1_start_date: "1989-09-14"
+  # Rows flagged ok = 0 are described as "suspect / trash" in the manual.
+  keep_only_ok_rows: true
+  min_price: 0.01
+  min_qty: 1
+
+modeling:
+  target: move
+  # Temporal split boundaries expressed as fractions of the ordered week index.
+  train_frac: 0.70
+  valid_frac: 0.15
+  test_frac: 0.15
+  min_weeks_per_series: 20
+  lags: [1, 2, 3, 4]
+  rolling_windows: [4, 8, 13]
+  hgb:
+    learning_rate: 0.06
+    max_iter: 500
+    max_leaf_nodes: 63
+    min_samples_leaf: 40
+    l2_regularization: 1.0
+    early_stopping: false
+
+eligibility:
+  # A UPC x store series is eligible for price optimization only if it has
+  # enough history and enough within-series price variation.
+  min_observations: 40
+  min_distinct_prices: 5
+  min_price_cv: 0.05
+
+optimization:
+  objective: gross_profit          # gross_profit | revenue
+  price_step: 0.05                 # candidate grid step in dollars
+  price_rounding: 0.01             # final recommendation rounding
+  charm_pricing: false             # if true, round to x.x9
+
+# DEMO POLICY SETTINGS - illustrative guardrails for a portfolio demo, NOT
+# universal retail best-practice thresholds.
+#
+# high_risk_action controls what happens when the heuristic risk layer rates a
+# context HIGH RISK (little history, little price variation, or the candidate
+# extrapolates). Default profiles must never auto-change a HIGH-risk price.
+policy_profiles:
+  conservative:
+    max_price_change_pct: 0.05
+    extrapolation_tolerance_pct: 0.02
+    min_gross_margin_rate: 0.10
+    materiality_threshold_pct: 0.02
+    allow_below_cost: false
+    high_risk_action: keep_current      # keep_current | review_required | recommend
+    medium_risk_max_price_change_pct: 0.03
+  standard:
+    max_price_change_pct: 0.10
+    extrapolation_tolerance_pct: 0.05
+    min_gross_margin_rate: 0.05
+    materiality_threshold_pct: 0.01
+    allow_below_cost: false
+    high_risk_action: review_required
+    medium_risk_max_price_change_pct: 0.05
+  aggressive:
+    # DEMO ONLY: explicitly allows acting on HIGH-risk contexts. Never the default.
+    max_price_change_pct: 0.20
+    extrapolation_tolerance_pct: 0.10
+    min_gross_margin_rate: 0.00
+    materiality_threshold_pct: 0.005
+    allow_below_cost: false
+    high_risk_action: recommend
+    medium_risk_max_price_change_pct: 0.20
+
+# Heuristic reliability layer. NOTE the direction: LOW RISK = plenty of history
+# and price variation, recommendation stays inside observed support.
+# HIGH RISK = thin evidence and/or extrapolation. This is NOT calibrated
+# statistical confidence.
+# Risk bands are deliberately STRICTER than the eligibility screen: eligibility
+# answers "can this series be modelled at all", risk answers "how much do we
+# trust acting on it". A series can therefore be eligible and still be HIGH
+# risk, which is what routes it to REVIEW_REQUIRED instead of an automatic
+# price change.
+risk:
+  low_risk:
+    min_observations: 150
+    min_distinct_prices: 15
+    max_extrapolation_pct: 0.02
+  medium_risk:
+    min_observations: 80
+    min_distinct_prices: 8
+    max_extrapolation_pct: 0.05
+
+# ---------------------------------------------------------------------------
+# Phase L - price-response method used for counterfactual pricing.
+#
+#   ml       : the fitted demand model answers price counterfactuals directly
+#              (kept as a benchmark; its implied elasticity is steeper than the
+#              controlled econometric estimate)
+#   pooled   : Q(p) = Q_hat(p0) * (p / p0) ** epsilon_pooled
+#   shrunk   : same, with an empirical-Bayes shrunk per-UPC elasticity (DEFAULT)
+# ---------------------------------------------------------------------------
+pricing_response:
+  method: shrunk                   # ml | pooled | shrunk
+  elasticity_table: artifacts/models/elasticity_table.csv
+  min_abs_elasticity: 0.2          # clip |epsilon| to a plausible band
+  max_abs_elasticity: 6.0
+  fallback: pooled                 # what to use when a UPC has no usable estimate
+
+elasticity:
+  # Estimation uses TRAINING WEEKS ONLY (no validation/test outcomes).
+  min_obs_per_upc: 200
+  min_distinct_prices_per_upc: 10
+  # Empirical-Bayes shrinkage toward the pooled controlled elasticity:
+  #   w_i = tau^2 / (tau^2 + se_i^2)
+  # tau^2 is the between-UPC variance of TRUE elasticities. Phase M replaced the
+  # method-of-moments estimator (var(estimates) - mean(se^2), floored at zero)
+  # with REML, and the per-UPC standard errors with cluster-robust ones - see
+  # reports/14_SHRINKAGE_AUDIT.md and reports/15_ELASTICITY_INFERENCE_AUDIT.md.
+  shrinkage: empirical_bayes
+  shrinkage_tau2_estimator: reml       # reml | moment
+  shrinkage_prior_mean: pooled         # pooled | estimated
+  # Rejection threshold on the PANEL-ROBUST standard error (was HC1 before
+  # Phase M, which made this screen roughly 3x too permissive).
+  max_se_for_product_estimate: 1.5
+  sensitivity_scenarios: [-1.5, -1.9, -2.4, -3.1]

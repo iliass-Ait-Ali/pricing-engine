@@ -1,0 +1,65 @@
+# ---------------------------------------------------------------
+# Dominick's data is restricted to academic research use and must
+# not be redistributed. Raw + derived data stay out of Git.
+# ---------------------------------------------------------------
+data/raw/
+data/raw/dominicks/
+data/interim/
+data/processed/
+*.zip
+
+# Large / regenerable artifacts
+artifacts/models/*
+!artifacts/models/.gitkeep
+artifacts/figures/*
+!artifacts/figures/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+.env
+
+# Tooling
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs / local db
+*.log
+*.sqlite
+
+# ---------------------------------------------------------------------------
+# Derived row-level extracts of the Dominick's panel.
+#
+# These are generated artifacts, but each row still carries the licensed data
+# (weekly prices, units, costs per UPC x store x week), so they are treated the
+# same as the raw files: regenerable, never redistributed. Rebuild them with
+# `make eda`, `make optimize` and `make audit`.
+# ---------------------------------------------------------------------------
+artifacts/metrics/price_change_episodes.csv
+artifacts/metrics/constraint_attribution.csv
+artifacts/metrics/price_variation_upc_store.csv
+artifacts/recommendation_log.csv
+artifacts/recommendation_log__schema_pre_phase_m.csv
+
+# Vendored third-party library, fetched once by scripts/render_mermaid.py
+artifacts/report_figures/mermaid/mermaid.min.js
+
+# Word / Office lock and autosave files
+~$*
+*.tmp
+
+# Local virtual environments
+.venv*/
