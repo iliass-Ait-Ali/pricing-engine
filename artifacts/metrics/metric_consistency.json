@@ -369,7 +369,7 @@
       "expected": 538.0,
       "source": "test_suite.json:collected_tests",
       "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
-      "line": 7405,
+      "line": 7407,
       "stated": "519",
       "value": 519.0,
       "ok": false,

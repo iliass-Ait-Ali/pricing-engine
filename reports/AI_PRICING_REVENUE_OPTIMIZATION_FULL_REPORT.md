@@ -10,6 +10,7 @@
 | Pipeline artifacts dated | 2026-08-18 (full `make all` run) |
 | Verification re-run for this report | test suite, lint, `run_demo.py`, live FastAPI service, live Streamlit dashboard, all report figures — 2026-08-19 |
 | Environment | Windows 11 (10.0.26200), Python 3.13.0, pandas 2.2.3, numpy 2.0.2, scikit-learn 1.8.0, statsmodels 0.14.6 |
+| Post-freeze engineering addendum | Phase O (review/approval workflow, monitoring history + local alerting, batch scale harness) added **Thursday, 2026-08-27** — no change to the scientific findings above; see §120 and `reports/22_POST_FREEZE_ENGINEERING.md` |
 | Companion audit trail | [`reports/AI_PRICING_REVENUE_OPTIMIZATION_REPORT_SOURCES.md`](AI_PRICING_REVENUE_OPTIMIZATION_REPORT_SOURCES.md) |
 | Companion QA record | [`reports/REPORT_QA.md`](REPORT_QA.md) |
 
@@ -75,6 +76,7 @@ recommended price*, *model-internal estimated counterfactual uplift*,
 **Part XXVI — Claims** — §112 Fully supported · §113 Require qualification · §114 Must not be made
 **Part XXVII — CV / GitHub positioning** — §115 CV bullets · §116 Repository description · §117 Skills demonstrated
 **Part XXVIII — Conclusion** — §118 Final assessment · §119 Final lessons
+**Part XXIX — Post-freeze engineering** — §120 Phase O addendum (review/approval workflow, monitoring history + local alerting, batch scale harness)
 **Appendices** — A Data dictionary · B Formula reference · C Hyperparameters · D Configuration profiles · E API schemas · F Reason codes · G Test inventory · H Repository tree · I Reproduction commands · J Consolidated metrics table · K Limitations register · L Glossary
 
 ---
@@ -11031,6 +11033,54 @@ requires an experiment. Recognising that boundary, stating it, building
 verification for everything on the near side of it, and designing the
 experiment for the far side, is what separates a pricing *project* from a
 pricing *demo*.
+
+---
+
+# PART XXIX — POST-FREEZE ENGINEERING
+
+## 120. Phase O addendum (added Thursday, 2026-08-27)
+
+Everything above this section describes the system as it stood at the v1.0.0
+freeze (Phase N, verified 2026-08-19) and is unchanged by what follows. On
+**Thursday, 2026-08-27**, a post-freeze engineering phase ("Phase O") added
+three items from `FUTURE_WORK.md` §3 ("Product and operations — no new
+science"): a recommendation review/approval workflow, monitoring metric
+history with local threshold alerting, and a batch scale-testing harness.
+None of it touches an estimator, model, feature, guardrail or decision rule
+— every scientific finding in Parts I–XXVIII, including the headline **2.9%**
+interior-optimum attribution, stands exactly as reported.
+
+**What was added:**
+
+* **Review/approval workflow** — every logged recommendation now carries a
+  `rec_id`; a new append-only `recommendation_transitions.csv` records
+  `GENERATED → REVIEWED → APPROVED/REJECTED → PUBLISHED` transitions (an
+  illegal edge raises rather than silently no-opping); a `scripts/review.py`
+  CLI and a tenth Streamlit dashboard page ("Review queue") let a human work
+  the `REVIEW_REQUIRED` backlog. This is the tool a reviewer would use, not a
+  reviewer, an SLA, or a notification path.
+* **Monitoring history + local alerting** — `scripts/monitor.py` now appends
+  one JSON line per run to `artifacts/metrics/monitoring_history.jsonl`
+  (previously a single overwritten snapshot) and evaluates the run against
+  config-driven local thresholds (`configs/config.yaml` `monitoring:` block),
+  exiting non-zero on a breach. These thresholds are loosely calibrated
+  against this project's own reported numbers, not agreed with a business or
+  fitted against realised out-of-sample error.
+* **Batch scale harness** — `scripts/benchmark_scale.py` sweeps
+  `optimize_price_batch` up to 30,000+ contexts by tiling the same real
+  sampled pool `benchmark_batch.py` already proved equivalent to the
+  per-context path. Sizes above the base sample are that sample
+  **replicated**, not independent catalogue growth or a scaling claim to
+  other hardware.
+
+**What this section does not claim:** no realised staffing of the review
+queue, no business-calibrated monitoring thresholds, no metric-store database
+or paging integration, no proof of scaling to a larger real catalogue, and no
+GitHub remote was created or pushed to. Full evidence — real command output
+for every item above, including the one-time archival of the pre-Phase-O
+`recommendation_log.csv` that adding `rec_id` triggered, and one disclosed
+(not fabricated) residual test-count inconsistency inside this very report —
+is in `reports/22_POST_FREEZE_ENGINEERING.md`.
 
 ---
 ---
