@@ -20,6 +20,7 @@ paths:
   figures_dir: artifacts/figures
   reports_dir: reports
   recommendation_log: artifacts/recommendation_log.csv
+  recommendation_transitions_log: artifacts/recommendation_transitions.csv
 
 data:
   # Dominick's week 1 starts on 1989-09-14 (Thursday) per the Kilts Center
@@ -145,3 +146,31 @@ elasticity:
   # Phase M, which made this screen roughly 3x too permissive).
   max_se_for_product_estimate: 1.5
   sensitivity_scenarios: [-1.5, -1.9, -2.4, -3.1]
+
+# ---------------------------------------------------------------------------
+# Post-freeze engineering (Phase O) - monitoring thresholds.
+#
+# These are LOCAL thresholds only: loosely calibrated against the real test-
+# window numbers already reported (test WAPE 0.4565, bias -3.88 -
+# reports/04_MODEL_COMPARISON.md), not agreed with a business or fitted
+# against realised out-of-sample error. See reports/MONITORING_DESIGN.md.
+# ---------------------------------------------------------------------------
+monitoring:
+  psi_bands:
+    stable_below: 0.10
+    moderate_below: 0.25         # >= this is "large shift"
+  alerts:
+    psi_warn: 0.10
+    psi_alert: 0.25
+    wape_warn: 0.55
+    wape_alert: 0.70
+    bias_abs_alert: 10.0
+    schema_check_is_hard_fail: true
+  expected_schema:
+    upc: int
+    store: int
+    week: int
+    move: float
+    effective_unit_price: float
+    decision_time_unit_cost: float
+    recorded_promotion_flag: int

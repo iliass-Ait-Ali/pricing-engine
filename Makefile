@@ -6,7 +6,7 @@ PY ?= python
         estimate-elasticity compare-response audit-zero-price audit-cost audit \
         audit-constraints audit-model-value audit-guardrails audit-shrinkage \
         audit-inference audit-out-of-time audit-stability audit-funnel \
-        audit-decision-states audit-claims
+        audit-decision-states audit-claims review-list benchmark-scale
 
 help:
 	@echo "install        install the package (editable) + dev extras"
@@ -23,12 +23,14 @@ help:
 	@echo "compare-response  compare ml / pooled / shrunk price responses + sensitivity"
 	@echo "optimize       batch price recommendations"
 	@echo "backtest       offline policy comparison"
-	@echo "monitor        drift / schema / performance checks"
+	@echo "monitor        drift / schema / performance checks + local threshold alerts + history"
+	@echo "review-list    list pending recommendations in the review/approval queue"
 	@echo "audit-zero-price  deep audit of the price = 0 exclusion"
 	@echo "audit-cost     prove decision-time cost is leakage-safe"
 	@echo "audit          Phase M scientific audit (reports 11-20)"
 	@echo "demo           end-to-end demo on one real UPC x store"
 	@echo "benchmark-batch  loop vs vectorised batch benchmark + equivalence check"
+	@echo "benchmark-scale  batch throughput/memory sweep across replicated context counts"
 	@echo "readme-metrics regenerate the README generated-metrics block"
 	@echo "check-readme   fail if the README metrics are stale"
 	@echo "report         rebuild the DOCX edition of the full report"
@@ -83,6 +85,9 @@ backtest:
 
 monitor:
 	$(PY) scripts/monitor.py
+
+review-list:
+	$(PY) scripts/review.py --list
 
 audit-zero-price:
 	$(PY) scripts/audit_zero_price.py
@@ -143,6 +148,9 @@ check-readme:
 
 benchmark-batch:
 	$(PY) scripts/benchmark_batch.py --contexts 3000
+
+benchmark-scale:
+	$(PY) scripts/benchmark_scale.py --sizes 500,3000,10000,30000,100000
 
 smoke:
 	$(PY) scripts/smoke_dashboard.py

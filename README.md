@@ -133,7 +133,7 @@ Native ML price-response validation on 300 decision contexts (`artifacts/metrics
 
 | metric | value |
 | --- | --- |
-| tests collected | **519** |
+| tests collected | **538** |
 | batch scoring, 3,000 contexts | per-context loop 122.0s → vectorised **2.4s** (50× on this machine) |
 | batch equivalence (discrete fields exact, floats ≤ 1e-09) | PASS on 3,000 recommendations |
 
@@ -383,6 +383,7 @@ causal question: `docs/PRICING_EXPERIMENT.md`.
 | `reports/18_ELASTICITY_ELIGIBILITY_FUNNEL.md` | 489 UPCs -> 239 usable, every transition counted |
 | `reports/19_DECISION_STATE_AUDIT.md` | decision-state invariants over every real context |
 | `reports/20_CLAIM_AUDIT.md` | every claim in the repository, classified |
+| `reports/22_POST_FREEZE_ENGINEERING.md` | post-freeze (Phase O) engineering: review/approval workflow, monitoring history + local alerts, batch scale sweep - no science changed |
 
 ## 12. Attribution
 

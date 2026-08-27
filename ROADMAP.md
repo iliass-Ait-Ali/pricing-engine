@@ -27,7 +27,7 @@ several of them require an experiment this data cannot supply.
 | **L. Pricing-science hardening** | Hybrid elasticity price response, elasticity estimator + shrinkage, method comparison, sensitivity, HIGH-risk gating, uplift language, zero-price audit, cost-leakage audit | E-K | Hybrid works and is the default; elasticity fitted on training weeks only; product reliability handled; sensitivity reported; HIGH risk never auto-actionable; zero-price and cost audits published; ml kept as benchmark; tests pass | `VALIDATED` |
 
 | **M. Final scientific audit** | Constraint attribution, rule-only and guardrail ablations, shrinkage/inference re-derivation, out-of-time price response, elasticity stability, eligibility funnel, decision-state invariants, claim audit | L | `reports/11`-`reports/20`; 0 UNSUPPORTED claims | `VALIDATED` |
-| **N. Engineering closure and v1.0 freeze** | Executive-summary wording fix, batch vectorisation with equivalence tests, Docker build + run, CI reproduced locally, generated README metrics, cross-document numeric audit, report regeneration, version freeze and initial Git history | M | `reports/21_FINAL_ENGINEERING_CLOSURE.md`; 519 tests, ruff clean, 0 UNSUPPORTED claims, 0 numeric mismatches; DOCX/PDF rebuilt from the Markdown source | `VALIDATED` |
+| **N. Engineering closure and v1.0 freeze** | Executive-summary wording fix, batch vectorisation with equivalence tests, Docker build + run, CI reproduced locally, generated README metrics, cross-document numeric audit, report regeneration, version freeze and initial Git history | M | `reports/21_FINAL_ENGINEERING_CLOSURE.md`; 519 tests at Phase N, ruff clean, 0 UNSUPPORTED claims, 0 numeric mismatches; DOCX/PDF rebuilt from the Markdown source | `VALIDATED` |
 
 ## Gate evidence (actual command output)
 
@@ -61,3 +61,33 @@ must not be confused:
 One item from that list was completed inside the v1.0 closure rather than
 deferred: the Docker image is now built and run (Phase N). The
 GitHub-hosted CI run remains outstanding and is recorded as such.
+
+## Phase O - post-freeze engineering (no new science)
+
+Three items from `FUTURE_WORK.md` §3 ("Product and operations - no new
+science") were implemented after the v1.0.0 freeze: a recommendation
+review/approval workflow, monitoring metric history + local threshold
+alerting, and a batch scale-testing harness. **This is not a reopening of
+v1.0's frozen scientific scope** - no estimator, model, feature or
+optimisation logic changed; the pricing engine's outputs are identical to
+before this phase. Full evidence: `reports/22_POST_FREEZE_ENGINEERING.md`.
+
+Two related items from the same list were explicitly NOT attempted, because
+they are not engineering tasks: a real cost feed needs an external data
+source this project does not have, and "staffing" the `REVIEW_REQUIRED`
+queue is an operational/HR decision, not code - what was built is the tool a
+human reviewer would use, not the reviewer.
+
+| Sub-item | Evidence |
+| --- | --- |
+| Review/approval workflow | `pytest tests/test_review_workflow.py` -> 9 passed; `python scripts/review.py --list`; one real `REVIEW_REQUIRED` recommendation walked GENERATED -> REVIEWED -> APPROVED -> PUBLISHED via the CLI, and a second via the dashboard's "Review queue" page |
+| Monitoring history + local alerts | `python scripts/monitor.py` -> writes `artifacts/metrics/monitoring_history.jsonl` (append-only, one line per run) and prints `alerts: PASS/FAIL`; `pytest tests/test_monitoring.py` -> 16 passed |
+| Batch scale benchmark | `python scripts/benchmark_scale.py --sizes 500,3000,10000,30000` -> `artifacts/metrics/batch_scale_benchmark.json`; `pytest tests/test_batch_scale_benchmark.py` -> 3 passed |
+
+Adding `rec_id` to the recommendation-log schema triggered the log's own
+existing archive-on-schema-change behaviour: the real, pre-Phase-O
+`artifacts/recommendation_log.csv` (6,005 rows) was archived - not deleted -
+to `recommendation_log__schema_20260825T115810.csv` on the first `optimize.py`
+run after this change, exactly as it did once before at the Phase M schema
+change. This was expected and disclosed before implementation, not an
+incident.

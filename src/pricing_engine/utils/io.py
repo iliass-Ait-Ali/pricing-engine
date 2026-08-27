@@ -7,6 +7,7 @@ import json
 import platform
 import random
 import subprocess
+import sys
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -100,6 +101,49 @@ def environment_record() -> dict[str, Any]:
         "scikit_learn": sklearn.__version__,
         "git_commit": git_commit(),
     }
+
+
+def peak_process_memory_mb() -> float | None:
+    """Peak resident memory of this process, when the platform exposes it.
+
+    Shared by the batch benchmark scripts (`benchmark_batch.py`,
+    `benchmark_scale.py`) so it is measured identically in both.
+    """
+    try:  # Windows
+        import ctypes
+        import ctypes.wintypes as wt
+
+        class _Counters(ctypes.Structure):
+            _fields_ = [
+                ("cb", wt.DWORD),
+                ("PageFaultCount", wt.DWORD),
+                ("PeakWorkingSetSize", ctypes.c_size_t),
+                ("WorkingSetSize", ctypes.c_size_t),
+                ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
+                ("QuotaNonPagedPoolUsage", ctypes.c_size_t),
+                ("PagefileUsage", ctypes.c_size_t),
+                ("PeakPagefileUsage", ctypes.c_size_t),
+            ]
+
+        counters = _Counters()
+        counters.cb = ctypes.sizeof(_Counters)
+        kernel32 = ctypes.windll.kernel32
+        kernel32.GetCurrentProcess.restype = wt.HANDLE
+        get_info = ctypes.windll.psapi.GetProcessMemoryInfo
+        get_info.argtypes = [wt.HANDLE, ctypes.POINTER(_Counters), wt.DWORD]
+        if get_info(kernel32.GetCurrentProcess(), ctypes.byref(counters), counters.cb):
+            return round(counters.PeakWorkingSetSize / 1024**2, 1)
+    except Exception:  # noqa: BLE001 - a benchmark must not fail on diagnostics
+        pass
+    try:  # POSIX
+        import resource
+
+        peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+        return round(peak / (1024**2 if sys.platform == "darwin" else 1024), 1)
+    except Exception:  # noqa: BLE001
+        return None
 
 
 def set_seed(seed: int) -> None:

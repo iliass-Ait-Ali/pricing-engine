@@ -10,10 +10,12 @@ Outputs
 -------
     reports/MONITORING_DESIGN.md
     artifacts/metrics/monitoring.json
+    artifacts/metrics/monitoring_history.jsonl   (appended, one line per run)
 """
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -26,13 +28,17 @@ from pricing_engine.config import load_config  # noqa: E402
 from pricing_engine.features.build import training_frame  # noqa: E402
 from pricing_engine.models.demand_model import NUMERIC_FEATURES, load_model  # noqa: E402
 from pricing_engine.monitoring.drift import (  # noqa: E402
+    PSI_BANDS,
+    append_history,
+    evaluate_alerts,
     feature_drift,
     performance_when_outcomes_arrive,
     prediction_distribution_check,
     schema_check,
 )
-from pricing_engine.utils.io import write_json  # noqa: E402
+from pricing_engine.utils.io import utc_now, write_json  # noqa: E402
 
+# Fallback used only if configs/config.yaml has no `monitoring` block.
 EXPECTED_SCHEMA = {
     "upc": "int",
     "store": "int",
@@ -42,6 +48,17 @@ EXPECTED_SCHEMA = {
     "decision_time_unit_cost": "float",
     "recorded_promotion_flag": "int",
 }
+
+
+def _psi_bands(cfg) -> tuple:
+    raw = cfg.get("monitoring.psi_bands")
+    if not raw:
+        return PSI_BANDS
+    return (
+        (raw["stable_below"], "stable"),
+        (raw["moderate_below"], "moderate shift"),
+        (float("inf"), "large shift"),
+    )
 
 
 def main() -> int:
@@ -58,12 +75,18 @@ def main() -> int:
     print(f"reference weeks {train_lo}-{train_hi} ({len(reference):,} rows), "
           f"current weeks {test_lo}-{test_hi} ({len(current):,} rows)")
 
-    schema = schema_check(current, EXPECTED_SCHEMA)
-    drift = feature_drift(reference, current, [f for f in NUMERIC_FEATURES if f != "upc_demand_prior"])
+    expected_schema = cfg.get("monitoring.expected_schema") or EXPECTED_SCHEMA
+    bands = _psi_bands(cfg)
+    schema = schema_check(current, expected_schema)
+    drift = feature_drift(
+        reference, current, [f for f in NUMERIC_FEATURES if f != "upc_demand_prior"], bands=bands
+    )
 
     ref_sample = reference.sample(min(200_000, len(reference)), random_state=cfg.seed)
     cur_sample = current.sample(min(200_000, len(current)), random_state=cfg.seed)
-    pred_check = prediction_distribution_check(model.predict(ref_sample), model.predict(cur_sample))
+    pred_check = prediction_distribution_check(
+        model.predict(ref_sample), model.predict(cur_sample), bands=bands
+    )
 
     scored = current.copy()
     scored["pred"] = model.predict(current)
@@ -79,7 +102,21 @@ def main() -> int:
         "prediction_drift": pred_check,
         "performance_by_quarter": [p.as_dict() for p in perf],
     }
+    alert_thresholds = cfg.get("monitoring.alerts", {})
+    alerts = evaluate_alerts(payload, alert_thresholds)
+    payload["alerts"] = alerts.as_dict()
+
     write_json(cfg.path("metrics_dir") / "monitoring.json", payload)
+    append_history(
+        cfg.path("metrics_dir") / "monitoring_history.jsonl",
+        {"run_at_utc": utc_now(), **payload},
+    )
+    print(
+        f"alerts: {'PASS' if alerts.passed else 'FAIL'} "
+        f"({len(alerts.checked)} checked, {len(alerts.alerts)} breached)"
+    )
+    for msg in alerts.alerts:
+        print(f"  ALERT: {msg}")
 
     top = drift[:12]
     drift_rows = "\n".join(
@@ -91,6 +128,7 @@ def main() -> int:
         f"{p.metrics['wape']:.4f} | {p.metrics['bias']:+.2f} |"
         for p in perf
     )
+    alerts_json = json.dumps(alerts.as_dict(), indent=2)
 
     report = f"""# Monitoring design
 
@@ -163,11 +201,40 @@ levels trend.
 
 These are named rather than faked: this repository implements the checks it can
 verify offline, and states plainly what a real deployment would still need.
+
+## 7. What changed in the post-freeze engineering phase (Phase O)
+
+Two items from §6 above were partially closed, engineering-only, after the
+v1.0.0 freeze - see `reports/22_POST_FREEZE_ENGINEERING.md`:
+
+* **metric persistence**: every run now appends one JSON line to
+  `artifacts/metrics/monitoring_history.jsonl` (in addition to the
+  overwritten `monitoring.json` snapshot), so a run's numbers are no longer
+  lost by the next run. This is a flat file, **not a database or a metric
+  store** - there is still no scheduling, no retention policy, no query layer.
+* **local threshold alerting**: `configs/config.yaml`'s new `monitoring:`
+  block defines PSI / WAPE / bias thresholds, compared against this run's
+  numbers by `evaluate_alerts()`. A breach is printed and makes this script
+  exit non-zero. These thresholds are **loosely calibrated against this
+  project's own reported numbers, not agreed with a business or fitted
+  against realised out-of-sample error** - exactly the gap this section
+  named before Phase O, and it is still not closed, only made checkable.
+
+This run's alert result:
+
+```json
+{alerts_json}
+```
+
+Still not built: scheduled re-scoring, a real metric-store database,
+business-calibrated thresholds, automatic degrade-to-KEEP_CURRENT fallback,
+champion/challenger comparison, and a retraining trigger. None of this
+section implies any of those now exist.
 """
     out = cfg.path("reports_dir") / "MONITORING_DESIGN.md"
     out.write_text(report, encoding="utf-8")
     print(f"wrote {out}")
-    return 0
+    return 0 if alerts.passed else 1
 
 
 if __name__ == "__main__":

@@ -130,21 +130,41 @@ project is and must stay labelled **model-internal estimated**.
 * **Staff the `REVIEW_REQUIRED` queue.** 10.4% of contexts (1,353 of 13,964 in
   the full decision week) escalate to a human. v1.0 produces the queue and the
   audit trail; it does not provide a review UI, an approval workflow or an
-  SLA.
+  SLA. **[Engineering done, `reports/22`]:** `scripts/review.py` (a
+  non-interactive CLI) and a dashboard "Review queue" page now let a human
+  move a recommendation through GENERATED → REVIEWED → APPROVED/REJECTED →
+  PUBLISHED. No real staffing, SLA, or notification path is claimed - this is
+  the tool a reviewer would use, not the reviewer.
 * **Recommendation lifecycle in a real store.** The audit log models
   GENERATED → REVIEWED → APPROVED/REJECTED → PUBLISHED, but nothing consumes it.
+  **[Engineering done, `reports/22`]:** the state machine above is now
+  enforced (illegal transitions raise), recorded in an append-only
+  `recommendation_transitions.csv` that never rewrites `recommendation_log.csv`.
+  Nothing outside this repository still consumes it.
 * **A real cost feed.** The AAC proxy is an average acquisition cost implied by
   the accounting margin; it lags replacement cost. Temporal availability is
-  proven (`reports/10`), economic correctness is not.
+  proven (`reports/10`), economic correctness is not. **Not attempted** - no
+  external cost data source exists for this project.
 * **Online monitoring.** v1.0's monitoring is offline: drift, schema and
   performance checks run on demand, with no metric store and no alerting.
+  **[Engineering done, `reports/22`]:** every `scripts/monitor.py` run now
+  appends to `artifacts/metrics/monitoring_history.jsonl` and is checked
+  against config-driven local thresholds (`evaluate_alerts`), exiting
+  non-zero on a breach. This is a flat append-only file and a local
+  comparison, not a metric-store database or a paging integration; the
+  thresholds are not business-calibrated.
 * **Run the GitHub-hosted CI.** The workflow exists and every step has been
   reproduced locally, but it has never executed on GitHub because no remote is
-  configured.
+  configured. **Not attempted in Phase O** - out of scope by explicit user
+  decision (no remote/push).
 * **Scale testing.** The batch path was vectorised in v1.0 and measured once, on
   one machine: 3,000 contexts, 122.0 s → 2.4 s. That is a local measurement, not
   a scalability claim; a real claim needs a fixed harness across catalogue sizes
-  and hardware.
+  and hardware. **[Engineering done, `reports/22`]:** `scripts/benchmark_scale.py`
+  sweeps `optimize_price_batch` across context counts up to 30,000+ on this
+  one machine. Sizes above the 3,000-context real sample are that sample
+  **replicated**, not independent catalogue growth, and no other-hardware
+  claim is made.
 
 ---
 

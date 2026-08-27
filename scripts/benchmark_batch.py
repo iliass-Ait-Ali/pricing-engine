@@ -40,7 +40,7 @@ from pricing_engine.optimization.optimizer import (  # noqa: E402
     optimize_price,
     optimize_price_batch,
 )
-from pricing_engine.utils.io import write_json  # noqa: E402
+from pricing_engine.utils.io import peak_process_memory_mb, write_json  # noqa: E402
 
 STAT_COLUMNS = ["n_obs", "n_distinct_prices", "price_cv", "price_min", "price_max"]
 
@@ -79,45 +79,6 @@ FLOAT_FIELDS = [
 ]
 
 TOLERANCE = 1e-9
-
-
-def _peak_memory_mb() -> float | None:
-    """Peak resident memory of this process, when the platform exposes it."""
-    try:  # Windows
-        import ctypes
-        import ctypes.wintypes as wt
-
-        class _Counters(ctypes.Structure):
-            _fields_ = [
-                ("cb", wt.DWORD),
-                ("PageFaultCount", wt.DWORD),
-                ("PeakWorkingSetSize", ctypes.c_size_t),
-                ("WorkingSetSize", ctypes.c_size_t),
-                ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
-                ("QuotaPagedPoolUsage", ctypes.c_size_t),
-                ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
-                ("QuotaNonPagedPoolUsage", ctypes.c_size_t),
-                ("PagefileUsage", ctypes.c_size_t),
-                ("PeakPagefileUsage", ctypes.c_size_t),
-            ]
-
-        counters = _Counters()
-        counters.cb = ctypes.sizeof(_Counters)
-        kernel32 = ctypes.windll.kernel32
-        kernel32.GetCurrentProcess.restype = wt.HANDLE
-        get_info = ctypes.windll.psapi.GetProcessMemoryInfo
-        get_info.argtypes = [wt.HANDLE, ctypes.POINTER(_Counters), wt.DWORD]
-        if get_info(kernel32.GetCurrentProcess(), ctypes.byref(counters), counters.cb):
-            return round(counters.PeakWorkingSetSize / 1024**2, 1)
-    except Exception:  # noqa: BLE001 - a benchmark must not fail on diagnostics
-        pass
-    try:  # POSIX
-        import resource
-
-        peak = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-        return round(peak / (1024**2 if sys.platform == "darwin" else 1024), 1)
-    except Exception:  # noqa: BLE001
-        return None
 
 
 def compare(old: list, new: list) -> dict:
@@ -217,7 +178,7 @@ def main() -> int:
         "speedup": round(old_seconds / new_seconds, 2) if new_seconds > 0 else None,
         "contexts_per_second_loop": round(len(take) / old_seconds, 1) if old_seconds else None,
         "contexts_per_second_batch": round(len(take) / new_seconds, 1) if new_seconds else None,
-        "peak_process_memory_mb": _peak_memory_mb(),
+        "peak_process_memory_mb": peak_process_memory_mb(),
         "equivalence": equivalence,
         "environment": {
             "timestamp_utc": datetime.now(UTC).isoformat(timespec="seconds"),

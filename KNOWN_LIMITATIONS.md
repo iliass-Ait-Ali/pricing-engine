@@ -113,7 +113,10 @@ how the output should be read.
     interpretation is inferred from the data, not documented by the provider.
 33. **REVIEW_REQUIRED is a queue, not a solution.** 10.4% of scored contexts now
     land there. In a real deployment somebody has to work that queue; this demo
-    only produces it.
+    only produces it. Post-freeze (`reports/22_POST_FREEZE_ENGINEERING.md`)
+    added the tool a reviewer would use to work it - `scripts/review.py` and
+    a dashboard "Review queue" page - but not the reviewer, an SLA, or a
+    notification path.
 34. **Shrinkage improves stability, not identification.** If the pooled
     elasticity is biased by promotion contamination, every shrunk product
     estimate inherits part of that bias.

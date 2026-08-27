@@ -32,6 +32,7 @@ def main() -> int:
         "7. Model performance",
         "8. Data quality",
         "9. Methodology & limitations",
+        "10. Review queue",
     ]
 
     failures = 0

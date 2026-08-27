@@ -84,3 +84,49 @@ levels trend.
 
 These are named rather than faked: this repository implements the checks it can
 verify offline, and states plainly what a real deployment would still need.
+
+## 7. What changed in the post-freeze engineering phase (Phase O)
+
+Two items from §6 above were partially closed, engineering-only, after the
+v1.0.0 freeze - see `reports/22_POST_FREEZE_ENGINEERING.md`:
+
+* **metric persistence**: every run now appends one JSON line to
+  `artifacts/metrics/monitoring_history.jsonl` (in addition to the
+  overwritten `monitoring.json` snapshot), so a run's numbers are no longer
+  lost by the next run. This is a flat file, **not a database or a metric
+  store** - there is still no scheduling, no retention policy, no query layer.
+* **local threshold alerting**: `configs/config.yaml`'s new `monitoring:`
+  block defines PSI / WAPE / bias thresholds, compared against this run's
+  numbers by `evaluate_alerts()`. A breach is printed and makes this script
+  exit non-zero. These thresholds are **loosely calibrated against this
+  project's own reported numbers, not agreed with a business or fitted
+  against realised out-of-sample error** - exactly the gap this section
+  named before Phase O, and it is still not closed, only made checkable.
+
+This run's alert result:
+
+```json
+{
+  "passed": true,
+  "alerts": [],
+  "checked": [
+    "schema.passed",
+    "prediction_drift.psi",
+    "performance[1996Q2].wape",
+    "performance[1996Q2].bias",
+    "performance[1996Q3].wape",
+    "performance[1996Q3].bias",
+    "performance[1996Q4].wape",
+    "performance[1996Q4].bias",
+    "performance[1997Q1].wape",
+    "performance[1997Q1].bias",
+    "performance[1997Q2].wape",
+    "performance[1997Q2].bias"
+  ]
+}
+```
+
+Still not built: scheduled re-scoring, a real metric-store database,
+business-calibrated thresholds, automatic degrade-to-KEEP_CURRENT fallback,
+champion/challenger comparison, and a retraining trigger. None of this
+section implies any of those now exist.

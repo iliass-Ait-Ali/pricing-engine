@@ -1,0 +1,54 @@
+{
+  "decision_week": 399,
+  "policy_profile": "standard",
+  "price_response_method": "shrunk",
+  "base_sample_size": 3000,
+  "sizes": [
+    500,
+    3000,
+    10000,
+    30000
+  ],
+  "results": [
+    {
+      "n_contexts": 500,
+      "n_recommendations": 500,
+      "seconds": 1.2922,
+      "contexts_per_second": 386.9,
+      "peak_process_memory_mb": 4602.4,
+      "replication_factor": 1
+    },
+    {
+      "n_contexts": 3000,
+      "n_recommendations": 3000,
+      "seconds": 3.8843,
+      "contexts_per_second": 772.3,
+      "peak_process_memory_mb": 4602.4,
+      "replication_factor": 1
+    },
+    {
+      "n_contexts": 10000,
+      "n_recommendations": 10000,
+      "seconds": 9.9518,
+      "contexts_per_second": 1004.8,
+      "peak_process_memory_mb": 4602.4,
+      "replication_factor": 4
+    },
+    {
+      "n_contexts": 30000,
+      "n_recommendations": 30000,
+      "seconds": 33.8767,
+      "contexts_per_second": 885.6,
+      "peak_process_memory_mb": 4602.4,
+      "replication_factor": 10
+    }
+  ],
+  "environment": {
+    "timestamp_utc": "2026-08-25T12:38:10+00:00",
+    "python": "3.13.0",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "numpy": "2.0.2",
+    "pandas": "2.2.3"
+  },
+  "caveat": "Single machine, single process. Contexts above the base sample size are the same real sampled contexts REPLICATED (tiled), not independent new contexts or catalogue growth - this measures optimize_price_batch's throughput at larger row counts, not scaling to a larger real catalogue or to other hardware."
+}

@@ -2,7 +2,7 @@
 
     streamlit run dashboard/app.py
 
-Nine pages, all driven by artifacts produced by the pipeline - no numbers are
+Ten pages, all driven by artifacts produced by the pipeline - no numbers are
 typed into this file. Anything the pipeline has not produced yet is reported as
 missing rather than faked.
 """
@@ -24,6 +24,7 @@ for p in (REPO_ROOT, REPO_ROOT / "src"):
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))
 
+from pricing_engine.audit import RecommendationLog, RecommendationTransitions  # noqa: E402
 from pricing_engine.config import load_config  # noqa: E402
 from pricing_engine.features.build import recompute_price_features  # noqa: E402
 from pricing_engine.models.demand_model import load_model  # noqa: E402
@@ -84,6 +85,13 @@ def load_stats() -> pd.DataFrame:
 def load_elasticities() -> pd.DataFrame:
     path = CFG.path("metrics_dir") / "elasticity_by_upc.csv"
     return pd.read_csv(path) if path.exists() else pd.DataFrame()
+
+
+@st.cache_data(show_spinner="Loading recommendation review queue ...")
+def load_recommendation_log_with_state() -> pd.DataFrame:
+    log = RecommendationLog(CFG.path("recommendation_log"))
+    transitions = RecommendationTransitions(CFG.path("recommendation_transitions_log"))
+    return log.read_with_state(transitions)
 
 
 @st.cache_resource(show_spinner="Loading pricing model ...")
@@ -507,6 +515,87 @@ def page_recommendation(panel: pd.DataFrame, stats: pd.DataFrame, model) -> None
             st.dataframe(pd.read_csv(log_path).tail(200), height=320)
 
 
+def page_review_queue() -> None:
+    st.title("Review queue")
+    st.caption(
+        "Human-in-the-loop workflow for the recommendation audit log: "
+        "GENERATED -> REVIEWED -> APPROVED / REJECTED -> PUBLISHED. "
+        "`recommendation_log.csv` is never rewritten - every decision here is "
+        "recorded as a new row in `recommendation_transitions.csv`."
+    )
+    log_path = CFG.path("recommendation_log")
+    if not log_path.exists():
+        missing("The recommendation log", "python scripts/optimize.py --batch 3000")
+        return
+
+    frame = load_recommendation_log_with_state()
+    if frame.empty:
+        st.info("The recommendation log exists but has no rows yet.")
+        return
+
+    pending = frame[~frame["lifecycle_state_current"].isin({"REJECTED", "PUBLISHED"})]
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Total recommendations", f"{len(frame):,}")
+    c2.metric("Pending review/action", f"{len(pending):,}")
+    c3.metric("Published", f"{int((frame['lifecycle_state_current'] == 'PUBLISHED').sum()):,}")
+
+    show_cols = [
+        "rec_id", "lifecycle_state_current", "upc", "store", "decision_week",
+        "decision", "risk_level", "final_recommended_price", "price_change_pct",
+    ]
+    show_cols = [c for c in show_cols if c in pending.columns]
+    st.dataframe(pending[show_cols].head(500), height=320, use_container_width=True)
+
+    if pending.empty:
+        st.info("Nothing pending - every recommendation has reached a terminal state.")
+        return
+
+    st.subheader("Act on one recommendation")
+    rec_id = st.selectbox("rec_id", options=pending["rec_id"].tolist())
+    current_row = pending[pending["rec_id"] == rec_id].iloc[0]
+    st.caption(
+        f"UPC {current_row['upc']} | store {current_row['store']} | "
+        f"decision {current_row['decision']} | current state "
+        f"**{current_row['lifecycle_state_current']}**"
+    )
+
+    actor = st.text_input("Actor (your name)", key="review_actor")
+    note = st.text_input("Note (required to reject)", key="review_note")
+    transitions = RecommendationTransitions(CFG.path("recommendation_transitions_log"))
+    known_ids = set(frame["rec_id"])
+
+    def _act(to_state: str) -> None:
+        try:
+            transitions.append_transition(
+                rec_id, to_state=to_state, actor=actor or None, note=note or None,
+                valid_rec_ids=known_ids,
+            )
+        except ValueError as exc:
+            st.error(str(exc))
+            return
+        st.success(f"{rec_id}: -> {to_state}")
+        load_recommendation_log_with_state.clear()
+        st.rerun()
+
+    b1, b2, b3, b4 = st.columns(4)
+    if b1.button("Mark reviewed"):
+        _act("REVIEWED")
+    if b2.button("Approve"):
+        _act("APPROVED")
+    if b3.button("Reject"):
+        if not note:
+            st.error("A note is required to reject a recommendation.")
+        else:
+            _act("REJECTED")
+    if b4.button("Publish"):
+        _act("PUBLISHED")
+
+    with st.expander("Transition history for this rec_id"):
+        hist = transitions.read()
+        hist = hist[hist["rec_id"] == rec_id] if not hist.empty else hist
+        st.dataframe(hist, use_container_width=True)
+
+
 def page_model_performance() -> None:
     st.title("Model performance")
     metrics = load_metric("model_metrics.json")
@@ -723,6 +812,7 @@ PAGES = {
     "7. Model performance": "model",
     "8. Data quality": "quality",
     "9. Methodology & limitations": "methodology",
+    "10. Review queue": "review_queue",
 }
 
 
@@ -754,8 +844,10 @@ def main() -> None:
         page_model_performance()
     elif key == "quality":
         page_data_quality()
-    else:
+    elif key == "methodology":
         page_methodology()
+    else:
+        page_review_queue()
 
 
 main()

@@ -272,5 +272,23 @@
       "bias": -6.155680982355972,
       "smape": 0.42916257345300224
     }
-  ]
+  ],
+  "alerts": {
+    "passed": true,
+    "alerts": [],
+    "checked": [
+      "schema.passed",
+      "prediction_drift.psi",
+      "performance[1996Q2].wape",
+      "performance[1996Q2].bias",
+      "performance[1996Q3].wape",
+      "performance[1996Q3].bias",
+      "performance[1996Q4].wape",
+      "performance[1996Q4].bias",
+      "performance[1997Q1].wape",
+      "performance[1997Q1].bias",
+      "performance[1997Q2].wape",
+      "performance[1997Q2].bias"
+    ]
+  }
 }

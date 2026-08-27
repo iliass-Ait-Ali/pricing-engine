@@ -6,12 +6,17 @@ Full clean verification of the pipeline: executed on 2026-08-18 for **Phase L**
 (pricing-science hardening) and **Phase M** (final scientific audit), and re-run
 on 2026-08-19 for **Phase N** (engineering closure and v1.0 freeze).
 
+This is a historical record of that Phase N freeze gauntlet, pinned to the
+verified commit in "Freeze record" below - every test count on this page is
+what that gauntlet found **at Phase N**, not a live figure. `reports/22`
+records 19 further tests added in a post-freeze engineering phase (538 live);
+this page is intentionally left as it was verified, not edited to match.
+
 Environment: Windows 11, Python 3.13.0, pandas 2.2.3, numpy 2.0.2,
 scikit-learn 1.8.0, statsmodels 0.14.6.
 Also verified in a **fresh virtual environment** created from the documented
 install command (`pip install -e ".[api,dashboard,dev]"`), which resolved to
-pandas 3.0.5, numpy 2.5.2, scikit-learn 1.9.0, pytest 9.1.1: **519 passed**,
-ruff clean. Loading the model artifact there raises
+pandas 3.0.5, numpy 2.5.2, scikit-learn 1.9.0, pytest 9.1.1: **519 passed** at Phase N, ruff clean. Loading the model artifact there raises
 `InconsistentVersionWarning` (fitted under scikit-learn 1.8.0) — recorded as
 limitation 45, not silenced.
 
@@ -29,7 +34,7 @@ without having been run.
 | 5 | Feature build | `python scripts/build_features.py` | **PASS** - 4,671,333 usable rows, 36,443 dropped for no history, 73 s |
 | 6 | Pricing EDA | `python scripts/run_eda.py` | **PASS** - `reports/02`, 6 figures |
 | 7 | Elasticity analysis | `python scripts/run_elasticity.py` | **PASS** - `reports/03`: naive -0.348 -> UPC x store FE -2.419 -> +controls -1.909 |
-| 8 | Unit + integration tests | `python -m pytest` | **PASS** - **519 passed** in 15.9 s, 0 failed, 0 skipped, 0 xfailed |
+| 8 | Unit + integration tests | `python -m pytest` | **PASS at Phase N** - **519 passed** in 15.9 s, 0 failed, 0 skipped, 0 xfailed |
 | 9 | Model training | `python scripts/train.py` | **PASS** - 6 models compared, 243 s |
 | 10 | Model selection | validation WAPE, price-aware models only | **M1 ridge log-log** (0.4135) over HGB Poisson (0.4226) |
 | 11 | Test metrics | scored once after selection | MAE **8.503**, RMSE **72.064**, WAPE **0.4565**, bias -3.883 (749,040 rows) |
@@ -77,7 +82,7 @@ without having been run.
 | Zero-price exclusion investigated | **PASS** | `reports/09` - counts by ok/week/UPC/store, position within series, selection probe, manual searched |
 | Cost availability leakage-safe | **PASS** | `reports/10` - three independent checks, all pass; `tests/test_cost_leakage.py` (5 tests) |
 | Native ML vs elasticity pricing compared | **PASS** | `reports/08`; the ML method is retained as `--method ml` |
-| Tests pass | **PASS** | 519 passed, 0 failed, 0 skipped |
+| Tests pass | **PASS at Phase N** | 519 passed, 0 failed, 0 skipped |
 | Reports regenerated from execution | **PASS** | reports 01-20 + MONITORING_DESIGN + this file, all produced by the commands above |
 
 ## Phase M acceptance gate
@@ -121,10 +126,10 @@ Deterministic fixtures with closed-form answers (`tests/test_optimizer.py`):
 | CI reproduced locally; hosted status stated honestly | **PASS** | row 42 |
 | README headline metrics generated, not hand-copied | **PASS** | rows 39-40; `tests/test_readme_metrics.py`, `tests/test_metric_consistency.py` |
 | Report regenerated from the Markdown source of truth | **PASS** | row 41; DOCX/PDF never hand-edited; page count read back from Word into `artifacts/metrics/report_build.json` |
-| Zero failing tests at the freeze | **PASS** | 519 passed, 0 failed, 0 skipped, 0 xfailed |
+| Zero failing tests at the freeze | **PASS at Phase N** | 519 passed, 0 failed, 0 skipped, 0 xfailed |
 | Scientific findings preserved | **PASS** | 2.9% interior-optimum attribution, the rule-only benchmark, the circularity of the backtest and every causal disclaimer are unchanged and re-verified |
 
-## Test suite composition (519 tests)
+## Test suite composition (519 tests at Phase N)
 
 | file | tests | covers |
 | --- | --- | --- |

@@ -39,7 +39,7 @@ receive under the default policy.
 | expected gross profit if actionable changes applied | $40,700.96 |
 | **model-internal estimated portfolio profit uplift** | **+8.30%** |
 | median internal uplift among actionable | +13.33% |
-| runtime | 2.3s |
+| runtime | 4.0s |
 
 ## Risk gating
 

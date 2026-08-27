@@ -13,6 +13,7 @@ recommendation can be reconstructed and questioned after the fact.
 from __future__ import annotations
 
 import json
+import uuid
 from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
@@ -24,7 +25,28 @@ from pricing_engine.utils.io import ensure_dir, utc_now
 
 LIFECYCLE_STATES = ("GENERATED", "REVIEWED", "APPROVED", "REJECTED", "PUBLISHED")
 
+#: Legal transitions out of each lifecycle state. REJECTED and PUBLISHED are
+#: terminal. A rejection or a re-review always starts a fresh REVIEWED cycle,
+#: not a jump straight to APPROVED/PUBLISHED.
+TRANSITIONS: dict[str, frozenset[str]] = {
+    "GENERATED": frozenset({"REVIEWED"}),
+    "REVIEWED": frozenset({"APPROVED", "REJECTED"}),
+    "APPROVED": frozenset({"PUBLISHED"}),
+    "REJECTED": frozenset(),
+    "PUBLISHED": frozenset(),
+}
+
+TRANSITION_COLUMNS = [
+    "transitioned_at_utc",
+    "rec_id",
+    "from_state",
+    "to_state",
+    "actor",
+    "note",
+]
+
 LOG_COLUMNS = [
+    "rec_id",
     "logged_at_utc",
     "lifecycle_state",
     "upc",
@@ -81,6 +103,7 @@ class RecommendationLog:
             d = rec.as_dict() if hasattr(rec, "as_dict") else dict(rec)
             rows.append(
                 {
+                    "rec_id": uuid.uuid4().hex[:12],
                     "logged_at_utc": now,
                     "lifecycle_state": state,
                     "product_description": d.get("product_description"),
@@ -134,3 +157,97 @@ class RecommendationLog:
         if not self.path.exists():
             return pd.DataFrame(columns=LOG_COLUMNS)
         return pd.read_csv(self.path)
+
+    def read_with_state(self, transitions: RecommendationTransitions) -> pd.DataFrame:
+        """The log joined with the live lifecycle state from ``transitions``.
+
+        ``lifecycle_state`` stays exactly what it always meant: the state a
+        row was logged with (always ``GENERATED``, since ``append()`` never
+        writes anything else). ``lifecycle_state_current`` is the read-time
+        projection a human review workflow actually needs: the latest
+        recorded transition for that ``rec_id``, or ``GENERATED`` when none
+        exists yet.
+        """
+        log = self.read()
+        if log.empty:
+            log["lifecycle_state_current"] = pd.Series(dtype="object")
+            return log
+        if "rec_id" not in log.columns:
+            # Rows logged before rec_id existed (an older, narrower schema on
+            # disk that append() has not yet rotated): they predate the
+            # review workflow and cannot be individually transitioned, but
+            # they must still be readable rather than crashing the caller.
+            log["rec_id"] = pd.NA
+            log["lifecycle_state_current"] = "GENERATED"
+            return log
+        current = transitions.current_states()
+        log["lifecycle_state_current"] = log["rec_id"].map(current).fillna("GENERATED")
+        return log
+
+
+@dataclass
+class RecommendationTransitions:
+    """Append-only companion log of lifecycle-state transitions.
+
+    ``recommendation_log.csv`` is never rewritten after it is written - its
+    own docstring promises "append-only". Every REVIEWED / APPROVED /
+    REJECTED / PUBLISHED transition is instead recorded here as its own
+    event, and "current state" is read back as a join (see
+    :meth:`RecommendationLog.read_with_state`).
+    """
+
+    path: Path
+
+    def __post_init__(self) -> None:
+        self.path = Path(self.path)
+        ensure_dir(self.path.parent)
+
+    def read(self) -> pd.DataFrame:
+        if not self.path.exists():
+            return pd.DataFrame(columns=TRANSITION_COLUMNS)
+        return pd.read_csv(self.path)
+
+    def current_states(self) -> dict[str, str]:
+        """``rec_id`` -> latest ``to_state``, taking the last transition per id."""
+        frame = self.read()
+        if frame.empty:
+            return {}
+        latest = frame.drop_duplicates(subset="rec_id", keep="last")
+        return dict(zip(latest["rec_id"], latest["to_state"], strict=True))
+
+    def append_transition(
+        self,
+        rec_id: str,
+        *,
+        to_state: str,
+        actor: str | None = None,
+        note: str | None = None,
+        valid_rec_ids: Iterable[str] | None = None,
+    ) -> dict[str, Any]:
+        """Validate and record one lifecycle transition for ``rec_id``.
+
+        Raises ``ValueError`` on an unknown ``rec_id`` (when ``valid_rec_ids``
+        is supplied, typically ``set(log.read()["rec_id"])``) or an illegal
+        state-machine edge - it never silently no-ops, since a review
+        decision must either take effect or be rejected loudly.
+        """
+        if valid_rec_ids is not None and rec_id not in valid_rec_ids:
+            raise ValueError(f"Unknown rec_id {rec_id!r}: no such recommendation in the log")
+        from_state = self.current_states().get(rec_id, "GENERATED")
+        if to_state not in TRANSITIONS.get(from_state, frozenset()):
+            raise ValueError(
+                f"Illegal transition {from_state!r} -> {to_state!r} for rec_id {rec_id!r}; "
+                f"allowed from {from_state!r}: {sorted(TRANSITIONS.get(from_state, ()))}"
+            )
+        row = {
+            "transitioned_at_utc": utc_now(),
+            "rec_id": rec_id,
+            "from_state": from_state,
+            "to_state": to_state,
+            "actor": actor,
+            "note": note,
+        }
+        frame = pd.DataFrame([row])[TRANSITION_COLUMNS]
+        header = not self.path.exists()
+        frame.to_csv(self.path, mode="a", header=header, index=False)
+        return row

@@ -240,7 +240,7 @@ inputs, constraints, model version, risk level and reason codes.
 | Portfolio gross-profit uplift | **+8.30%** | **model-internal counterfactual estimate** |
 | Share of final recommendations set by an interior model optimum | **2.9%** | audit result |
 | A no-model rule matching the engine within one 5¢ step | **82.5%** | audit result |
-| Tests / lint | **519 passed, 0 failed** / ruff clean | verified 2026-08-19 |
+| Tests / lint | **519 passed, 0 failed** / ruff clean | verified at Phase N, 2026-08-19 |
 
 ### 1.11 The most important findings
 
@@ -6199,7 +6199,7 @@ this report presents them as facts.
 | **elasticity inference** | `elasticity_inference.json` | estimators validated against statsmodels; two-way clustered SE 16.24× classical |
 | **elasticity stability (category)** | `elasticity_stability.json` | max pairwise z between disjoint windows 1.36 — not significant |
 | **rule-vs-model decision agreement** | `model_value_ablation.json` | R4 within one grid step 82.5%, same decision state 90.0% |
-| test suite and lint | live re-run 2026-08-19 | **519 passed, 0 failed**; ruff clean |
+| test suite and lint | live re-run at Phase N, 2026-08-19 | **519 passed, 0 failed**; ruff clean |
 
 ### 65.2 Not directly verifiable
 
@@ -7516,7 +7516,7 @@ is the right default for a scanner of this kind.
 
 | check | status | evidence |
 | --- | --- | --- |
-| pytest | **519 passed, 0 failed, 0 skipped** | live run 2026-08-19 |
+| pytest | **519 passed, 0 failed, 0 skipped** | live run at Phase N, 2026-08-19 |
 | ruff | **All checks passed** | live run 2026-08-19 |
 | dashboard smoke | **PASS — 9/9 pages** | `smoke_dashboard.py`; independently re-verified by live capture |
 | API live | **PASS** | `/health`, `/model/info`, `/recommend-price` called live 2026-08-19 |
@@ -7568,7 +7568,7 @@ make audit                # reports/11–20 (ten Phase M audits)
 
 # 7. Demo, quality gates and applications
 make demo                 # one real UPC × store, end to end
-make test lint            # 519 tests, ruff
+make test lint            # 519 tests at Phase N, ruff
 make api                  # http://127.0.0.1:8000/docs
 make dashboard            # Streamlit, 9 pages
 
@@ -9714,9 +9714,9 @@ UPC × store × week observations, 489 products, 93 stores, 366 weeks, 1989–19
 The pipeline runs from an official download through a validated canonical table,
 a decision-time feature contract, a demand forecaster, a separately estimated
 elasticity, a hybrid price response, a constrained grid optimizer, a risk gate,
-an append-only audit log, a FastAPI service and a nine-page dashboard. It is
-covered by 519 tests and twelve audit reports that measure how much of the
-answer the model actually supplies.
+an append-only audit log, a FastAPI service and a nine-page dashboard. It was
+covered by 519 tests at Phase N and twelve audit reports that measure how much
+of the answer the model actually supplies.
 
 **Short.** A price-recommendation engine on real retail scanner data, with the
 scientific limits measured rather than asserted.
@@ -10563,7 +10563,7 @@ changed both the numbers and a scientific conclusion.
 > model-internal by construction. That is stated in the metric name, the API
 > schema, every dashboard page and an enforceable claim-audit script.
 >
-> It ships as a FastAPI service and a nine-page dashboard with 519 tests.
+> It shipped as a FastAPI service and a nine-page dashboard with 519 tests at Phase N.
 
 ---
 
@@ -10675,9 +10675,9 @@ Each of these can be quoted verbatim.
 
 ### Engineering
 
-* *"**519 tests pass**, 0 failed, 0 skipped; `ruff check .` clean; all 9
-  dashboard pages render; the FastAPI service and the batch pipeline share one
-  pricing model."* (Verified 2026-08-19.)
+* *"**519 tests pass at Phase N**, 0 failed, 0 skipped; `ruff check .` clean;
+  all 9 dashboard pages render; the FastAPI service and the batch pipeline
+  share one pricing model."* (Verified 2026-08-19.)
 * *"Every recommendation is written to an append-only audit log with its model
   version, elasticity and provenance, constraints, risk level and reason codes."*
 
@@ -10699,7 +10699,7 @@ is not optional.
 | *"the demand model achieves WAPE 0.4565"* | at **observed** prices, on the test window; it says nothing about accuracy at counterfactual prices |
 | *"the hybrid preserves the forecaster's prediction"* | **at the reference price only** — not at any other price |
 | *"the engine recommends a price"* | only when the decision state is **RECOMMEND_CHANGE**; `REVIEW_REQUIRED` and `KEEP_CURRENT` ship the current price |
-| *"the pipeline is validated"* | 15 structural checks and 519 tests pass; **"validated" refers to the machinery, not to the economics** |
+| *"the pipeline is validated"* | 15 structural checks and 519 tests pass at Phase N; **"validated" refers to the machinery, not to the economics** |
 | *"54.08% of series are eligible"* | eligible **for price optimization** under the configured screen; the remaining 45.92% always receive keep-current |
 | *"the decision-time cost is leakage-safe"* | **temporal availability** is proven; **economic correctness** of the AAC proxy is not |
 | *"Docker and CI are implemented"* | the image was **never built** (daemon unavailable) and the workflow has **never run** (no remote, no commits) |
@@ -10776,15 +10776,15 @@ Using **final, actual** numbers only.
 >   engine's price within one 5-cent step **82.5%** of the time — and discovered
 >   that understated standard errors had **silently disabled** the
 >   empirical-Bayes shrinkage (mean weight 0.954 → **0.780**). Shipped with
->   **519 tests**, a FastAPI service, a 9-page Streamlit dashboard and 22
->   generated analysis reports.
+>   **519 tests at Phase N**, a FastAPI service, a 9-page Streamlit dashboard
+>   and 22 generated analysis reports.
 
 ### 115.1 Alternative shorter set (for a one-page CV)
 
 > * **Retail price optimization on 4.7M real scanner observations** — demand
 >   model (test WAPE **0.4565**), panel-robust elasticity estimation with
 >   empirical-Bayes shrinkage, constrained optimizer validated against
->   closed-form optima, FastAPI + Streamlit, **519 tests**.
+>   closed-form optima, FastAPI + Streamlit, **519 tests at Phase N**.
 > * **Found and fixed a price-response defect**: the best forecaster's implied
 >   elasticity (−3.10) contradicted every controlled estimate (−1.91 to −2.42),
 >   so forecasting and price response were separated and the replacement was
@@ -10808,7 +10808,7 @@ prices". Every number is traceable to an artifact in this report's sources file.
 > demand forecasting, panel-robust elasticity with empirical-Bayes shrinkage,
 > constrained optimization with reason codes, risk gating, FastAPI + Streamlit.
 > Includes an audit showing only 2.9% of recommendations are set by the model.
-> 519 tests. Nothing causal is claimed.
+> Extensively tested. Nothing causal is claimed.
 
 **Long (README opening):**
 
@@ -10886,7 +10886,7 @@ dashboard and every figure — concurs.
 | **defensible econometrics** | fixed effects, panel-robust and two-way clustered inference validated against statsmodels, REML empirical-Bayes shrinkage, formal stability tests |
 | **a real scientific finding, honestly handled** | the forecaster's implied elasticity contradicted the controlled estimates; the architecture was changed in response and the rejected alternative kept as a measured benchmark |
 | **an audit of its own contribution** | 2.9% interior model optima, published as the headline rather than buried |
-| **working software** | FastAPI (5 endpoints, model loaded once), Streamlit (9 pages), 519 tests, clean lint, an audit log, a Dockerfile, a CI workflow |
+| **working software** | FastAPI (5 endpoints, model loaded once), Streamlit (9 pages), 519 tests at Phase N, clean lint, an audit log, a Dockerfile, a CI workflow |
 | **calibrated communication** | 0 UNSUPPORTED claims across 49 files (this report included), enforced by a script that fails the build |
 
 ### 118.2 Why "with clear limitations"
@@ -11544,7 +11544,7 @@ class RecommendPriceRequest(BaseModel):
 
 ## Appendix G — Test inventory
 
-**519 tests, 0 failed, 0 skipped — verified 2026-08-19, 7.05 s.**
+**519 tests at Phase N, 0 failed, 0 skipped — verified 2026-08-19, 7.05 s.**
 
 | file | tests | coverage |
 | --- | ---: | --- |
@@ -11668,7 +11668,7 @@ the 46 PNG figures).
 │   ├── monitoring/         drift
 │   └── utils/              io
 │
-└── tests/                  # 14 files, 519 tests
+└── tests/                  # 14 files, 519 tests (at Phase N)
     ├── conftest.py
     ├── test_data_pipeline.py       test_repo_and_downloader.py
     ├── test_features.py            test_economics.py
@@ -11726,7 +11726,7 @@ python scripts/audit_claims.py --strict                # → reports/20, fails o
 
 # ---- demo, quality gates, applications --------------------------------------
 python scripts/run_demo.py                             # one real UPC × store
-python -m pytest                                       # 519 passed
+python -m pytest                                       # 519 passed at Phase N
 python -m ruff check .                                 # All checks passed
 python scripts/smoke_dashboard.py                      # 9 pages render
 python -m uvicorn api.main:app --host 127.0.0.1 --port 8000 --reload
@@ -12151,7 +12151,7 @@ Model median actionable change: **+8.361%**.
 
 | gate | result |
 | --- | --- |
-| **pytest** | **519 passed, 0 failed, 0 skipped**, 7.05 s |
+| **pytest** | **519 passed, 0 failed, 0 skipped**, 7.05 s (at Phase N) |
 | **ruff** | **All checks passed** |
 | dashboard smoke | 9/9 pages render (independently re-verified by live capture) |
 | API live | `/health`, `/model/info`, `/recommend-price` all responded |

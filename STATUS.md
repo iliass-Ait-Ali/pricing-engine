@@ -46,11 +46,12 @@ Statuses: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `TESTED` | `VALIDATED`
 | Claim audit (Phase M) | `VALIDATED` | `reports/20`: 0 UNSUPPORTED claims; `scripts/audit_claims.py --strict` enforces it | - |
 | Offline backtest | `VALIDATED` (`LIMITED`) | `reports/06`, weeks 390-399: ML policy +10.45% model-internal estimated, 36.9% unchanged | Circular by construction: the same fitted response chooses and scores |
 | FastAPI service | `VALIDATED` | 15 API tests; model loaded once at startup | No auth, no rate limiting - demo scope |
-| Streamlit dashboard | `TESTED` | `scripts/smoke_dashboard.py`: all 9 pages render | Loads the full 4.7 M-row panel in memory; not a deployment pattern |
-| Monitoring | `IMPLEMENTED` | `reports/MONITORING_DESIGN.md`, 9 tests | Offline only; no metric store, no alerting |
+| Streamlit dashboard | `TESTED` | `scripts/smoke_dashboard.py`: all 10 pages render (Phase O added the "Review queue" page) | Loads the full 4.7 M-row panel in memory; not a deployment pattern |
+| Monitoring | `IMPLEMENTED` | `reports/MONITORING_DESIGN.md`, 16 tests; Phase O added `artifacts/metrics/monitoring_history.jsonl` (append-only run history) and local threshold alerting (`evaluate_alerts`, `configs/config.yaml` `monitoring:` block) | Offline only; thresholds are local, loosely calibrated against this project's own numbers - not agreed with a business or fitted against realised out-of-sample error; still no scheduling, no metric-store database, no paging |
+| Review/approval workflow (Phase O) | `VALIDATED` | `pytest tests/test_review_workflow.py` -> 9 passed; `scripts/review.py` CLI + dashboard "Review queue" page; `recommendation_transitions.csv` (append-only, never rewrites `recommendation_log.csv`) | Gives a human the tool to review/approve/reject/publish a recommendation; does not staff, schedule or SLA the queue itself |
 | CLI + Makefile + demo | `VALIDATED` | `make demo` produces a real recommendation on real data | - |
 | Documentation | `VALIDATED` | 15 docs + 23 reports, all numbers generated from execution | **v1.0: README headline metrics are generated** (`scripts/update_readme_metrics.py`) and a cross-document numeric audit (`scripts/audit_metric_consistency.py`, 212 statements, 0 mismatches) is test-enforced |
-| Test suite | `VALIDATED` | **519 passed**, 0 failed, 0 skipped, 15.9 s (`python -m pytest`) | Decision-critical paths prioritised over coverage percentage |
+| Test suite | `VALIDATED` | **538 passed**, 0 failed, 0 skipped (`python -m pytest`; 519 at the v1.0 freeze, +19 in Phase O) | Decision-critical paths prioritised over coverage percentage |
 | Lint | `VALIDATED` | `ruff check .` - All checks passed | - |
 | CI workflow | `IMPLEMENTED` (locally reproduced) | `.github/workflows/ci.yml` (lint, smoke import, README-metrics check, tests, Docker build); every step re-run locally and passing | **GITHUB-HOSTED RUN NOT YET EXECUTED** - no remote is configured, and none was created |
 | Docker | `VALIDATED` | **built and run**: `docker build -t pricing-engine:local .` (1.66 GB), container serves `/health`, `/model/info` and a real `/recommend-price` identical to the local run, runs as non-root `appuser` (uid 1000); image contains no data files | Model and processed data are **mounted read-only**, never baked in (Dominick's licence); the image is not hardened, load-tested or deployed |
@@ -84,7 +85,10 @@ Ranked by how much they should change what you claim about the project.
 7. **The risk layer is a heuristic, not calibrated confidence.** Thresholds are
    asserted, not fitted against realised out-of-sample error.
 8. **REVIEW_REQUIRED creates a human queue** (10.4% of contexts, 1,353 of
-   13,964 in the full week) that this demo does not staff.
+   13,964 in the full week) that this demo does not staff. Phase O added the
+   software a reviewer would use (`scripts/review.py`, the dashboard's
+   "Review queue" page, and an append-only `recommendation_transitions.csv`)
+   - no real staffing, SLA, or notification path is claimed.
 9. **The AAC cost proxy** is an average acquisition cost, so it lags true
    replacement cost. Temporal availability is proven (`reports/10`); economic
    correctness is not.
@@ -96,4 +100,19 @@ Ranked by how much they should change what you claim about the project.
     reports regenerated).
 12. **Batch scale is measured, not proven.** The vectorisation benchmark is one
     single-process run on one machine (3,000 contexts). It says nothing about
-    millions of SKUs, and no such claim is made.
+    millions of SKUs, and no such claim is made. Phase O added a multi-size
+    sweep (`scripts/benchmark_scale.py`, `reports/22`) up to 30,000 contexts,
+    but it remains single-machine, and sizes above the 3,000-context real
+    sample are that same sample **replicated**, not independent catalogue
+    growth.
+13. **One known, disclosed test failure at the end of Phase O.** Phase O's 19
+    new tests raised the live test count to 538, which the pre-existing
+    cross-document consistency audit correctly flagged against the frozen
+    v1.0 report bundle's "519" mentions. All but one were fixed (genuinely
+    live mentions updated; genuinely historical ones qualified "at Phase N",
+    the same convention this table's own Phase K note already used). The one
+    exception is a verbatim captured console transcript inside
+    `reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md`
+    (`## 78. Final test results`) that cannot be annotated without fabricating
+    pytest output that was never printed. `pytest tests/test_metric_consistency.py`
+    fails on this one line; see `reports/22` §5.1.

@@ -1,7 +1,7 @@
 {
   "n_checks": 25,
-  "n_statements_verified": 214,
-  "n_mismatches": 0,
+  "n_statements_verified": 191,
+  "n_mismatches": 1,
   "documents_scanned": [
     "DECISIONS.md",
     "FUTURE_WORK.md",
@@ -352,19 +352,28 @@
     {
       "metric": "test count",
       "source_of_truth": "test_suite.json:collected_tests",
-      "expected": 519.0,
+      "expected": 538.0,
       "unit": "",
       "tolerance": 0.5,
-      "statements_found": 26,
-      "statements_agreeing": 26,
+      "statements_found": 3,
+      "statements_agreeing": 2,
       "files": [
-        "ROADMAP.md",
-        "STATUS.md",
         "docs/TECHNICAL_DESIGN.md",
-        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
-        "reports/VALIDATION_SUMMARY.md"
+        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md"
       ]
     }
   ],
-  "mismatches": []
+  "mismatches": [
+    {
+      "metric": "test count",
+      "expected": 538.0,
+      "source": "test_suite.json:collected_tests",
+      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
+      "line": 7405,
+      "stated": "519",
+      "value": 519.0,
+      "ok": false,
+      "text": "519 passed in 7.05s"
+    }
+  ]
 }
