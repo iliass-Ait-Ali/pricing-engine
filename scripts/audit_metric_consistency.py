@@ -19,6 +19,10 @@ excluded by design:
   explicitly does not do.
 * **generated reports** - `reports/01..20` are rewritten from the artifacts by
   their pipeline scripts on every run, so they cannot drift.
+* **verbatim transcripts** - a fenced block directly preceded by the marker
+  ``<!-- metric-audit: verbatim-transcript -->`` is captured console output
+  from a dated run. Editing it to match today's value would fabricate output
+  that the tool never printed, so the whole block is skipped instead.
 
 Outputs
 -------
@@ -80,6 +84,32 @@ TRANSITION = re.compile(
 
 MINUS = "[-−–]"
 
+#: Marks the next fenced block as captured console output (see the docstring).
+VERBATIM_MARKER = "<!-- metric-audit: verbatim-transcript -->"
+
+
+def scannable_lines(text: str) -> list[tuple[int, str]]:
+    """(line number, line) pairs, minus fenced blocks marked as verbatim."""
+    out: list[tuple[int, str]] = []
+    armed = in_verbatim = False
+    for lineno, line in enumerate(text.splitlines(), 1):
+        stripped = line.strip()
+        if in_verbatim:
+            if stripped.startswith("```"):
+                in_verbatim = False
+            continue
+        if stripped == VERBATIM_MARKER:
+            armed = True
+            continue
+        if armed and stripped.startswith("```"):
+            armed = False
+            in_verbatim = True
+            continue
+        if stripped:
+            armed = False
+        out.append((lineno, line))
+    return out
+
 
 def artifact(name: str) -> dict:
     path = METRICS_DIR / name
@@ -134,7 +164,7 @@ def build_checks() -> list[Check]:
     pairs = {p["pair"]: p for p in comparison["pairwise_disagreement"]}
     determinants = attribution["final_determinant_counts"]
 
-    return [
+    checks = [
         Check(
             name="canonical rows",
             source="dataset_fingerprint.json:rows",
@@ -363,6 +393,64 @@ def build_checks() -> list[Check]:
             exclude=r"tests/test_|at Phase|\bPhase [A-Z]\b",
         ),
     ]
+    return checks + commercial_checks()
+
+
+def commercial_checks() -> list[Check]:
+    """The commercial headline numbers (value range, product roles)."""
+    value = artifact("value_sizing.json")["range"]
+    roles = artifact("product_roles.json")
+    traffic = {r["role"]: r for r in roles["roles"]}["traffic driver"]
+    return [
+        Check(
+            name="annual value range, low end ($k)",
+            source="value_sizing.json:range.low_annual_usd",
+            expected=value["low_annual_usd"] / 1000.0,
+            tolerance=1.0,
+            patterns=(r"\$(\d{3})k to \$\d{3}k",),
+            allow_transitions=False,
+        ),
+        Check(
+            name="annual value range, high end ($k)",
+            source="value_sizing.json:range.high_annual_usd",
+            expected=value["high_annual_usd"] / 1000.0,
+            tolerance=1.0,
+            patterns=(r"\$\d{3}k to \$(\d{3})k",),
+            allow_transitions=False,
+        ),
+        Check(
+            name="value range, low end (% of gross profit)",
+            source="value_sizing.json:range.low_uplift_pct",
+            expected=100.0 * value["low_uplift_pct"],
+            tolerance=0.06,
+            patterns=(r"\+(\d+\.\d)% to \+\d+\.\d%",),
+            allow_transitions=False,
+        ),
+        Check(
+            name="value range, high end (% of gross profit)",
+            source="value_sizing.json:range.high_uplift_pct",
+            expected=100.0 * value["high_uplift_pct"],
+            tolerance=0.06,
+            patterns=(r"\+\d+\.\d% to \+(\d+\.\d)%",),
+            allow_transitions=False,
+        ),
+        Check(
+            name="traffic-driver cap: share of gain given up",
+            source="product_roles.json:traffic_cap_what_if.share_of_gain_given_up",
+            expected=100.0 * roles["traffic_cap_what_if"]["share_of_gain_given_up"],
+            tolerance=0.6,
+            patterns=(r"gives? up (\d+(?:\.\d)?)% of the estimated gain",),
+            allow_transitions=False,
+        ),
+        Check(
+            name="traffic-driver revenue share",
+            source="product_roles.json:roles[traffic driver].revenue_share",
+            expected=100.0 * traffic["revenue_share"],
+            tolerance=0.06,
+            patterns=(r"[Tt]raffic[- ]drivers?\W[^.]{0,80}?(\d+\.\d)%(?: of)?(?:\s+revenue|\s*$)",),
+            allow_transitions=False,
+        ),
+    ]
 
 
 def scan(checks: list[Check]) -> list[dict]:
@@ -375,7 +463,7 @@ def scan(checks: list[Check]) -> list[dict]:
     compiled = [(c, c.compiled()) for c in checks]
     for path in files:
         rel = path.relative_to(REPO_ROOT).as_posix()
-        for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        for lineno, line in scannable_lines(path.read_text(encoding="utf-8")):
             for check, patterns in compiled:
                 if check.skip_line(line):
                     continue

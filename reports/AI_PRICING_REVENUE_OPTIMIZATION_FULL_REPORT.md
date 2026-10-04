@@ -7402,6 +7402,7 @@ simulation → optimization → audit log.
 
 ### 78.1 Test suite — verified 2026-08-19
 
+<!-- metric-audit: verbatim-transcript -->
 ```
 $ python -m pytest
 519 passed in 7.05s

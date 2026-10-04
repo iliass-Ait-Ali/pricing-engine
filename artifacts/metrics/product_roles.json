@@ -1,0 +1,79 @@
+{
+  "generated_at_utc": "2026-10-04T01:55:00+00:00",
+  "data_mode": "licensed",
+  "data_label": "Dominick's Finer Foods (Kilts Center, Chicago Booth)",
+  "decision_week": 399,
+  "policy_profile": "standard",
+  "rules": {
+    "traffic_top_share_by_units": 0.15,
+    "traffic_min_store_coverage": 0.9,
+    "tail_revenue_share": 0.05,
+    "margin_builder": "above-median margin rate and below-median |elasticity| among the rest"
+  },
+  "roles": [
+    {
+      "role": "traffic driver",
+      "products": 43,
+      "revenue_share": 0.43493368155322587,
+      "median_elasticity": -2.333353633082667,
+      "median_gross_margin_rate": 0.19993741243244711,
+      "private_label_products": 0,
+      "contexts": 706,
+      "share_actionable": 0.7804532577903682,
+      "share_review_required": 0.09631728045325778,
+      "share_increases_among_actionable": 0.8911070780399274,
+      "median_change_among_actionable": 0.08389261744966436,
+      "share_of_estimated_gain": 0.4332259196258251
+    },
+    {
+      "role": "core",
+      "products": 104,
+      "revenue_share": 0.4268791436560703,
+      "median_elasticity": -2.028859937952365,
+      "median_gross_margin_rate": 0.19974170255493956,
+      "private_label_products": 9,
+      "contexts": 1608,
+      "share_actionable": 0.5124378109452736,
+      "share_review_required": 0.12002487562189054,
+      "share_increases_among_actionable": 0.8859223300970874,
+      "median_change_among_actionable": 0.07537688442211055,
+      "share_of_estimated_gain": 0.3876394272789448
+    },
+    {
+      "role": "margin builder",
+      "products": 17,
+      "revenue_share": 0.08820421713491017,
+      "median_elasticity": -1.3518644353467777,
+      "median_gross_margin_rate": 0.21985001760889367,
+      "private_label_products": 2,
+      "contexts": 329,
+      "share_actionable": 0.851063829787234,
+      "share_review_required": 0.015197568389057751,
+      "share_increases_among_actionable": 1.0,
+      "median_change_among_actionable": 0.09117725931885234,
+      "share_of_estimated_gain": 0.16237448329607043
+    },
+    {
+      "role": "tail",
+      "products": 126,
+      "revenue_share": 0.04998295765579376,
+      "median_elasticity": -2.028859937952365,
+      "median_gross_margin_rate": 0.18821625442942752,
+      "private_label_products": 6,
+      "contexts": 357,
+      "share_actionable": 0.31092436974789917,
+      "share_review_required": 0.12605042016806722,
+      "share_increases_among_actionable": 1.0,
+      "median_change_among_actionable": 0.07537688442211055,
+      "share_of_estimated_gain": 0.016760169799159758
+    }
+  ],
+  "traffic_cap_what_if": {
+    "cap": 0.03,
+    "uplift_full_pct": 0.08261677927643413,
+    "uplift_capped_pct": 0.0644718657878305,
+    "share_of_gain_given_up": 0.21962746124357013,
+    "traffic_driver_contexts_affected": 491
+  },
+  "label": "descriptive segmentation; estimated gains are model-internal"
+}

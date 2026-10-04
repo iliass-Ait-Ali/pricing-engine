@@ -1,18 +1,61 @@
 # AI Pricing & Revenue Optimization Engine
 
-A price-recommendation system built end to end on **real retail scanner data**:
-the Dominick's Finer Foods Cereals panel from the Kilts Center, University of
-Chicago Booth (93 stores, 489 UPCs, 366 weeks, 1989-1997).
+[![CI](https://github.com/CharikatDajaj/pricing-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/CharikatDajaj/pricing-engine/actions/workflows/ci.yml)
 
-> **Given a product, store, week, commercial context and a feasible price
-> range, what price should we recommend to maximise expected gross profit,
-> while respecting business and scientific guardrails?**
+**What price should a grocer charge for each product, in each store, this week,
+to earn more gross profit without taking risks it cannot defend?** This project
+answers that end to end on **real retail scanner data**: the Dominick's Finer
+Foods cereal panel (93 stores, 489 products, 1989-1997, Kilts Center, Chicago
+Booth).
 
-Every number in this README was produced by running the pipeline. Nothing is
-hardcoded, and every counterfactual figure is labelled a **model-internal
-estimate**: demand at prices that were never charged was never observed, and
-the same fitted price-response model both proposes and scores candidate
-prices.
+![Business impact page of the dashboard](artifacts/report_figures/dashboard_0_business_impact.png)
+
+## In two minutes
+
+* **The answer.** Applying the engine's recommendations is plausibly worth
+  **+4.1% to +9.4%** of category gross profit (**$234k to $538k a year**
+  across 93 stores). That is a *model-internal estimate*: the range spans every
+  demand response the data supports, and only a store-randomised pilot can
+  narrow it. [`reports/23_BUSINESS_VALUE.md`](reports/23_BUSINESS_VALUE.md)
+* **The finding.** Business guardrails, not the model, set the size of most
+  price changes: only **2.9%** of final recommendations come from the model's
+  own best price. This is **rule-bounded pricing with a learned direction**,
+  and it is described that way everywhere.
+  [`reports/11_CONSTRAINT_ATTRIBUTION.md`](reports/11_CONSTRAINT_ATTRIBUTION.md)
+* **The decision for a category manager.** Traffic-driver products (43.5% of
+  revenue) get the most price increases. Capping them at +3% gives up 22% of
+  the estimated gain. [`reports/24_PRODUCT_ROLES.md`](reports/24_PRODUCT_ROLES.md)
+* **Why trust it.** Strict chronological validation, leakage tests, robust
+  standard errors, out-of-time checks on 154,899 unseen price changes, a claim
+  audit that fails the build on any unsupported claim, and an explicit list of
+  what the data cannot prove ([`KNOWN_LIMITATIONS.md`](KNOWN_LIMITATIONS.md)).
+
+| for | start here |
+| --- | --- |
+| a business reader | [`docs/EXECUTIVE_SUMMARY.md`](docs/EXECUTIVE_SUMMARY.md) |
+| a data scientist | section 2 below, then [`docs/PRICING_SCIENCE.md`](docs/PRICING_SCIENCE.md) and `reports/11`-`reports/20` |
+| an engineer | [`docs/TECHNICAL_DESIGN.md`](docs/TECHNICAL_DESIGN.md) and the demo below |
+
+### Try it: public demo on synthetic data
+
+The Dominick's licence forbids redistributing the data, so the public demo runs
+the **same code** on a generated panel with known elasticities, clearly
+labelled as synthetic everywhere:
+
+```bash
+docker build -f Dockerfile.demo -t pricing-engine-demo .
+docker run --rm -p 7860:7860 pricing-engine-demo
+# dashboard: http://localhost:7860    API docs: http://localhost:7860/api/docs
+```
+
+or without Docker: `python scripts/make_demo.py`, then
+`PRICING_ENGINE_CONFIG=configs/demo.yaml streamlit run dashboard/app.py`.
+
+Every number in this README was produced by running the pipeline on the real
+data. Nothing is hardcoded, and every counterfactual figure is labelled a
+**model-internal estimate**: demand at prices that were never charged was never
+observed, and the same fitted price-response model both proposes and scores
+candidate prices.
 
 ---
 
@@ -28,7 +71,7 @@ official Kilts Center files
   -> vectorised counterfactual price simulation (cost held fixed)
   -> constrained optimization with reason codes and a risk layer
   -> offline policy backtest
-  -> FastAPI service + 9-page Streamlit dashboard
+  -> FastAPI service + 11-page Streamlit dashboard
   -> hybrid elasticity price response + risk gating (Phase L)
   -> tests, lint, Docker image, CI (counts in section 2)
 ```
@@ -133,7 +176,7 @@ Native ML price-response validation on 300 decision contexts (`artifacts/metrics
 
 | metric | value |
 | --- | --- |
-| tests collected | **538** |
+| tests collected | **583** |
 | batch scoring, 3,000 contexts | per-context loop 122.0s → vectorised **2.4s** (50× on this machine) |
 | batch equivalence (discrete fields exact, floats ≤ 1e-09) | PASS on 3,000 recommendations |
 
@@ -218,7 +261,7 @@ src/pricing_engine/
   monitoring/   schema / drift / prediction / performance checks
   audit.py      append-only recommendation log with lifecycle states
 api/            FastAPI (health, model info, predict, simulate, recommend)
-dashboard/      Streamlit, 9 pages
+dashboard/      Streamlit, 11 pages
 scripts/        one CLI per pipeline stage
 tests/          the test suite (count in section 2)
 ```
@@ -307,9 +350,9 @@ startup.
 
 ### Dashboard
 
-Nine pages: executive overview, product/store explorer, pricing & demand,
-elasticity, price simulator, recommendation engine, model performance, data
-quality, methodology & limitations.
+Eleven pages: business impact, executive overview, product/store explorer,
+pricing & demand, elasticity, price simulator, recommendation engine, model
+performance, data quality, methodology & limitations, review queue.
 
 ## 9. Tests
 
@@ -383,6 +426,9 @@ causal question: `docs/PRICING_EXPERIMENT.md`.
 | `reports/18_ELASTICITY_ELIGIBILITY_FUNNEL.md` | 489 UPCs -> 239 usable, every transition counted |
 | `reports/19_DECISION_STATE_AUDIT.md` | decision-state invariants over every real context |
 | `reports/20_CLAIM_AUDIT.md` | every claim in the repository, classified |
+| `docs/EXECUTIVE_SUMMARY.md` | one page for a business reader: answer, value range, risks, next steps |
+| `reports/23_BUSINESS_VALUE.md` | annual gross-profit value range across every evidenced elasticity |
+| `reports/24_PRODUCT_ROLES.md` | traffic drivers, core, margin builders, tail: what the engine does to each |
 | `reports/22_POST_FREEZE_ENGINEERING.md` | post-freeze (Phase O) engineering: review/approval workflow, monitoring history + local alerts, batch scale sweep - no science changed |
 
 ## 12. Attribution

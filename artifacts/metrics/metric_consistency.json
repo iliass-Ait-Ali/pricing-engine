@@ -1,7 +1,7 @@
 {
-  "n_checks": 25,
-  "n_statements_verified": 191,
-  "n_mismatches": 1,
+  "n_checks": 31,
+  "n_statements_verified": 200,
+  "n_mismatches": 0,
   "documents_scanned": [
     "DECISIONS.md",
     "FUTURE_WORK.md",
@@ -10,6 +10,7 @@
     "ROADMAP.md",
     "STATUS.md",
     "docs/BUSINESS_CASE.md",
+    "docs/EXECUTIVE_SUMMARY.md",
     "docs/INTERVIEW_GUIDE.md",
     "docs/INTERVIEW_RED_TEAM.md",
     "docs/MODEL_CARD.md",
@@ -217,8 +218,8 @@
       "expected": 154899.0,
       "unit": "",
       "tolerance": 0.5,
-      "statements_found": 18,
-      "statements_agreeing": 18,
+      "statements_found": 19,
+      "statements_agreeing": 19,
       "files": [
         "DECISIONS.md",
         "KNOWN_LIMITATIONS.md",
@@ -247,10 +248,9 @@
       "expected": 3000.0,
       "unit": "",
       "tolerance": 0.5,
-      "statements_found": 10,
-      "statements_agreeing": 10,
+      "statements_found": 9,
+      "statements_agreeing": 9,
       "files": [
-        "KNOWN_LIMITATIONS.md",
         "README.md",
         "docs/INTERVIEW_GUIDE.md",
         "docs/TECHNICAL_DESIGN.md",
@@ -292,8 +292,8 @@
       "expected": 2.864508736751647,
       "unit": "%",
       "tolerance": 0.06,
-      "statements_found": 22,
-      "statements_agreeing": 22,
+      "statements_found": 23,
+      "statements_agreeing": 23,
       "files": [
         "DECISIONS.md",
         "FUTURE_WORK.md",
@@ -352,28 +352,90 @@
     {
       "metric": "test count",
       "source_of_truth": "test_suite.json:collected_tests",
-      "expected": 538.0,
+      "expected": 583.0,
       "unit": "",
       "tolerance": 0.5,
-      "statements_found": 3,
+      "statements_found": 0,
+      "statements_agreeing": 0,
+      "files": []
+    },
+    {
+      "metric": "annual value range, low end ($k)",
+      "source_of_truth": "value_sizing.json:range.low_annual_usd",
+      "expected": 234.30348866835246,
+      "unit": "",
+      "tolerance": 1.0,
+      "statements_found": 2,
       "statements_agreeing": 2,
       "files": [
-        "docs/TECHNICAL_DESIGN.md",
-        "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md"
+        "README.md",
+        "docs/EXECUTIVE_SUMMARY.md"
+      ]
+    },
+    {
+      "metric": "annual value range, high end ($k)",
+      "source_of_truth": "value_sizing.json:range.high_annual_usd",
+      "expected": 538.2140185783392,
+      "unit": "",
+      "tolerance": 1.0,
+      "statements_found": 2,
+      "statements_agreeing": 2,
+      "files": [
+        "README.md",
+        "docs/EXECUTIVE_SUMMARY.md"
+      ]
+    },
+    {
+      "metric": "value range, low end (% of gross profit)",
+      "source_of_truth": "value_sizing.json:range.low_uplift_pct",
+      "expected": 4.1134673393950605,
+      "unit": "",
+      "tolerance": 0.06,
+      "statements_found": 2,
+      "statements_agreeing": 2,
+      "files": [
+        "README.md",
+        "docs/EXECUTIVE_SUMMARY.md"
+      ]
+    },
+    {
+      "metric": "value range, high end (% of gross profit)",
+      "source_of_truth": "value_sizing.json:range.high_uplift_pct",
+      "expected": 9.448966379498902,
+      "unit": "",
+      "tolerance": 0.06,
+      "statements_found": 2,
+      "statements_agreeing": 2,
+      "files": [
+        "README.md",
+        "docs/EXECUTIVE_SUMMARY.md"
+      ]
+    },
+    {
+      "metric": "traffic-driver cap: share of gain given up",
+      "source_of_truth": "product_roles.json:traffic_cap_what_if.share_of_gain_given_up",
+      "expected": 21.962746124357015,
+      "unit": "",
+      "tolerance": 0.6,
+      "statements_found": 1,
+      "statements_agreeing": 1,
+      "files": [
+        "docs/EXECUTIVE_SUMMARY.md"
+      ]
+    },
+    {
+      "metric": "traffic-driver revenue share",
+      "source_of_truth": "product_roles.json:roles[traffic driver].revenue_share",
+      "expected": 43.493368155322585,
+      "unit": "",
+      "tolerance": 0.06,
+      "statements_found": 2,
+      "statements_agreeing": 2,
+      "files": [
+        "README.md",
+        "docs/EXECUTIVE_SUMMARY.md"
       ]
     }
   ],
-  "mismatches": [
-    {
-      "metric": "test count",
-      "expected": 538.0,
-      "source": "test_suite.json:collected_tests",
-      "file": "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
-      "line": 7407,
-      "stated": "519",
-      "value": 519.0,
-      "ok": false,
-      "text": "519 passed in 7.05s"
-    }
-  ]
+  "mismatches": []
 }

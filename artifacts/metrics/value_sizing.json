@@ -1,0 +1,79 @@
+{
+  "generated_at_utc": "2026-10-04T02:00:20+00:00",
+  "data_mode": "licensed",
+  "data_label": "Dominick's Finer Foods (Kilts Center, Chicago Booth)",
+  "decision_week": 399,
+  "policy_profile": "standard",
+  "n_contexts_scored": 3000,
+  "share_actionable": 0.5886666666666667,
+  "share_review_required": 0.10366666666666667,
+  "baseline": {
+    "stores": 93,
+    "weeks_observed": 366,
+    "annual_category_revenue_usd": 37225263.05830603,
+    "annual_category_gross_profit_usd": 5696009.4571410855,
+    "annual_gross_profit_per_store_usd": 61247.413517646084
+  },
+  "scenarios": [
+    {
+      "scenario": "engine's own price response",
+      "assumed_elasticity": "per product",
+      "uplift_pct": 0.08302483682280726,
+      "annual_gross_profit_usd": 472910.25572030555,
+      "annual_gross_profit_per_store_usd": 5085.056513121565
+    },
+    {
+      "scenario": "native ML response (steepest evidence)",
+      "assumed_elasticity": -3.102,
+      "uplift_pct": 0.041134673393950605,
+      "annual_gross_profit_usd": 234303.48866835245,
+      "annual_gross_profit_per_store_usd": 2519.392351272607
+    },
+    {
+      "scenario": "sensitivity scenario -2.4",
+      "assumed_elasticity": -2.4,
+      "uplift_pct": 0.06325868207563268,
+      "annual_gross_profit_usd": 360322.051349085,
+      "annual_gross_profit_per_store_usd": 3874.4306596675806
+    },
+    {
+      "scenario": "median elasticity the engine applied",
+      "assumed_elasticity": -2.029,
+      "uplift_pct": 0.0757399729087711,
+      "annual_gross_profit_usd": 431415.6019719698,
+      "annual_gross_profit_per_store_usd": 4638.877440558816
+    },
+    {
+      "scenario": "sensitivity scenario -1.9",
+      "assumed_elasticity": -1.9,
+      "uplift_pct": 0.08020306871642613,
+      "annual_gross_profit_usd": 456837.43790049956,
+      "annual_gross_profit_per_store_usd": 4912.230515059135
+    },
+    {
+      "scenario": "sensitivity scenario -1.5",
+      "assumed_elasticity": -1.5,
+      "uplift_pct": 0.09448966379498902,
+      "annual_gross_profit_usd": 538214.0185783391,
+      "annual_gross_profit_per_store_usd": 5787.247511595045
+    }
+  ],
+  "range": {
+    "low_uplift_pct": 0.041134673393950605,
+    "engine_uplift_pct": 0.08302483682280726,
+    "high_uplift_pct": 0.09448966379498902,
+    "low_annual_usd": 234303.48866835245,
+    "engine_annual_usd": 472910.25572030555,
+    "high_annual_usd": 538214.0185783391
+  },
+  "review_queue_upside_pct": 0.010875827802283784,
+  "label": "model-internal estimated; not realised or causal",
+  "assumptions": [
+    "The decision-week sample represents the category (same seed and contexts as optimize.py).",
+    "Annual baseline = observed category gross profit scaled to 52 weeks.",
+    "Dollars are nominal for the data period (1989-1997 for Dominick's), not inflation-adjusted.",
+    "Only RECOMMEND_CHANGE prices move; REVIEW_REQUIRED and KEEP_CURRENT stay at today's price.",
+    "Unit cost is held fixed at the decision-time AAC proxy; no competitor or substitution response.",
+    "Every scenario re-scores the SAME recommended prices; only the assumed elasticity changes."
+  ]
+}

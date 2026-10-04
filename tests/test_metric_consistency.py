@@ -92,3 +92,28 @@ def test_the_headline_scientific_finding_is_still_stated(audit, result):
         "here means the guardrails changed and the finding must be re-derived, "
         "not quietly restated"
     )
+
+
+def test_verbatim_transcripts_are_skipped_but_nothing_else(audit):
+    """Only the fenced block right after the marker is exempt from the audit."""
+    text = "\n".join([
+        "519 tests passed before",           # 1: scanned
+        audit.VERBATIM_MARKER,                # 2: marker itself, not scanned
+        "",                                   # 3: blank lines keep the marker armed
+        "```",                                # 4: opens the verbatim block
+        "519 passed in 7.05s",                # 5: skipped
+        "```",                                # 6: closes it
+        "519 tests passed after",             # 7: scanned again
+        "```",                                # 8: an unmarked block is scanned
+        "519 passed",                         # 9
+        "```",                                # 10
+    ])
+    scanned = [n for n, _ in audit.scannable_lines(text)]
+    assert 5 not in scanned
+    assert {1, 7, 9} <= set(scanned)
+
+
+def test_a_marker_followed_by_prose_does_not_hide_anything(audit):
+    text = "\n".join([audit.VERBATIM_MARKER, "519 tests passed", "```", "519 passed", "```"])
+    scanned = [n for n, _ in audit.scannable_lines(text)]
+    assert scanned == [2, 3, 4, 5]
