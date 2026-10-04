@@ -1,6 +1,6 @@
 {
   "n_checks": 31,
-  "n_statements_verified": 200,
+  "n_statements_verified": 214,
   "n_mismatches": 0,
   "documents_scanned": [
     "DECISIONS.md",
@@ -12,6 +12,7 @@
     "docs/BUSINESS_CASE.md",
     "docs/EXECUTIVE_SUMMARY.md",
     "docs/INTERVIEW_GUIDE.md",
+    "docs/INTERVIEW_PITCH.md",
     "docs/INTERVIEW_RED_TEAM.md",
     "docs/MODEL_CARD.md",
     "docs/PRICING_SCIENCE.md",
@@ -222,6 +223,7 @@
       "statements_agreeing": 19,
       "files": [
         "DECISIONS.md",
+        "FUTURE_WORK.md",
         "KNOWN_LIMITATIONS.md",
         "README.md",
         "ROADMAP.md",
@@ -292,8 +294,8 @@
       "expected": 2.864508736751647,
       "unit": "%",
       "tolerance": 0.06,
-      "statements_found": 23,
-      "statements_agreeing": 23,
+      "statements_found": 24,
+      "statements_agreeing": 24,
       "files": [
         "DECISIONS.md",
         "FUTURE_WORK.md",
@@ -301,6 +303,7 @@
         "README.md",
         "STATUS.md",
         "docs/BUSINESS_CASE.md",
+        "docs/INTERVIEW_PITCH.md",
         "docs/INTERVIEW_RED_TEAM.md",
         "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md",
         "reports/VALIDATION_SUMMARY.md"
@@ -352,12 +355,14 @@
     {
       "metric": "test count",
       "source_of_truth": "test_suite.json:collected_tests",
-      "expected": 621.0,
+      "expected": 624.0,
       "unit": "",
       "tolerance": 0.5,
-      "statements_found": 0,
-      "statements_agreeing": 0,
-      "files": []
+      "statements_found": 2,
+      "statements_agreeing": 2,
+      "files": [
+        "STATUS.md"
+      ]
     },
     {
       "metric": "annual value range, low end ($k)",
@@ -365,11 +370,12 @@
       "expected": 234.30348866835246,
       "unit": "",
       "tolerance": 1.0,
-      "statements_found": 2,
-      "statements_agreeing": 2,
+      "statements_found": 3,
+      "statements_agreeing": 3,
       "files": [
         "README.md",
-        "docs/EXECUTIVE_SUMMARY.md"
+        "docs/EXECUTIVE_SUMMARY.md",
+        "docs/INTERVIEW_PITCH.md"
       ]
     },
     {
@@ -378,11 +384,12 @@
       "expected": 538.2140185783392,
       "unit": "",
       "tolerance": 1.0,
-      "statements_found": 2,
-      "statements_agreeing": 2,
+      "statements_found": 3,
+      "statements_agreeing": 3,
       "files": [
         "README.md",
-        "docs/EXECUTIVE_SUMMARY.md"
+        "docs/EXECUTIVE_SUMMARY.md",
+        "docs/INTERVIEW_PITCH.md"
       ]
     },
     {
@@ -391,11 +398,13 @@
       "expected": 4.1134673393950605,
       "unit": "",
       "tolerance": 0.06,
-      "statements_found": 2,
-      "statements_agreeing": 2,
+      "statements_found": 6,
+      "statements_agreeing": 6,
       "files": [
         "README.md",
-        "docs/EXECUTIVE_SUMMARY.md"
+        "STATUS.md",
+        "docs/EXECUTIVE_SUMMARY.md",
+        "docs/INTERVIEW_PITCH.md"
       ]
     },
     {
@@ -404,11 +413,13 @@
       "expected": 9.448966379498902,
       "unit": "",
       "tolerance": 0.06,
-      "statements_found": 2,
-      "statements_agreeing": 2,
+      "statements_found": 6,
+      "statements_agreeing": 6,
       "files": [
         "README.md",
-        "docs/EXECUTIVE_SUMMARY.md"
+        "STATUS.md",
+        "docs/EXECUTIVE_SUMMARY.md",
+        "docs/INTERVIEW_PITCH.md"
       ]
     },
     {
@@ -417,10 +428,11 @@
       "expected": 21.962746124357015,
       "unit": "",
       "tolerance": 0.6,
-      "statements_found": 1,
-      "statements_agreeing": 1,
+      "statements_found": 2,
+      "statements_agreeing": 2,
       "files": [
-        "docs/EXECUTIVE_SUMMARY.md"
+        "docs/EXECUTIVE_SUMMARY.md",
+        "docs/INTERVIEW_PITCH.md"
       ]
     },
     {

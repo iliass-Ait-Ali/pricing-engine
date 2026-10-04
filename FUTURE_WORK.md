@@ -71,6 +71,13 @@ transparent and auditable, but it is not calibrated confidence. Replacing it
 would mean fitting the thresholds against realised out-of-sample error — which
 requires the outcomes that only 2 or an experiment can supply.
 
+*v1.1 note.* Two different things are mixed up in that sentence. Calibrating the
+risk bands against **prediction error** does not need an experiment: the
+154,899 out-of-time price-change episodes (`reports/16`) have realised demand,
+so one could check whether HIGH-risk contexts really forecast worse.
+Calibrating against **realised uplift** does need an experiment. The first is
+a candidate for the next version; the second stays in section 2.
+
 ### 1.5 Guardrail design instead of guardrail dominance
 
 `reports/11` shows the ±10% change cap binds first in 44.6% of contexts and that
@@ -167,6 +174,20 @@ project is and must stay labelled **model-internal estimated**.
   claim is made.
 
 ---
+
+## 3b. Done in v1.1 (2026-10-04)
+
+* **A ground-truth recovery study** on synthetic panels with known elasticities
+  (`reports/25`). It measures which confounders the estimator removes and how
+  far the engine's self-scored uplift sits from the truth. It was not on this
+  list before; it is the one check of the estimator that needs no experiment.
+* **Product roles** (`reports/24`), as analysis only. **Role-based
+  guardrails** (tighter caps on traffic drivers) remain future work, and must
+  be justified as a policy change.
+* **A public synthetic demo, a value range in dollars, and a guarded LLM
+  copilot.** All engineering; no new science.
+* **Still open from section 3:** the GitHub-hosted CI run and the hosted demo.
+  Both are ready and need only the owner's GitHub login and Hugging Face token.
 
 ## 4. What will not be added
 

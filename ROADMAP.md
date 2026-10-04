@@ -5,9 +5,9 @@ Statuses: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `TESTED` | `VALIDATED`
 A phase is only `VALIDATED` when it is implemented, executed on the real data,
 inspected, tested where appropriate, documented and integrated.
 
-> **Looking forward?** The plan after Phase O is at the bottom of this file:
-> [Forward roadmap](#forward-roadmap-from-2026-10-03). Everything above it is
-> the historical phase log.
+> **Looking forward?** v1.1 (Phase P) and the next steps are at the bottom of
+> this file: [Phase P](#phase-p---v11-visible-commercial-grounded-2026-10-04).
+> Everything above it is the historical phase log.
 
 **v1.0.0 is frozen.** Phases A-N below are complete and closed. The scientific
 architecture is fixed: no new estimator, model family, feature or optimisation
@@ -98,100 +98,43 @@ incident.
 
 ---
 
-## Forward roadmap (from 2026-10-03)
+## Phase P - v1.1: visible, commercial, grounded (2026-10-04)
 
-Phases A-O built and audited the engine. This section is the plan for what
-comes next. It keeps the project's own rule from `FUTURE_WORK.md`:
-**engineering work** (code, tests, time) is separated from **evidence work**
-(needs a new intervention, so it is blocked on this dataset).
+The v1.0 engine is unchanged: no estimator, guardrail or decision rule was
+modified. v1.1 adds what a reader outside the team needs: something to
+click, an answer in dollars, a decision for the business, a check of the
+estimator against known truth, and a safe GenAI interface.
 
-### Where the project actually stands (re-checked 2026-10-03)
-
-| area | state |
-| --- | --- |
-| Science | Done to the limit of the data. Pipeline, elasticity + shrinkage, hybrid price response, guardrails, risk gate, out-of-time validation and a full claim audit all exist and are evidenced (`reports/01`-`reports/20`). |
-| Engineering | API, dashboard (10 pages), review workflow, monitoring history, scale harness, Docker image built and run. |
-| Build health | **Not green.** Full `pytest` run today: 1 known failure (`test_metric_consistency.py`, the verbatim transcript at line 7407 of the full report, see `reports/22` §5.1) **plus 1 newly found intermittent failure**: `test_review_workflow.py::test_reject_is_terminal` (details in P1). `ruff check .` is clean. |
-| Visibility | **Nothing is public.** No Git remote, the `v1.0.0` tag is local only, and the GitHub CI workflow has never run. |
-| Docs | Very thorough, with some drift: README and `docs/TECHNICAL_DESIGN.md` still say "9 pages" (the dashboard has 10). `KNOWN_LIMITATIONS.md` items 17 and 18 describe problems that were fixed at Phase N (Docker not built, batch not vectorised). Item numbers 32-34 appear twice. |
-
-**Assessment.** The scientific work has reached diminishing returns: another
-audit report will not change what the project can claim. Right now the best
-value comes, in order, from (1) a green, trustworthy build, (2) making the
-work visible, and (3) one or two pieces of new science that build on the
-project's most interesting finding: *the guardrails, not the model, set most
-prices*. Most of the remaining ideas are blocked on an experiment that this
-data cannot supply, and should stay blocked.
-
-### Phase P - Green build and consistency (v1.0.1) - size S
-
-No science changes. Goal: `pytest` passes with no exceptions, and every
-document matches the current code.
-
-| # | item | acceptance criterion |
+| Item | Evidence | Status |
 | --- | --- | --- |
-| P1 | **Fix the `rec_id` CSV parsing bug.** `rec_id` is 12 hex characters, so about 0.6% of ids are made only of digits plus at most one `e` (for example `659826115e98`). `pd.read_csv` then parses them as floats (`6.59826115e+106`). In a small transitions file that silently corrupts the id: the earlier transition is not found and a legal `REVIEWED -> REJECTED` is refused as `GENERATED -> REJECTED`. This is why `test_reject_is_terminal` fails intermittently. Fix: read with `dtype={"rec_id": str}` in `audit.py` (both `read()` methods) and `dashboard/app.py`, or generate ids that cannot parse as numbers. | Regression test with a fixed numeric-looking id; the review tests pass 200 times in a row |
-| P2 | **Close the known consistency failure honestly.** Let `audit_metric_consistency.py` skip text that is explicitly marked as a verbatim historical transcript (for example a `<!-- metric-audit: verbatim-transcript -->` marker before the fenced block), instead of editing captured output. | Full `pytest` has 0 failures; the transcript is unchanged |
-| P3 | Fix the doc drift: "9 pages" -> 10; mark `KNOWN_LIMITATIONS.md` items 17 and 18 as resolved (with a pointer to Phase N); fix the duplicate item numbers. | `audit_metric_consistency.py` and `audit_claims.py --strict` stay clean |
-| P4 | Add Python 3.13 to the CI matrix. The local environment where all of this was verified runs 3.13, but CI only tests 3.11 and 3.12. | Workflow file updated |
-| P5 | Repo hygiene: decide whether the two generation prompts (`AI_Pricing_..._Master_Prompt.txt` and `Claude Code Prompt - ...md`, the latter duplicated in `reports/`) belong in a public portfolio repo. Either move them to `docs/process/` with a sentence explaining them, or remove them from the tree. | One copy or none, by explicit choice |
+| Fix the intermittent `rec_id` parsing bug | `tests/test_review_workflow.py` (numeric-looking ids) | `VALIDATED` |
+| Close the known consistency failure honestly (verbatim-transcript marker) | `tests/test_metric_consistency.py` | `VALIDATED` |
+| Documentation drift, generation briefs moved to `docs/process/` | `KNOWN_LIMITATIONS.md` 17-18, `docs/process/README.md` | `VALIDATED` |
+| Synthetic generator + demo config + `make_demo.py` | `tests/test_synthetic.py`, `tests/test_demo_config.py`, `tests/test_demo_e2e.py` | `VALIDATED` |
+| Shared serving layer (`pricing_engine.serving`), data-mode labels | API and demo tests | `VALIDATED` |
+| CI runs the API and dashboard end to end on the demo; demo Docker image | `.github/workflows/ci.yml` (`demo` job), `Dockerfile.demo` built and run locally | `IMPLEMENTED` (hosted run pending) |
+| Value range in dollars | `reports/23_BUSINESS_VALUE.md` | `VALIDATED` |
+| Product roles (traffic drivers, margin builders) | `reports/24_PRODUCT_ROLES.md` | `VALIDATED` |
+| Executive summary, Business impact page, README front door | `docs/EXECUTIVE_SUMMARY.md`, dashboard page 1 | `VALIDATED` |
+| Pricing Copilot (OpenAI tool calling + deterministic guard) | `docs/COPILOT_CARD.md`, `tests/test_copilot_*.py` | `TESTED` (live evaluation pending) |
+| Ground-truth recovery study | `reports/25_GROUND_TRUTH_STUDY.md`, `tests/test_ground_truth_study.py` | `VALIDATED` (`LIMITED`: synthetic) |
+| Interview pack | `docs/INTERVIEW_PITCH.md` | `VALIDATED` |
 
-### Phase Q - Make it visible - size S/M - **needs the owner's decision**
+## Next (owner actions first)
 
-The earlier "no remote, no push" decision was correct while the build was
-being frozen. For a portfolio project, though, it is now the biggest gap.
-Nothing below needs new science.
+1. **Publish.** Create the GitHub repository, push `master` and the tags, and
+   confirm the first hosted CI run is green. The README badge assumes the
+   repository name `pricing-engine`; adjust it if the name differs.
+2. **Deploy the demo.** Add the `HF_TOKEN` secret and the `HF_SPACE` variable,
+   run "Deploy demo", put the Space link in the README, and optionally add an
+   OpenAI key with a hard spending cap as a Space secret.
+3. **Record the copilot evaluation.** Run `python scripts/eval_copilot.py --mode record`
+   with a key, commit `evals/copilot/recordings/` and `results.json`, and
+   report the pass rate in `docs/COPILOT_CARD.md`.
+4. **Then, as interest allows:** replicate on a second Dominick's category,
+   calibrate the risk bands against out-of-time prediction error, add
+   role-based guardrails as an explicit policy option, and move to
+   cross-price effects (`FUTURE_WORK.md` 1.1).
 
-| # | item | acceptance criterion |
-| --- | --- | --- |
-| Q1 | Create the GitHub repo (the licensed data stays git-ignored, as it already is) and push `master` and the `v1.0.0` tag. | `git remote -v` shows the remote; the tag is visible |
-| Q2 | **First real CI run.** Fix whatever only shows up on a clean Ubuntu runner. | Green badge in the README; `STATUS.md` open issue 10 closed |
-| Q3 | GitHub Release `v1.0.1` with the PDF report attached. | Release page exists |
-| Q4 | A 2-minute front door: shorten the top of the README to the question, the headline finding (rule-bounded pricing with a learned direction), one dashboard screenshot and one figure. Move the detail below the fold. | A first-time reader gets the point without scrolling |
-| Q5 | Short demo (GIF or 60 to 90 s video) of the simulator, a recommendation and the review queue. | Linked from the README |
-| Q6 | (Optional) A hosted read-only demo on synthetic or aggregated data only, since the Dominick's licence forbids redistributing the raw panel. | Public URL serves no raw Dominick's rows |
-
-### Phase R - Engineering hardening (v1.1) - size M
-
-| # | item | why |
-| --- | --- | --- |
-| R1 | Lock the dependencies (`uv lock` or `pip-tools`) and pin the training runtime. Persist the model in a version-stable form (for example the ridge coefficients as JSON, or `skops`). | `KNOWN_LIMITATIONS.md` #45: an unpinned scikit-learn pickle |
-| R2 | A cross-platform task runner (a `scripts/run_all.py` or `nox` session) that mirrors the Makefile targets. | `make` is not available on the Windows machine where everything was verified (#47) |
-| R3 | API: API-key auth, request limits, structured logging, request IDs. | Currently demo scope with no auth |
-| R4 | Dashboard reads pre-aggregated parquet (or DuckDB) instead of the whole feature panel. | Lower memory use; a prerequisite for Q6 |
-| R5 | Run `monitor.py` on a schedule (GitHub Actions cron on fixtures, or a local scheduled task) and send alerts somewhere a person sees them. | Monitoring is offline only today |
-| R6 | Review workflow: actor required, notes recorded, and an "age in queue" column. A basic SLA view on the dashboard page. | Turns the tool into something a process could use |
-
-### Phase S - New science on the same data (v2.0) - size L
-
-Everything here is still **observational** and must be labelled that way.
-Ordered by value per unit of risk.
-
-| # | item | why it is worth doing |
-| --- | --- | --- |
-| S1 | **Synthetic ground-truth study.** Simulate panels with *known* elasticities and confounded pricing (promotion-driven price cuts, store heterogeneity), run the unchanged pipeline, and measure how far the estimates and the chosen prices are from the truth. | The only way to measure estimator bias without an experiment. It turns "observational, could be biased" into "this is how much bias we see under these confounding levels". Not in `FUTURE_WORK.md` yet. |
-| S2 | **Replicate on a second Dominick's category** (for example soft drinks or canned soup), using `docs/USING_YOUR_OWN_DATA.md`. | Tests whether the headline findings (interior-optimum share, rule-only agreement, elasticity stability) are about cereal or about the method. The strongest generalisation evidence available without new data. |
-| S3 | **Evidence-weighted guardrails** (`FUTURE_WORK.md` 1.5): make the change cap a function of the elasticity confidence-interval width. Report it as a *policy* change, side by side with v1.0, and never loosen a cap only to make the model look more influential. | Turns the project's main finding into a design. |
-| S4 | **Risk bands checked against out-of-time error.** The 154,899 out-of-time price-change episodes have realised demand. Check whether HIGH-risk contexts really have larger prediction errors there. | Moves the risk layer from asserted to *empirically checked for prediction error*. It is still not causal uplift; `FUTURE_WORK.md` 1.4 should be reworded to make that difference clear. |
-| S5 | Quantile demand forecasts (`FUTURE_WORK.md` 1.3), so the optimiser can weigh downside risk. | Feeds S4 and a risk-aware objective |
-| S6 | **Cross-price effects for a small set of plausible substitute pairs** (`FUTURE_WORK.md` 1.1), with honest uncertainty, before any full demand system. | The largest missing mechanism. Only after S1, so its bias can be measured on simulated data first. |
-| S7 | Joint category optimiser (`FUTURE_WORK.md` 1.2). | Only once S6 gives credible estimates |
-
-### Phase T - Evidence-gated (blocked) - unchanged
-
-A randomised pricing experiment (`docs/PRICING_EXPERIMENT.md`), then causal
-estimation, realised uplift measurement and any bandit or RL approach. These
-stay blocked until a data partner or an experimental dataset exists. No
-causal-looking method gets applied to the observational panel in the
-meantime.
-
-### Explicitly not on the roadmap
-
-* More audit reports on the v1.0 engine. The claims are already audited.
-* More forecasting model families or deep learning (`FUTURE_WORK.md` §4).
-* Rebuilding the DOCX and PDF for every change. Keep the Markdown report as
-  the live source and rebuild the other formats only at releases.
-
-### Suggested order
-
-P (all) -> Q1-Q4 -> R1, R2 -> S1 -> S2 -> S3/S4 -> the rest as interest allows.
+**Not doing:** more audit reports on the v1.0 engine, more model families,
+or loosening guardrails to make the model look more influential.

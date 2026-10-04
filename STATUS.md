@@ -1,8 +1,12 @@
 # Status
 
-**Version: 1.0.0 — scientific development FROZEN.**
-Tagged `v1.0.0` (annotated, local only — nothing was pushed).
-Last full verification: **2026-08-19**, the final engineering closure
+**Version: 1.1.0** (2026-10-04). The v1.0 pricing engine (estimators,
+guardrails, decision policy) is unchanged. v1.1 adds layers around it: a
+synthetic public demo, a business-value and product-role analysis, a
+ground-truth recovery study, and a guarded LLM copilot (see the "v1.1" rows
+below and `ROADMAP.md`, Phase P).
+Tags `v1.0.0` and `v1.1.0` are annotated and local only; nothing has been pushed yet.
+v1.0 verification: **2026-08-19**, the final engineering closure
 (`reports/21_FINAL_ENGINEERING_CLOSURE.md`), on top of the Phase M scientific
 audit (`reports/11`-`reports/20`, `reports/VALIDATION_SUMMARY.md`).
 
@@ -51,10 +55,14 @@ Statuses: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `TESTED` | `VALIDATED`
 | Review/approval workflow (Phase O) | `VALIDATED` | `pytest tests/test_review_workflow.py` -> 9 passed; `scripts/review.py` CLI + dashboard "Review queue" page; `recommendation_transitions.csv` (append-only, never rewrites `recommendation_log.csv`) | Gives a human the tool to review/approve/reject/publish a recommendation; does not staff, schedule or SLA the queue itself |
 | CLI + Makefile + demo | `VALIDATED` | `make demo` produces a real recommendation on real data | - |
 | Documentation | `VALIDATED` | 15 docs + 23 reports, all numbers generated from execution | **v1.0: README headline metrics are generated** (`scripts/update_readme_metrics.py`) and a cross-document numeric audit (`scripts/audit_metric_consistency.py`, 212 statements, 0 mismatches) is test-enforced |
-| Test suite | `VALIDATED` | **621 tests collected**; full run: 0 failed, 2 skipped by design (copilot replay needs recordings; the live-count check skips on subsets) | Decision-critical paths prioritised over coverage percentage |
+| Test suite | `VALIDATED` | **624 tests collected**; full run: 0 failed, 2 skipped by design (copilot replay needs recordings; the live-count check skips on subsets) | Decision-critical paths prioritised over coverage percentage |
 | Lint | `VALIDATED` | `ruff check .` - All checks passed | - |
 | CI workflow | `IMPLEMENTED` (locally reproduced) | `.github/workflows/ci.yml` (lint, smoke import, README-metrics check, tests, Docker build); every step re-run locally and passing | **GITHUB-HOSTED RUN NOT YET EXECUTED** - no remote is configured, and none was created |
 | Docker | `VALIDATED` | **built and run**: `docker build -t pricing-engine:local .` (1.66 GB), container serves `/health`, `/model/info` and a real `/recommend-price` identical to the local run, runs as non-root `appuser` (uid 1000); image contains no data files | Model and processed data are **mounted read-only**, never baked in (Dominick's licence); the image is not hardened, load-tested or deployed |
+| v1.1 public demo (synthetic) | `VALIDATED` | `configs/demo.yaml`, `scripts/make_demo.py`, `Dockerfile.demo` built and served locally (dashboard + `/api`); `tests/test_demo_config.py` (demo paths never touch real artifacts), `tests/test_demo_e2e.py` | Not yet deployed: the Hugging Face Space needs the owner's token (`.github/workflows/deploy-demo.yml`) |
+| v1.1 business value + product roles | `VALIDATED` | `reports/23_BUSINESS_VALUE.md` (+4.1% to +9.4%, model-internal), `reports/24_PRODUCT_ROLES.md`; headline numbers checked by `audit_metric_consistency.py` | Same circularity as every uplift: a range, not a measurement |
+| v1.1 ground-truth recovery study | `VALIDATED` (`LIMITED`) | `reports/25_GROUND_TRUTH_STUDY.md`, 7 scenarios x 5 seeds, `tests/test_ground_truth_study.py` | Synthetic; the demand form matches the engine's, which flatters it; not evidence about Dominick's |
+| v1.1 Pricing Copilot | `TESTED` | `src/pricing_engine/copilot/`, `POST /copilot/ask`, dashboard page; guard, agent, API and eval-scoring tests run offline | No live evaluation recorded yet (needs `OPENAI_API_KEY`): no accuracy figure is claimed |
 | Randomised experiment | `NOT STARTED` (by design) | `docs/PRICING_EXPERIMENT.md` designs it | Would be required for any causal claim |
 
 ## Top open issues
@@ -105,14 +113,16 @@ Ranked by how much they should change what you claim about the project.
     but it remains single-machine, and sizes above the 3,000-context real
     sample are that same sample **replicated**, not independent catalogue
     growth.
-13. **One known, disclosed test failure at the end of Phase O.** Phase O's 19
-    new tests raised the live test count to 538, which the pre-existing
-    cross-document consistency audit correctly flagged against the frozen
-    v1.0 report bundle's "519" mentions. All but one were fixed (genuinely
-    live mentions updated; genuinely historical ones qualified "at Phase N",
-    the same convention this table's own Phase K note already used). The one
-    exception is a verbatim captured console transcript inside
-    `reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md`
-    (`## 78. Final test results`) that cannot be annotated without fabricating
-    pytest output that was never printed. `pytest tests/test_metric_consistency.py`
-    fails on this one line; see `reports/22` §5.1.
+13. ~~**One known, disclosed test failure at the end of Phase O.**~~ **Resolved
+    in v1.1.** The consistency audit now skips fenced blocks marked
+    `<!-- metric-audit: verbatim-transcript -->`, and the Phase N pytest
+    transcript in the full report carries that marker. The captured output
+    itself is unchanged. v1.1 also fixed an intermittent review-workflow
+    failure: `rec_id` values that look like numbers were parsed as floats.
+14. **The copilot has not been evaluated against a live model yet.** The
+    20-case evaluation set, the scoring and the replay harness are tested
+    offline. Until `scripts/eval_copilot.py --mode record` is run with an
+    OpenAI key, no copilot accuracy figure exists, and none is claimed.
+15. **The public demo is built and runs locally but is not deployed.** The
+    Hugging Face Space needs the owner's token. The GitHub repository and the
+    first hosted CI run need the owner's login (open issue 10).

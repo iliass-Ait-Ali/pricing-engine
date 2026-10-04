@@ -242,3 +242,30 @@ engineering closure could and could not establish.
     Makefile targets were verified by running the underlying commands directly.
     The targets themselves are therefore documented but not executed as
     `make ...` in this environment.
+
+## v1.1 additions (2026-10-04)
+
+v1.1 left the engine unchanged and added layers around it. Each layer has its
+own limits.
+
+48. **The public demo is synthetic.** Its numbers (decision mix, uplift,
+    elasticities) describe a generated panel. They show that the code runs end
+    to end; they say nothing about Dominick's. Every API response and
+    dashboard page is labelled with the data mode for this reason.
+49. **The value range is still model-internal.** `reports/23` re-scores the
+    same recommended prices under every evidenced elasticity. That makes the
+    uncertainty visible, but it does not remove the circularity in item 27.
+    It also assumes the decision-week sample represents the category, and it
+    ignores substitution and competitor responses.
+50. **Product roles are rules, not a model.** The cut-offs (top 15% by units,
+    90% store coverage, last 5% of revenue) are judgement calls, and
+    "traffic driver" is inferred from volume and coverage, not from
+    shopper-perception data.
+51. **The ground-truth study flatters the engine.** The synthetic demand has
+    the same constant-elasticity form the engine assumes, and each scenario
+    isolates one mechanism at a time. It measures recovery under a known
+    process, not accuracy on real data.
+52. **The copilot guard checks form, not meaning.** A correct number attached
+    to the wrong label passes. The tool results are always shown beside the
+    answer. The copilot has not been evaluated against a live model yet
+    (`docs/COPILOT_CARD.md`).

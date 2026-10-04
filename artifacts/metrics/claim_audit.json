@@ -1,10 +1,10 @@
 {
-  "n_files_scanned": 65,
-  "n_occurrences": 400,
+  "n_files_scanned": 67,
+  "n_occurrences": 416,
   "counts": {
     "UNSUPPORTED": 0,
-    "NEEDS QUALIFICATION": 42,
-    "SAFE": 358
+    "NEEDS QUALIFICATION": 54,
+    "SAFE": 362
   },
   "unsupported": [],
   "needs_qualification": [
@@ -18,8 +18,17 @@
       "verdict": "NEEDS QUALIFICATION"
     },
     {
+      "file": "docs/INTERVIEW_PITCH.md",
+      "line": 63,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "re-derived them with clustered errors and validated against statsmodels.",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
       "file": "README.md",
-      "line": 66,
+      "line": 75,
       "pattern": "\\bvalidated\\b",
       "declared_verdict": "NEEDS QUALIFICATION",
       "negated_context": false,
@@ -28,7 +37,7 @@
     },
     {
       "file": "README.md",
-      "line": 317,
+      "line": 326,
       "pattern": "\\bguarantee[sd]?\\b",
       "declared_verdict": "NEEDS QUALIFICATION",
       "negated_context": false,
@@ -351,6 +360,96 @@
       "verdict": "NEEDS QUALIFICATION"
     },
     {
+      "file": "ROADMAP.md",
+      "line": 110,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| Fix the intermittent `rec_id` parsing bug | `tests/test_review_workflow.py` (numeric-looking ids) | `VALIDATED` |",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "ROADMAP.md",
+      "line": 111,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| Close the known consistency failure honestly (verbatim-transcript marker) | `tests/test_metric_consistency.py` | `VALIDATED` |",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "ROADMAP.md",
+      "line": 112,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| Documentation drift, generation briefs moved to `docs/process/` | `KNOWN_LIMITATIONS.md` 17-18, `docs/process/README.md` | `VALIDATED` |",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "ROADMAP.md",
+      "line": 113,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| Synthetic generator + demo config + `make_demo.py` | `tests/test_synthetic.py`, `tests/test_demo_config.py`, `tests/test_demo_e2e.py` | `VALIDATED` |",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "ROADMAP.md",
+      "line": 114,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| Shared serving layer (`pricing_engine.serving`), data-mode labels | API and demo tests | `VALIDATED` |",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "ROADMAP.md",
+      "line": 116,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| Value range in dollars | `reports/23_BUSINESS_VALUE.md` | `VALIDATED` |",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "ROADMAP.md",
+      "line": 117,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| Product roles (traffic drivers, margin builders) | `reports/24_PRODUCT_ROLES.md` | `VALIDATED` |",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "ROADMAP.md",
+      "line": 118,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| Executive summary, Business impact page, README front door | `docs/EXECUTIVE_SUMMARY.md`, dashboard page 1 | `VALIDATED` |",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "ROADMAP.md",
+      "line": 120,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| Ground-truth recovery study | `reports/25_GROUND_TRUTH_STUDY.md`, `tests/test_ground_truth_study.py` | `VALIDATED` (`LIMITED`: synthetic) |",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "ROADMAP.md",
+      "line": 121,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| Interview pack | `docs/INTERVIEW_PITCH.md` | `VALIDATED` |",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
       "file": "scripts/build_dataset.py",
       "line": 147,
       "pattern": "\\bvalidated\\b",
@@ -366,6 +465,15 @@
       "declared_verdict": "NEEDS QUALIFICATION",
       "negated_context": false,
       "text": "\"\"\"Phase C - build the modelling feature table with decision-time guarantees.",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "scripts/ground_truth_study.py",
+      "line": 194,
+      "pattern": "profit uplift",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "a2.set_xlabel(\"portfolio gross-profit uplift (%)\")",
       "verdict": "NEEDS QUALIFICATION"
     },
     {
@@ -387,5 +495,5 @@
       "verdict": "NEEDS QUALIFICATION"
     }
   ],
-  "runtime_seconds": 1.7
+  "runtime_seconds": 1.5
 }

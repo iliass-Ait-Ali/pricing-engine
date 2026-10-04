@@ -5,15 +5,15 @@ classified. Run by `scripts/audit_claims.py`; `--strict` makes it fail the build
 if an UNSUPPORTED claim reappears.
 
 Scanned: `.md`, `.py`, `.yaml` across the repository (excluding data, artifacts
-and the original brief). **400 occurrences** of
+and the original brief). **416 occurrences** of
 10 watched patterns.
 
 ## 1. Verdict summary
 
 | Verdict | Occurrences |
 | --- | ---: |
-| SAFE | 358 |
-| NEEDS QUALIFICATION | 42 |
+| SAFE | 362 |
+| NEEDS QUALIFICATION | 54 |
 | UNSUPPORTED | 0 |
 
 An occurrence is scored SAFE when the surrounding sentence *denies* the claim -
@@ -24,14 +24,14 @@ many times, and those are the opposite of the offence.
 
 | Pattern | Default verdict | Occurrences | SAFE | NEEDS QUAL. | UNSUPPORTED | Preferred wording |
 | --- | --- | ---: | ---: | ---: | ---: | --- |
-| `\bcausal\b` | SAFE | 202 | 202 | 0 | 0 | observational price-response estimate |
+| `\bcausal\b` | SAFE | 200 | 200 | 0 | 0 | observational price-response estimate |
 | `production[ -]ready` | SAFE | 13 | 13 | 0 | 0 | offline portfolio project with a runnable API and dashboard |
 | `\boptimal price\b` | UNSUPPORTED | 4 | 4 | 0 | 0 | candidate profit-maximising price under model assumptions |
 | `\b(increased|improved|achieved|delivered|realised|realized) (profit|revenue|margin)` | UNSUPPORTED | 5 | 5 | 0 | 0 | model-internal estimated gross-profit uplift (offline simulation) |
-| `profit uplift` | NEEDS QUALIFICATION | 25 | 24 | 1 | 0 | model-internal estimated profit uplift |
-| `\bvalidated\b` | NEEDS QUALIFICATION | 100 | 71 | 29 | 0 | validated out of time on unseen price-change episodes |
+| `profit uplift` | NEEDS QUALIFICATION | 26 | 24 | 2 | 0 | model-internal estimated profit uplift |
+| `\bvalidated\b` | NEEDS QUALIFICATION | 116 | 76 | 40 | 0 | validated out of time on unseen price-change episodes |
 | `no forecast skill is lost` | UNSUPPORTED | 8 | 8 | 0 | 0 | preserves the forecaster's baseline exactly at the reference price |
-| `mean shrinkage weight[^.\n]{0,40}0\.95` | UNSUPPORTED | 9 | 9 | 0 | 0 | mean empirical-Bayes shrinkage weight 0.78 (panel-robust standard errors) |
+| `mean shrinkage weight[^.\n]{0,40}0\.95` | UNSUPPORTED | 10 | 10 | 0 | 0 | mean empirical-Bayes shrinkage weight 0.78 (panel-robust standard errors) |
 | `\bguarantee[sd]?\b` | NEEDS QUALIFICATION | 34 | 22 | 12 | 0 | the optimizer never returns a price outside the feasible interval |
 | `\bstate[- ]of[- ]the[- ]art\b|\bbest[- ]in[- ]class\b|\bworld[- ]class\b` | UNSUPPORTED | 0 | 0 | 0 | 0 | (delete; state the metric instead) |
 
@@ -59,8 +59,9 @@ Why each pattern is watched:
 | Location | Text | Preferred wording |
 | --- | --- | --- |
 | `docs/COPILOT_CARD.md:43` | 2. **Wording.** Claims that are causal, guaranteed, proven or "realised", or | the optimizer never returns a price outside the feasible interval |
-| `README.md:66` | -> validated canonical panel (4,707,776 UPC x store x week rows) | validated out of time on unseen price-change episodes |
-| `README.md:317` | make features        # modelling table with decision-time guarantees | the optimizer never returns a price outside the feasible interval |
+| `docs/INTERVIEW_PITCH.md:63` | re-derived them with clustered errors and validated against statsmodels. | validated out of time on unseen price-change episodes |
+| `README.md:75` | -> validated canonical panel (4,707,776 UPC x store x week rows) | validated out of time on unseen price-change episodes |
+| `README.md:326` | make features        # modelling table with decision-time guarantees | the optimizer never returns a price outside the feasible interval |
 | `reports/01_DATA_AUDIT.md:4` | **Status:** VALIDATED | validated out of time on unseen price-change episodes |
 | `reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md:131` | → validated canonical panel (4,707,776 UPC × store × week rows) | validated out of time on unseen price-change episodes |
 | `reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md:203` | materiality threshold. The optimizer is validated against closed-form optima | validated out of time on unseen price-change episodes |
@@ -96,8 +97,19 @@ Why each pattern is watched:
 | `ROADMAP.md:23` | | **D. Elasticity analysis** | Arc elasticity, log-log naive vs controlled, causal limitations | B, C | `reports/03_ELASTICITY_ANALYSIS.md`; `docs/CAUSAL_LIMITA | validated out of time on unseen price-change episodes |
 | `ROADMAP.md:24` | | **E. Demand modelling** | Naive baselines, interpretable regression, gradient boosting; strict temporal split | C | `reports/04_MODEL_COMPARISON.md`; `artifac | validated out of time on unseen price-change episodes |
 | `ROADMAP.md:25` | | **F. Price-response validation + simulation** | Demand curves at fixed context, monotonicity/extrapolation checks, vectorised counterfactual simulator | E | ` | validated out of time on unseen price-change episodes |
+| `ROADMAP.md:110` | | Fix the intermittent `rec_id` parsing bug | `tests/test_review_workflow.py` (numeric-looking ids) | `VALIDATED` | | validated out of time on unseen price-change episodes |
+| `ROADMAP.md:111` | | Close the known consistency failure honestly (verbatim-transcript marker) | `tests/test_metric_consistency.py` | `VALIDATED` | | validated out of time on unseen price-change episodes |
+| `ROADMAP.md:112` | | Documentation drift, generation briefs moved to `docs/process/` | `KNOWN_LIMITATIONS.md` 17-18, `docs/process/README.md` | `VALIDATED` | | validated out of time on unseen price-change episodes |
+| `ROADMAP.md:113` | | Synthetic generator + demo config + `make_demo.py` | `tests/test_synthetic.py`, `tests/test_demo_config.py`, `tests/test_demo_e2e.py` | `VALIDATED` | | validated out of time on unseen price-change episodes |
+| `ROADMAP.md:114` | | Shared serving layer (`pricing_engine.serving`), data-mode labels | API and demo tests | `VALIDATED` | | validated out of time on unseen price-change episodes |
+| `ROADMAP.md:116` | | Value range in dollars | `reports/23_BUSINESS_VALUE.md` | `VALIDATED` | | validated out of time on unseen price-change episodes |
+| `ROADMAP.md:117` | | Product roles (traffic drivers, margin builders) | `reports/24_PRODUCT_ROLES.md` | `VALIDATED` | | validated out of time on unseen price-change episodes |
+| `ROADMAP.md:118` | | Executive summary, Business impact page, README front door | `docs/EXECUTIVE_SUMMARY.md`, dashboard page 1 | `VALIDATED` | | validated out of time on unseen price-change episodes |
+| `ROADMAP.md:120` | | Ground-truth recovery study | `reports/25_GROUND_TRUTH_STUDY.md`, `tests/test_ground_truth_study.py` | `VALIDATED` (`LIMITED`: synthetic) | | validated out of time on unseen price-change episodes |
+| `ROADMAP.md:121` | | Interview pack | `docs/INTERVIEW_PITCH.md` | `VALIDATED` | | validated out of time on unseen price-change episodes |
 | `scripts/build_dataset.py:147` | **Status:** {"VALIDATED" if all_pass else "FAILED CHECKS - see below"} | validated out of time on unseen price-change episodes |
 | `scripts/build_features.py:1` | """Phase C - build the modelling feature table with decision-time guarantees. | the optimizer never returns a price outside the feasible interval |
+| `scripts/ground_truth_study.py:194` | a2.set_xlabel("portfolio gross-profit uplift (%)") | model-internal estimated profit uplift |
 | `src/pricing_engine/copilot/guard.py:38` | "guarantee": re.compile(r"\bguarantee", re.I), | the optimizer never returns a price outside the feasible interval |
 | `tests/test_copilot_agent.py:89` | LLMTurn(text="It is guaranteed to raise profit by 50%."), | the optimizer never returns a price outside the feasible interval |
 
@@ -146,4 +158,4 @@ These are measured facts and stay exactly as they are:
 
 ---
 
-*Generated by `scripts/audit_claims.py` in 1.7s.*
+*Generated by `scripts/audit_claims.py` in 1.5s.*

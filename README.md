@@ -25,6 +25,15 @@ Booth).
 * **The decision for a category manager.** Traffic-driver products (43.5% of
   revenue) get the most price increases. Capping them at +3% gives up 22% of
   the estimated gain. [`reports/24_PRODUCT_ROLES.md`](reports/24_PRODUCT_ROLES.md)
+* **The check you can't do on real data.** On synthetic panels with known
+  elasticities, the unchanged engine recovers the truth when the data are
+  clean. It cannot remove unrecorded promotions or pricing on unseen demand
+  shocks, which is why the next step is a pilot.
+  [`reports/25_GROUND_TRUTH_STUDY.md`](reports/25_GROUND_TRUTH_STUDY.md)
+* **A GenAI layer that cannot invent a number.** An OpenAI tool-calling
+  copilot answers questions by calling the engine; a deterministic guard
+  rejects any figure the engine did not return.
+  [`docs/COPILOT_CARD.md`](docs/COPILOT_CARD.md)
 * **Why trust it.** Strict chronological validation, leakage tests, robust
   standard errors, out-of-time checks on 154,899 unseen price changes, a claim
   audit that fails the build on any unsupported claim, and an explicit list of
@@ -176,7 +185,7 @@ Native ML price-response validation on 300 decision contexts (`artifacts/metrics
 
 | metric | value |
 | --- | --- |
-| tests collected | **621** |
+| tests collected | **624** |
 | batch scoring, 3,000 contexts | per-context loop 122.0s → vectorised **2.4s** (50× on this machine) |
 | batch equivalence (discrete fields exact, floats ≤ 1e-09) | PASS on 3,000 recommendations |
 
@@ -430,6 +439,9 @@ causal question: `docs/PRICING_EXPERIMENT.md`.
 | `docs/EXECUTIVE_SUMMARY.md` | one page for a business reader: answer, value range, risks, next steps |
 | `reports/23_BUSINESS_VALUE.md` | annual gross-profit value range across every evidenced elasticity |
 | `reports/24_PRODUCT_ROLES.md` | traffic drivers, core, margin builders, tail: what the engine does to each |
+| `reports/25_GROUND_TRUTH_STUDY.md` | the unchanged engine on synthetic panels with known elasticities: which confounders it removes |
+| `docs/COPILOT_CARD.md` | the LLM copilot: tools, the guard that rejects ungrounded numbers, known limits, evaluation |
+| `docs/INTERVIEW_PITCH.md` | 30-second and 2-minute pitch, STAR stories, a mock case, CV lines |
 | `reports/22_POST_FREEZE_ENGINEERING.md` | post-freeze (Phase O) engineering: review/approval workflow, monitoring history + local alerts, batch scale sweep - no science changed |
 
 ## 12. Attribution
