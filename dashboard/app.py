@@ -560,7 +560,10 @@ def page_recommendation(panel: pd.DataFrame, stats: pd.DataFrame, model) -> None
         help="What would actually be charged under this policy: the current "
              "price whenever the decision is not actionable.",
     )
-    c4.metric("Decision state", d["decision"], help="Only RECOMMEND_CHANGE is actionable.")
+    # A metric tile truncates the long state names ("RECOMME..."), so spell it out.
+    short = {"RECOMMEND_CHANGE": "Change", "REVIEW_REQUIRED": "Review", "KEEP_CURRENT": "Keep"}
+    c4.metric("Decision", short.get(d["decision"], d["decision"]),
+              help=f"{d['decision']}. Only RECOMMEND_CHANGE is actionable.")
     st.caption(
         f"Risk level: **{d['risk_level']}** - heuristic risk score (HIGH = risky), "
         "NOT calibrated confidence. HIGH risk is gated under the default policy profiles."

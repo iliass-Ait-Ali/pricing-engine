@@ -60,6 +60,11 @@ docker run --rm -p 7860:7860 pricing-engine-demo
 or without Docker: `python scripts/make_demo.py`, then
 `PRICING_ENGINE_CONFIG=configs/demo.yaml streamlit run dashboard/app.py`.
 
+![A tour of the demo: business impact, a recommendation, the price simulator, the review queue and the copilot page](artifacts/report_figures/demo_tour.gif)
+
+*The synthetic demo: business impact, one recommendation, the price simulator,
+the review queue and the copilot page.*
+
 Every number in this README was produced by running the pipeline on the real
 data. Nothing is hardcoded, and every counterfactual figure is labelled a
 **model-internal estimate**: demand at prices that were never charged was never
