@@ -168,3 +168,31 @@ def test_read_with_state_defaults_to_generated_when_no_transitions_exist(tmp_pat
 
     joined = log.read_with_state(transitions)
     assert (joined["lifecycle_state_current"] == "GENERATED").all()
+
+
+@pytest.mark.parametrize("numeric_looking_id", ["659826115e98", "123456789012", "000000000001"])
+def test_numeric_looking_rec_id_survives_csv_round_trip(tmp_path, monkeypatch, numeric_looking_id):
+    """A hex rec_id made only of digits (plus at most one 'e') reads back as text.
+
+    Without a forced dtype, pandas parses "659826115e98" as 6.6e106, the
+    earlier transition for that id is no longer found, and a legal
+    REVIEWED -> REJECTED is refused as GENERATED -> REJECTED. About 0.6% of
+    uuid4-derived ids look like this, which made the suite fail intermittently.
+    """
+    import pricing_engine.audit as audit
+
+    class _FixedUUID:
+        hex = numeric_looking_id + "ffff"
+
+    monkeypatch.setattr(audit.uuid, "uuid4", lambda: _FixedUUID())
+    log = RecommendationLog(tmp_path / "log.csv")
+    transitions = RecommendationTransitions(tmp_path / "transitions.csv")
+    rec_id = log.append([_rec()])["rec_id"].iloc[0]
+    assert rec_id == numeric_looking_id
+
+    assert log.read()["rec_id"].iloc[0] == numeric_looking_id
+    transitions.append_transition(rec_id, to_state="REVIEWED")
+    transitions.append_transition(rec_id, to_state="REJECTED")
+    assert transitions.current_states() == {numeric_looking_id: "REJECTED"}
+    merged = log.read_with_state(transitions)
+    assert merged["lifecycle_state_current"].tolist() == ["REJECTED"]

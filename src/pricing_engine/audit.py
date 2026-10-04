@@ -45,6 +45,11 @@ TRANSITION_COLUMNS = [
     "note",
 ]
 
+#: ``rec_id`` is 12 hex characters, so roughly 0.6% of ids look like numbers
+#: to a CSV reader ("659826115e98" parses as 6.6e106). Every read must force it
+#: to stay text, or a transition recorded for that id is silently lost.
+CSV_DTYPES = {"rec_id": str}
+
 LOG_COLUMNS = [
     "rec_id",
     "logged_at_utc",
@@ -156,7 +161,7 @@ class RecommendationLog:
     def read(self) -> pd.DataFrame:
         if not self.path.exists():
             return pd.DataFrame(columns=LOG_COLUMNS)
-        return pd.read_csv(self.path)
+        return pd.read_csv(self.path, dtype=CSV_DTYPES)
 
     def read_with_state(self, transitions: RecommendationTransitions) -> pd.DataFrame:
         """The log joined with the live lifecycle state from ``transitions``.
@@ -205,7 +210,7 @@ class RecommendationTransitions:
     def read(self) -> pd.DataFrame:
         if not self.path.exists():
             return pd.DataFrame(columns=TRANSITION_COLUMNS)
-        return pd.read_csv(self.path)
+        return pd.read_csv(self.path, dtype=CSV_DTYPES)
 
     def current_states(self) -> dict[str, str]:
         """``rec_id`` -> latest ``to_state``, taking the last transition per id."""
