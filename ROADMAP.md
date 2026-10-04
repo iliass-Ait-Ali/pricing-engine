@@ -131,8 +131,11 @@ estimator against known truth, and a safe GenAI interface.
 3. **Record the copilot evaluation.** Run `python scripts/eval_copilot.py --mode record`
    with a key, commit `evals/copilot/recordings/` and `results.json`, and
    report the pass rate in `docs/COPILOT_CARD.md`.
-4. **Then, as interest allows:** replicate on a second Dominick's category,
-   calibrate the risk bands against out-of-time prediction error, add
+4. **Done after v1.1.0:** the risk bands were checked against out-of-time
+   prediction error (`reports/26_RISK_CALIBRATION.md`). They separate error
+   only weakly; extrapolation carries the signal.
+5. **Then, as interest allows:** replicate on a second Dominick's category,
+   fit the risk thresholds to the error evidence (a policy change), add
    role-based guardrails as an explicit policy option, and move to
    cross-price effects (`FUTURE_WORK.md` 1.1).
 

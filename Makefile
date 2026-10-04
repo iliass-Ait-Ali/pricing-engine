@@ -168,3 +168,25 @@ all: data validate features eda elasticity train evaluate price-response \
 
 clean:
 	rm -rf .pytest_cache .ruff_cache artifacts/figures/*.png
+
+# --- v1.1 -------------------------------------------------------------------
+value:
+	$(PY) scripts/size_value.py
+
+roles:
+	$(PY) scripts/segment_roles.py
+
+audit-risk:
+	$(PY) scripts/audit_risk_calibration.py
+
+ground-truth:
+	$(PY) scripts/ground_truth_study.py
+
+demo-build:
+	$(PY) scripts/make_demo.py
+
+eval-copilot:
+	$(PY) scripts/eval_copilot.py --mode replay
+
+v11: value roles audit-risk ground-truth
+	@echo "v1.1 analyses complete - see reports/23..26"

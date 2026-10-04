@@ -35,7 +35,7 @@ Statuses: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `TESTED` | `VALIDATED`
 | Price-response validation | `VALIDATED` | `reports/05_PRICE_RESPONSE_VALIDATION.md`: 100% monotone decreasing, median implied elasticity -3.10 | Implied elasticity steeper than the econometric benchmark - flagged everywhere |
 | Counterfactual simulator | `VALIDATED` | 16 tests: only price features move, cost held fixed, one batched call | - |
 | Constrained optimizer | `VALIDATED` | 23 tests incl. analytical optima `(a+bc)/(2b)` and `a/(2b)` | - |
-| Risk layer + decision gate | `VALIDATED` | HIGH = risky; 0 of 1,039 HIGH-risk contexts actionable; REVIEW_REQUIRED for 10.4%; 245 decision-state invariant tests (`reports/19`) | Still a heuristic, not calibrated confidence |
+| Risk layer + decision gate | `VALIDATED` | HIGH = risky; 0 of 1,039 HIGH-risk contexts actionable; REVIEW_REQUIRED for 10.4%; 245 decision-state invariant tests (`reports/19`) | Still a heuristic, not calibrated confidence. **Checked in v1.1** against out-of-time prediction error (`reports/26`): bands only weakly separate error (HIGH/LOW WAPE 1.04x); extrapolation is the factor that matters |
 | Price response (Phase L/M) | `VALIDATED` | hybrid `Q(p) = Q_hat(p0) * (p/p0) ** epsilon`; pooled -2.029 / shrunk per-UPC; best out-of-time WAPE of the three methods (`reports/16`) | Elasticity is observational; shrinkage fixes stability, not identification |
 | Elasticity estimation (Phase L/M) | `VALIDATED` | training weeks 2-257 only; 239/372 products usable; REML tau^2 0.766, mean weight 0.780, panel-robust SEs; `reports/14`, `reports/15`, `reports/18` | 133 products priced with the pooled fallback (35.8% of decision contexts) |
 | Zero-price audit (Phase L) | `VALIDATED` | `reports/09`: 1,851,380 rows, 677 with sales, 73.4% leading/trailing | Rule unchanged; selection tilt documented |
@@ -55,7 +55,7 @@ Statuses: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `TESTED` | `VALIDATED`
 | Review/approval workflow (Phase O) | `VALIDATED` | `pytest tests/test_review_workflow.py` -> 9 passed; `scripts/review.py` CLI + dashboard "Review queue" page; `recommendation_transitions.csv` (append-only, never rewrites `recommendation_log.csv`) | Gives a human the tool to review/approve/reject/publish a recommendation; does not staff, schedule or SLA the queue itself |
 | CLI + Makefile + demo | `VALIDATED` | `make demo` produces a real recommendation on real data | - |
 | Documentation | `VALIDATED` | 15 docs + 23 reports, all numbers generated from execution | **v1.0: README headline metrics are generated** (`scripts/update_readme_metrics.py`) and a cross-document numeric audit (`scripts/audit_metric_consistency.py`, 212 statements, 0 mismatches) is test-enforced |
-| Test suite | `VALIDATED` | **624 tests collected**; full run: 0 failed, 2 skipped by design (copilot replay needs recordings; the live-count check skips on subsets) | Decision-critical paths prioritised over coverage percentage |
+| Test suite | `VALIDATED` | **626 tests collected**; full run: 0 failed, 2 skipped by design (copilot replay needs recordings; the live-count check skips on subsets) | Decision-critical paths prioritised over coverage percentage |
 | Lint | `VALIDATED` | `ruff check .` - All checks passed | - |
 | CI workflow | `IMPLEMENTED` (locally reproduced) | `.github/workflows/ci.yml` (lint, smoke import, README-metrics check, tests, Docker build); every step re-run locally and passing | **GITHUB-HOSTED RUN NOT YET EXECUTED** - no remote is configured, and none was created |
 | Docker | `VALIDATED` | **built and run**: `docker build -t pricing-engine:local .` (1.66 GB), container serves `/health`, `/model/info` and a real `/recommend-price` identical to the local run, runs as non-root `appuser` (uid 1000); image contains no data files | Model and processed data are **mounted read-only**, never baked in (Dominick's licence); the image is not hardened, load-tested or deployed |
@@ -91,7 +91,11 @@ Ranked by how much they should change what you claim about the project.
 6. **133 of 372 products have no usable own elasticity** and are priced with the
    pooled fallback - 35.8% of decision contexts. `reports/18`.
 7. **The risk layer is a heuristic, not calibrated confidence.** Thresholds are
-   asserted, not fitted against realised out-of-sample error.
+   asserted, not fitted. v1.1 checked them against out-of-time prediction
+   error (`reports/26_RISK_CALIBRATION.md`): the typical episode's error rises
+   from LOW to HIGH, but only slightly (HIGH/LOW WAPE 1.04x), and MEDIUM has
+   the lowest volume-weighted error. The band is a weak guide to forecast
+   accuracy; its value is gating extrapolation and thin evidence.
 8. **REVIEW_REQUIRED creates a human queue** (10.4% of contexts, 1,353 of
    13,964 in the full week) that this demo does not staff. Phase O added the
    software a reviewer would use (`scripts/review.py`, the dashboard's

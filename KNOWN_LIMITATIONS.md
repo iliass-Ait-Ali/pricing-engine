@@ -193,6 +193,10 @@ section.*
 40. **The materiality threshold and the risk gate are asserted, not fitted.**
     1% and the risk bands are demo settings. Calibrating them would mean fitting
     realised out-of-sample error against the bands, which was not done.
+    *v1.1:* the bands were **checked** (not fitted) against out-of-time
+    prediction error in `reports/26_RISK_CALIBRATION.md`. They separate error
+    only weakly (HIGH/LOW WAPE 1.04x), and extrapolation is the one factor
+    with a clear signal.
 
 41. **The 5-cent candidate grid quantises the answer.** The grid optimum sits a
     median of $0.025 (p90 $0.043) from the continuous optimum inside the same

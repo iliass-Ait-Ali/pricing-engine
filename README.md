@@ -185,7 +185,7 @@ Native ML price-response validation on 300 decision contexts (`artifacts/metrics
 
 | metric | value |
 | --- | --- |
-| tests collected | **624** |
+| tests collected | **626** |
 | batch scoring, 3,000 contexts | per-context loop 122.0s → vectorised **2.4s** (50× on this machine) |
 | batch equivalence (discrete fields exact, floats ≤ 1e-09) | PASS on 3,000 recommendations |
 
@@ -440,6 +440,7 @@ causal question: `docs/PRICING_EXPERIMENT.md`.
 | `reports/23_BUSINESS_VALUE.md` | annual gross-profit value range across every evidenced elasticity |
 | `reports/24_PRODUCT_ROLES.md` | traffic drivers, core, margin builders, tail: what the engine does to each |
 | `reports/25_GROUND_TRUTH_STUDY.md` | the unchanged engine on synthetic panels with known elasticities: which confounders it removes |
+| `reports/26_RISK_CALIBRATION.md` | do the risk bands track out-of-time prediction error? (weakly; extrapolation matters most) |
 | `docs/COPILOT_CARD.md` | the LLM copilot: tools, the guard that rejects ungrounded numbers, known limits, evaluation |
 | `docs/INTERVIEW_PITCH.md` | 30-second and 2-minute pitch, STAR stories, a mock case, CV lines |
 | `reports/22_POST_FREEZE_ENGINEERING.md` | post-freeze (Phase O) engineering: review/approval workflow, monitoring history + local alerts, batch scale sweep - no science changed |

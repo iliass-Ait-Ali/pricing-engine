@@ -1,0 +1,104 @@
+{
+  "generated_at_utc": "2026-10-04T18:54:31+00:00",
+  "episodes": 154899,
+  "weeks": [
+    259,
+    399
+  ],
+  "price_response": "shrunk product elasticity (the engine default)",
+  "risk_from": "assess_risk with price statistics from weeks before each episode only",
+  "by_band": {
+    "LOW": {
+      "episodes": 95316,
+      "series": 9476,
+      "wape": 0.5839533649842023,
+      "median_abs_log_error": 0.42137420762364336,
+      "wape_null": 0.8126748444135763,
+      "price_response_improvement_pct": 28.144279474335
+    },
+    "MEDIUM": {
+      "episodes": 17113,
+      "series": 4390,
+      "wape": 0.550872715118621,
+      "median_abs_log_error": 0.43251079594847813,
+      "wape_null": 0.7965698369196262,
+      "price_response_improvement_pct": 30.844391842795325
+    },
+    "HIGH": {
+      "episodes": 42470,
+      "series": 10505,
+      "wape": 0.6045543649784139,
+      "median_abs_log_error": 0.476509686832031,
+      "wape_null": 0.8016780465910978,
+      "price_response_improvement_pct": 24.588883586234513
+    }
+  },
+  "by_band_no_recorded_promotion": {
+    "LOW": {
+      "episodes": 52182,
+      "series": 8808,
+      "wape": 0.5095487161238826,
+      "median_abs_log_error": 0.3679299668864876,
+      "wape_null": 0.7089476516087909,
+      "price_response_improvement_pct": 28.126044995341903
+    },
+    "MEDIUM": {
+      "episodes": 8677,
+      "series": 2884,
+      "wape": 0.4951664356912557,
+      "median_abs_log_error": 0.3973912099514343,
+      "wape_null": 0.7735811854157937,
+      "price_response_improvement_pct": 35.99037243581517
+    },
+    "HIGH": {
+      "episodes": 20435,
+      "series": 7146,
+      "wape": 0.5522658663653102,
+      "median_abs_log_error": 0.41513300450113727,
+      "wape_null": 0.7421914293511085,
+      "price_response_improvement_pct": 25.589835111926394
+    }
+  },
+  "bootstrap": {
+    "reps": 300,
+    "wape_ci95": {
+      "LOW": [
+        0.5745486986300865,
+        0.5928154183553833
+      ],
+      "MEDIUM": [
+        0.5397055132238083,
+        0.5631282267557001
+      ],
+      "HIGH": [
+        0.5952951158916485,
+        0.6152634484982528
+      ]
+    },
+    "high_over_low_ci95": [
+      1.0136065431323789,
+      1.0610209349553996
+    ]
+  },
+  "monotone_low_to_high_wape": false,
+  "monotone_low_to_high_median_abs_log_error": true,
+  "high_over_low_wape_ratio": 1.0352785020680015,
+  "factors": {
+    "extrapolates": {
+      "share": 0.08481010206650785,
+      "wape_with": 0.6310360104714087,
+      "wape_without": 0.5773606977289069
+    },
+    "thin_history": {
+      "share": 0.2516736712309311,
+      "wape_with": 0.5895333453095768,
+      "wape_without": 0.5844125426510888
+    },
+    "pooled_fallback": {
+      "share": 0.20570177986946334,
+      "wape_with": 0.5955814754117784,
+      "wape_without": 0.5836097271895836
+    }
+  },
+  "runtime_seconds": 28.9
+}

@@ -77,6 +77,9 @@ risk bands against **prediction error** does not need an experiment: the
 so one could check whether HIGH-risk contexts really forecast worse.
 Calibrating against **realised uplift** does need an experiment. The first is
 a candidate for the next version; the second stays in section 2.
+**Done:** `reports/26_RISK_CALIBRATION.md` runs that check. The bands separate
+error only weakly; extrapolation distance is the factor that carries the
+signal. Fitting new thresholds is left as an explicit policy change.
 
 ### 1.5 Guardrail design instead of guardrail dominance
 
