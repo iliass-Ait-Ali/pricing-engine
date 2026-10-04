@@ -58,12 +58,14 @@ how the output should be read.
 16. **Not production ready.** No orchestration, no model registry, no live
     monitoring store, no serving SLOs, no CI on the real data (by design - the
     licence forbids redistributing it).
-17. **Docker image not built in this environment** (no Docker daemon
-    available). The Dockerfile and compose file are written and included in CI,
-    but the build was not executed locally - see `reports/VALIDATION_SUMMARY.md`.
-18. **Batch optimization is per-context.** 3,000 contexts take ~160 s.
-    `simulation.simulate_many` provides the fully vectorised path for scaling to
-    all 36,443 series, but the batch script does not use it yet.
+17. ~~**Docker image not built in this environment.**~~ **Resolved at Phase N:**
+    the image was built and run, and served a real recommendation identical to
+    the local run (`reports/21_FINAL_ENGINEERING_CLOSURE.md`). What remains is
+    item 44: the image is not a production artifact.
+18. ~~**Batch optimization is per-context.**~~ **Resolved at Phase N:** the
+    batch path is vectorised (`optimize_price_batch`, bit-identical output,
+    `tests/test_batch_equivalence.py`). What remains is item 42: the speed-up
+    is a single-machine measurement, not a scalability result.
 19. **The dashboard loads the full feature panel** (~4.7 M rows) into memory
     with caching. Fine on a workstation, not a deployment pattern.
 20. **Risk level is heuristic**, not calibrated confidence, and is labelled as
@@ -125,6 +127,11 @@ how the output should be read.
 
 These are the limitations to disclose in an interview, ranked by how much they
 should change what you claim.
+
+*Numbering note: items 32-34 below reuse numbers already taken by the Phase L
+section above. They are kept, not renumbered, because the full report cites
+them by number; read a citation of #32-#34 in a Phase M context as this
+section.*
 
 32. **Business rules, not the learned price response, set the magnitude of most
     recommendations.** Over all 13,964 decision contexts of week 399 under the
