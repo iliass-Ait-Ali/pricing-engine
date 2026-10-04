@@ -352,7 +352,7 @@
     {
       "metric": "test count",
       "source_of_truth": "test_suite.json:collected_tests",
-      "expected": 583.0,
+      "expected": 621.0,
       "unit": "",
       "tolerance": 0.5,
       "statements_found": 0,

@@ -71,7 +71,7 @@ official Kilts Center files
   -> vectorised counterfactual price simulation (cost held fixed)
   -> constrained optimization with reason codes and a risk layer
   -> offline policy backtest
-  -> FastAPI service + 11-page Streamlit dashboard
+  -> FastAPI service + 12-page Streamlit dashboard
   -> hybrid elasticity price response + risk gating (Phase L)
   -> tests, lint, Docker image, CI (counts in section 2)
 ```
@@ -176,7 +176,7 @@ Native ML price-response validation on 300 decision contexts (`artifacts/metrics
 
 | metric | value |
 | --- | --- |
-| tests collected | **583** |
+| tests collected | **621** |
 | batch scoring, 3,000 contexts | per-context loop 122.0s → vectorised **2.4s** (50× on this machine) |
 | batch equivalence (discrete fields exact, floats ≤ 1e-09) | PASS on 3,000 recommendations |
 
@@ -261,7 +261,7 @@ src/pricing_engine/
   monitoring/   schema / drift / prediction / performance checks
   audit.py      append-only recommendation log with lifecycle states
 api/            FastAPI (health, model info, predict, simulate, recommend)
-dashboard/      Streamlit, 11 pages
+dashboard/      Streamlit, 12 pages
 scripts/        one CLI per pipeline stage
 tests/          the test suite (count in section 2)
 ```
@@ -350,9 +350,10 @@ startup.
 
 ### Dashboard
 
-Eleven pages: business impact, executive overview, product/store explorer,
+Twelve pages: business impact, executive overview, product/store explorer,
 pricing & demand, elasticity, price simulator, recommendation engine, model
-performance, data quality, methodology & limitations, review queue.
+performance, data quality, methodology & limitations, review queue, and the
+Pricing Copilot (needs an OpenAI key; see `docs/COPILOT_CARD.md`).
 
 ## 9. Tests
 

@@ -632,6 +632,74 @@ def page_recommendation(panel: pd.DataFrame, stats: pd.DataFrame, model) -> None
             st.dataframe(RecommendationLog(log_path).read().tail(200), height=320)
 
 
+@st.cache_resource(show_spinner="Starting the pricing copilot ...")
+def load_copilot():
+    """The live copilot, or None when no OPENAI_API_KEY / genai extra is available."""
+    from pricing_engine.copilot.agent import build_copilot
+    from pricing_engine.serving import build_state
+
+    try:
+        state = build_state(CFG)
+    except FileNotFoundError:
+        return None
+    return build_copilot(state)
+
+
+COPILOT_EXAMPLES = [
+    "Which products can you price? Show me a few.",
+    "What price do you recommend for the first product in its first store, and why?",
+    "Compare the conservative, standard and aggressive policies for that product.",
+    "Across all products this week, how many recommendations need a human review?",
+    "Prove that raising the price will increase profit.",
+]
+
+
+def page_copilot() -> None:
+    st.title("Pricing Copilot")
+    st.caption(
+        "Ask in plain English. The language model never prices anything and never supplies "
+        "a number: it calls the same engine tools as the API, and an automatic check rejects "
+        "any answer containing a number that did not come from a tool, or a causal or "
+        "guaranteed-outcome claim. See docs/COPILOT_CARD.md."
+    )
+    copilot = load_copilot()
+    if copilot is None:
+        st.info(
+            "The copilot is switched off here: it needs an OpenAI API key "
+            "(`OPENAI_API_KEY`) and `pip install -e \".[genai]\"`. Everything else in this "
+            "dashboard works without it."
+        )
+        st.markdown("**Questions it is built and evaluated for:**\n"
+                    + "\n".join(f"* {q}" for q in COPILOT_EXAMPLES))
+        return
+
+    history = st.session_state.setdefault("copilot_history", [])
+    for turn in history:
+        with st.chat_message("user"):
+            st.write(turn["question"])
+        with st.chat_message("assistant"):
+            st.markdown(turn["answer"])
+    st.caption("Try: " + " | ".join(COPILOT_EXAMPLES[:3]))
+    question = st.chat_input("Ask about a product, a store, or the portfolio")
+    if not question:
+        return
+    with st.chat_message("user"):
+        st.write(question)
+    with st.chat_message("assistant"):
+        with st.spinner("Calling the engine ..."):
+            out = copilot.ask(question[:1000])
+        st.markdown(out.answer)
+        badge = {"passed": "Checks passed", "passed_after_regeneration":
+                 "Checks passed after one rewrite", "fallback_template":
+                 "Model answer rejected; showing a template built from the engine's results"}
+        st.caption(f"{badge[out.status]} | model {out.model} | {out.latency_ms} ms")
+        with st.expander("Engine calls behind this answer (the facts)"):
+            for call in out.tool_calls:
+                st.markdown(f"**{call.name}** `{json.dumps(call.arguments)}`")
+                st.json(call.result, expanded=False)
+    history.append({"question": question, "answer": out.answer})
+
+
 def page_review_queue() -> None:
     st.title("Review queue")
     st.caption(
@@ -931,6 +999,7 @@ PAGES = {
     "9. Data quality": "quality",
     "10. Methodology & limitations": "methodology",
     "11. Review queue": "review_queue",
+    "12. Pricing Copilot": "copilot",
 }
 
 
@@ -981,6 +1050,8 @@ def main() -> None:
         page_data_quality()
     elif key == "methodology":
         page_methodology()
+    elif key == "copilot":
+        page_copilot()
     else:
         page_review_queue()
 

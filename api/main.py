@@ -21,11 +21,14 @@ if str(REPO_ROOT) not in sys.path:
 if str(REPO_ROOT / "src") not in sys.path:
     sys.path.insert(0, str(REPO_ROOT / "src"))
 
+from api.routes.copilot import RateLimiter  # noqa: E402
+from api.routes.copilot import router as copilot_router  # noqa: E402
 from api.routes.pricing import router as pricing_router  # noqa: E402
 from api.schemas import HealthResponse, ModelInfoResponse  # noqa: E402
 from api.state import build_state  # noqa: E402
 from pricing_engine import __version__  # noqa: E402
 from pricing_engine.config import load_config  # noqa: E402
+from pricing_engine.copilot.agent import build_copilot  # noqa: E402
 
 SYNTHETIC_NOTE = """
 **SYNTHETIC DEMO DATA.** This instance serves a generated panel with known
@@ -64,8 +67,15 @@ async def lifespan(app: FastAPI):
     except FileNotFoundError as exc:  # keep /health informative instead of crashing
         app.state.engine = None
         app.state.startup_error = str(exc)
+    # Optional: only when OPENAI_API_KEY is set and the genai extra is installed.
+    app.state.copilot = build_copilot(app.state.engine)
+    app.state.copilot_limiter = RateLimiter(
+        int(app.state.cfg.get("copilot.rate_limit_per_client_per_hour", 20)),
+        int(app.state.cfg.get("copilot.daily_limit", 300)),
+    )
     yield
     app.state.engine = None
+    app.state.copilot = None
 
 
 CFG = load_config()
@@ -78,6 +88,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 app.include_router(pricing_router)
+app.include_router(copilot_router)
 
 
 def _cfg(request: Request):

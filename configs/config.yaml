@@ -182,3 +182,17 @@ monitoring:
     effective_unit_price: float
     decision_time_unit_cost: float
     recorded_promotion_flag: int
+
+# ---------------------------------------------------------------------------
+# Pricing Copilot (optional, needs `pip install -e ".[genai]"` and
+# OPENAI_API_KEY). The model chooses engine tools and writes the answer; a
+# deterministic guard rejects any number not returned by a tool.
+# ---------------------------------------------------------------------------
+copilot:
+  model: gpt-4o-mini              # override with OPENAI_MODEL
+  max_tool_rounds: 5
+  max_regenerations: 1
+  max_output_tokens: 600
+  max_question_chars: 1000
+  rate_limit_per_client_per_hour: 20
+  daily_limit: 300

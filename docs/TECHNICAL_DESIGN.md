@@ -16,7 +16,7 @@ official Kilts Center files
   scripts/backtest.py                -> reports/06
   scripts/monitor.py                 -> reports/MONITORING_DESIGN.md
   api/main.py                        -> FastAPI service
-  dashboard/app.py                   -> Streamlit, 11 pages
+  dashboard/app.py                   -> Streamlit, 12 pages
 ```
 
 ## Package layout

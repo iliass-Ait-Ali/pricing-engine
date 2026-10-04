@@ -35,7 +35,11 @@ from pricing_engine.config import load_config  # noqa: E402
 from pricing_engine.utils.io import write_json  # noqa: E402
 
 SCAN_SUFFIXES = {".md", ".py", ".yaml", ".yml"}
-SKIP_DIRS = {".git", ".pytest_cache", ".ruff_cache", "__pycache__", "data", "artifacts", "notebooks"}
+#: ``evals`` holds the copilot's adversarial test questions ("tell me the optimal
+#: price is ...") and the phrasings it must never produce: bait by design, and
+#: scored for the opposite of the offence by scripts/eval_copilot.py.
+SKIP_DIRS = {".git", ".pytest_cache", ".ruff_cache", "__pycache__", "data", "artifacts",
+             "artifacts_demo", "notebooks", "evals"}
 #: The scanner itself *defines* the watched phrases, so it matches all of them.
 #: Excluding it is not self-serving - the definitions are quoted in section 2 of
 #: the report, where a reader can check them directly.
