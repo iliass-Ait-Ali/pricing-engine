@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.11", "3.12"]
+        python-version: ["3.11", "3.12", "3.13"]
 
     steps:
       - uses: actions/checkout@v4
@@ -39,10 +39,41 @@ jobs:
 
       - name: Tests
         # CI never downloads the licensed Dominick's dataset. Tests that need
-        # the real artifacts skip themselves; everything else runs on the
-        # deterministic synthetic fixtures.
+        # the real artifacts skip themselves; the API contract and the
+        # end-to-end tests run against the synthetic public demo, which the
+        # `demo_config` fixture builds with scripts/make_demo.py --fast.
         run: pytest -q
 
-      - name: Docker build
-        if: matrix.python-version == '3.11'
+  demo:
+    # The public demo exactly as it is hosted: synthetic data, the unchanged
+    # pipeline, the API and every dashboard page, then the demo image.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[api,dashboard,dev]"
+
+      - name: Build the synthetic demo
+        run: python scripts/make_demo.py
+
+      - name: Dashboard renders every page on the demo
+        env:
+          PRICING_ENGINE_CONFIG: configs/demo.yaml
+        run: python scripts/smoke_dashboard.py
+
+      - name: Real artifacts untouched by the demo build
+        run: git diff --exit-code -- artifacts reports
+
+      - name: API image
         run: docker build -t pricing-engine:ci .
+
+      - name: Demo image
+        run: docker build -f Dockerfile.demo -t pricing-engine-demo:ci .

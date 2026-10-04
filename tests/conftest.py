@@ -102,3 +102,29 @@ def panel() -> pd.DataFrame:
                     }
                 )
     return pd.DataFrame(rows)
+
+
+@pytest.fixture(scope="session")
+def demo_config(tmp_path_factory) -> Path:
+    """Build the synthetic public demo (fast mode) once per session.
+
+    Runs ``scripts/make_demo.py --fast --out-root <tmp>``: the unchanged
+    pipeline on generated data, with every output under a temporary folder.
+    Returns the path of the rooted config that points at those outputs.
+    """
+    import subprocess
+
+    out_root = tmp_path_factory.mktemp("demo")
+    result = subprocess.run(
+        [sys.executable, str(REPO_ROOT / "scripts" / "make_demo.py"), "--fast",
+         "--out-root", str(out_root)],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    assert result.returncode == 0, (
+        f"demo build failed:\n{result.stdout[-4000:]}\n{result.stderr[-4000:]}"
+    )
+    return out_root / "demo_rooted.yaml"

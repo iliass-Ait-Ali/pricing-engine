@@ -33,6 +33,7 @@ from pricing_engine.data.loader import (  # noqa: E402
 from pricing_engine.data.validator import raw_audit, validate_processed  # noqa: E402
 from pricing_engine.utils.io import (  # noqa: E402
     dataframe_fingerprint,
+    display_path,
     ensure_dir,
     environment_record,
     sha256_file,
@@ -304,7 +305,7 @@ def main() -> int:
         print(f"      [{'PASS' if c.passed else 'FAIL'}] {c.name}: {c.detail}")
 
     fingerprint = {
-        "parquet_path": str(out_path.relative_to(REPO_ROOT)),
+        "parquet_path": display_path(out_path, REPO_ROOT),
         "parquet_sha256": sha256_file(out_path),
         "dataframe_fingerprint": dataframe_fingerprint(df),
         "rows": int(len(df)),

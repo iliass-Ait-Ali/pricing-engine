@@ -1,0 +1,56 @@
+name: Deploy demo
+
+# Publishes the synthetic public demo to a Hugging Face Docker Space.
+# Manual or on a version tag. Needs:
+#   secret   HF_TOKEN  - a Hugging Face write token
+#   variable HF_SPACE  - the Space id, e.g. "your-name/pricing-engine-demo"
+# Optional secret OPENAI_API_KEY is NOT sent from here: set it in the Space's
+# own settings, where it stays.
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Stage the Space
+        # The Space needs its own README (YAML front matter) and a file named
+        # Dockerfile; the project README and Dockerfile stay untouched in Git.
+        run: |
+          mkdir -p space
+          cp -r pyproject.toml src api dashboard configs scripts deploy space/
+          cp Dockerfile.demo space/Dockerfile
+          cp deploy/hf_space/README.md space/README.md
+          cp .gitattributes space/ 2>/dev/null || true
+
+      - name: Upload to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_SPACE: ${{ vars.HF_SPACE }}
+        run: |
+          pip install "huggingface_hub>=0.24"
+          python - <<'PY'
+          import os
+          from huggingface_hub import HfApi
+
+          api = HfApi(token=os.environ["HF_TOKEN"])
+          space = os.environ["HF_SPACE"]
+          api.create_repo(space, repo_type="space", space_sdk="docker", exist_ok=True)
+          api.upload_folder(
+              folder_path="space",
+              repo_id=space,
+              repo_type="space",
+              delete_patterns=["*"],
+              commit_message=f"Deploy {os.environ.get('GITHUB_SHA', 'local')[:7]}",
+          )
+          print(f"deployed to https://huggingface.co/spaces/{space}")
+          PY

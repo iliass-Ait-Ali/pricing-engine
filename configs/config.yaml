@@ -7,6 +7,9 @@ project:
   name: pricing-engine
   random_seed: 42
   category: cereals
+  # licensed = the real Dominick's panel; synthetic = generated demo data
+  # (configs/demo.yaml). Shown by the API and the dashboard.
+  data_mode: licensed
 
 paths:
   raw_dir: data/raw/dominicks/cereals
@@ -26,6 +29,11 @@ data:
   # Dominick's week 1 starts on 1989-09-14 (Thursday) per the Kilts Center
   # manual; store weeks run Thursday -> Wednesday.
   week1_start_date: "1989-09-14"
+  # Raw file names inside paths.raw_dir (the official Cereals files).
+  movement_file: wcer.csv
+  upc_file: upccer.csv
+  # Any decoded week date outside this window means a calendar bug.
+  plausible_date_range: ["1989-01-01", "1998-12-31"]
   # Rows flagged ok = 0 are described as "suspect / trash" in the manual.
   keep_only_ok_rows: true
   min_price: 0.01

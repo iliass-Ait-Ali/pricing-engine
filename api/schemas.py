@@ -16,9 +16,13 @@ class HealthResponse(BaseModel):
     model_loaded: bool
     contexts_loaded: int
     decision_weeks: list[int] = Field(default_factory=list)
+    data_mode: str = Field("licensed", description="licensed (Dominick's) or synthetic (demo)")
+    data_label: str | None = None
 
 
 class ModelInfoResponse(BaseModel):
+    data_mode: str = "licensed"
+    data_label: str | None = None
     name: str | None
     kind: str | None
     version: str | None

@@ -27,6 +27,19 @@ def ensure_dir(path: str | Path) -> Path:
     return p
 
 
+def display_path(path: str | Path, root: str | Path) -> str:
+    """``path`` relative to ``root`` when it lies inside it, else absolute.
+
+    Provenance records prefer repo-relative paths, but a demo or test build may
+    write outside the repository, where ``Path.relative_to`` would raise.
+    """
+    p = Path(path).resolve()
+    try:
+        return p.relative_to(Path(root).resolve()).as_posix()
+    except ValueError:
+        return p.as_posix()
+
+
 def write_json(path: str | Path, payload: Any) -> Path:
     """Write JSON, creating parent directories, with numpy-safe conversion."""
     p = Path(path)

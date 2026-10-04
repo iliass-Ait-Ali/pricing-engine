@@ -25,6 +25,14 @@ from api.routes.pricing import router as pricing_router  # noqa: E402
 from api.schemas import HealthResponse, ModelInfoResponse  # noqa: E402
 from api.state import build_state  # noqa: E402
 from pricing_engine import __version__  # noqa: E402
+from pricing_engine.config import load_config  # noqa: E402
+
+SYNTHETIC_NOTE = """
+**SYNTHETIC DEMO DATA.** This instance serves a generated panel with known
+elasticities, not Dominick's data (whose licence forbids redistribution). The
+engine, guardrails and policy are the same code as the real run; every number
+it returns describes the synthetic panel only.
+"""
 
 DESCRIPTION = """
 Price recommendation service built on the Dominick's Finer Foods Cereals
@@ -41,10 +49,18 @@ it - HIGH-risk contexts never auto-change a price under the default policy.
 """
 
 
+def _description(cfg) -> str:
+    return (SYNTHETIC_NOTE if cfg.is_synthetic else "") + DESCRIPTION
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    app.state.cfg = load_config()
+    # The docs page states which data this instance serves.
+    app.description = _description(app.state.cfg)
+    app.openapi_schema = None
     try:
-        app.state.engine = build_state()
+        app.state.engine = build_state(app.state.cfg)
     except FileNotFoundError as exc:  # keep /health informative instead of crashing
         app.state.engine = None
         app.state.startup_error = str(exc)
@@ -52,14 +68,29 @@ async def lifespan(app: FastAPI):
     app.state.engine = None
 
 
+CFG = load_config()
+
 app = FastAPI(
     title="AI Pricing & Revenue Optimization Engine",
     # One source of truth for the project version: src/pricing_engine/__init__.py
     version=__version__,
-    description=DESCRIPTION,
+    description=_description(CFG),
     lifespan=lifespan,
 )
 app.include_router(pricing_router)
+
+
+def _cfg(request: Request):
+    """The config the running app was started with (falls back to import time)."""
+    return getattr(request.app.state, "cfg", CFG)
+
+
+@app.middleware("http")
+async def label_data_mode(request: Request, call_next):
+    """Every response says which data it describes (licensed or synthetic)."""
+    response = await call_next(request)
+    response.headers["X-Data-Mode"] = _cfg(request).data_mode
+    return response
 
 
 @app.get("/health", response_model=HealthResponse, tags=["meta"])
@@ -69,6 +100,8 @@ def health(request: Request) -> HealthResponse:
         model_loaded=state is not None,
         contexts_loaded=int(len(state.contexts)) if state else 0,
         decision_weeks=state.weeks if state else [],
+        data_mode=_cfg(request).data_mode,
+        data_label=_cfg(request).data_label,
     )
 
 
@@ -84,6 +117,8 @@ def model_info(request: Request) -> ModelInfoResponse:
         if elas_meta.get(k) is not None
     ]
     return ModelInfoResponse(
+        data_mode=_cfg(request).data_mode,
+        data_label=_cfg(request).data_label,
         price_response_method=(
             getattr(getattr(state.model, "method", None), "value", None) if state else None
         ),

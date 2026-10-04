@@ -1,0 +1,50 @@
+# Public demo image: dashboard + API on SYNTHETIC data, one port.
+#
+# The Dominick's licence forbids redistributing the panel, so this image never
+# contains it. Instead the build generates a synthetic panel with known
+# elasticities and runs the UNCHANGED pipeline on it (scripts/make_demo.py).
+# Every page and every API response is labelled synthetic.
+#
+#   docker build -f Dockerfile.demo -t pricing-engine-demo .
+#   docker run --rm -p 7860:7860 pricing-engine-demo
+#   # dashboard: http://localhost:7860/     API docs: http://localhost:7860/api/docs
+#
+# Port 7860 and uid 1000 match Hugging Face Docker Spaces, where it is hosted.
+
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    MPLBACKEND=Agg \
+    PRICING_ENGINE_CONFIG=configs/demo.yaml
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends nginx \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd --create-home --uid 1000 appuser
+WORKDIR /app
+
+COPY pyproject.toml README.md ./
+COPY src ./src
+RUN pip install --upgrade pip && pip install -e ".[api,dashboard,genai]"
+
+COPY api ./api
+COPY dashboard ./dashboard
+COPY configs ./configs
+COPY scripts ./scripts
+COPY deploy ./deploy
+
+# Generate the synthetic panel and run the pipeline at build time: the image
+# is deterministic (fixed seed) and carries only generated data.
+RUN python scripts/make_demo.py \
+    && chown -R appuser:appuser /app \
+    && chmod +x deploy/start.sh
+
+USER appuser
+EXPOSE 7860
+HEALTHCHECK --interval=30s --timeout=5s --start-period=60s --retries=3 \
+    CMD python -c "import urllib.request;urllib.request.urlopen('http://127.0.0.1:7860/api/health')"
+
+CMD ["./deploy/start.sh"]

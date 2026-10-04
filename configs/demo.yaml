@@ -1,0 +1,49 @@
+# ---------------------------------------------------------------------------
+# Public demo configuration: the UNCHANGED pipeline on SYNTHETIC data.
+#
+#   PRICING_ENGINE_CONFIG=configs/demo.yaml python scripts/make_demo.py
+#
+# Everything not set here is inherited from config.yaml, so the demo uses
+# exactly the same model settings, guardrails, policy profiles and risk
+# thresholds as the real run. Only provenance and paths change. Every path
+# points into data/demo/ or artifacts_demo/ (both git-ignored), so a demo run
+# can never overwrite the real Dominick's artifacts or reports.
+# tests/test_demo_config.py enforces both properties.
+# ---------------------------------------------------------------------------
+extends: config.yaml
+
+project:
+  category: synthetic_demo
+  data_mode: synthetic
+  data_label: "SYNTHETIC DEMO DATA - generated, not Dominick's"
+
+paths:
+  raw_dir: data/demo/raw
+  truth_dir: data/demo/truth
+  interim_dir: data/demo/interim
+  processed_dir: data/demo/processed
+  processed_table: data/demo/processed/demo.parquet
+  features_table: data/demo/processed/demo_features.parquet
+  artifacts_dir: artifacts_demo
+  models_dir: artifacts_demo/models
+  metrics_dir: artifacts_demo/metrics
+  figures_dir: artifacts_demo/figures
+  reports_dir: artifacts_demo/reports
+  recommendation_log: artifacts_demo/recommendation_log.csv
+  recommendation_transitions_log: artifacts_demo/recommendation_transitions.csv
+
+data:
+  week1_start_date: "2023-01-05"
+  movement_file: movement.csv
+  upc_file: upc_meta.csv
+  plausible_date_range: ["2023-01-01", "2030-12-31"]
+
+pricing_response:
+  elasticity_table: artifacts_demo/models/elasticity_table.csv
+
+# Generator settings (pricing_engine.data.synthetic.SyntheticSpec).
+synthetic:
+  n_upcs: 20
+  n_stores: 15
+  n_weeks: 200
+  seed: 7

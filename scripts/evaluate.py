@@ -61,8 +61,8 @@ def main() -> int:
         "by_promotion_state": by_promo.to_dict("records"),
         "implied_elasticity": model.implied_elasticity(test),
     }
-    write_json(cfg.path("metrics_dir") / "evaluation.json", payload)
-    print("wrote artifacts/metrics/evaluation.json")
+    out = write_json(cfg.path("metrics_dir") / "evaluation.json", payload)
+    print(f"wrote {out}")
     return 0 if drift < 1e-9 else 1
 
 

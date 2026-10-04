@@ -128,6 +128,123 @@ def missing(what: str, command: str) -> None:
 # ---------------------------------------------------------------------------
 # pages
 # ---------------------------------------------------------------------------
+GLOSSARY = {
+    "Elasticity": "How much demand moves when price moves. -2 means a 1% price rise "
+                  "loses about 2% of units.",
+    "Model-internal estimate": "A number scored by the same model that chose the price. "
+                               "Useful for ranking options; not a measured result.",
+    "Guardrail": "A business rule the price must respect: maximum change per week, "
+                 "minimum margin, staying close to prices seen before.",
+    "RECOMMEND_CHANGE / REVIEW_REQUIRED / KEEP_CURRENT": "Change the price / a person must "
+        "approve first (thin or risky evidence) / leave it alone.",
+    "Traffic driver": "A high-volume product almost every store carries; shoppers judge "
+                      "the store's prices by it (often called a key-value item).",
+    "WAPE": "Forecast error: total absolute error divided by total actual units.",
+    "AAC": "Average acquisition cost: the unit cost implied by the retailer's accounting "
+           "margin. A proxy for the true replacement cost.",
+}
+
+
+def page_business() -> None:
+    st.title("Business impact")
+    st.caption(
+        "The commercial answer in one page. Every dollar figure is a **model-internal "
+        "estimate**: a range across the demand responses this project has evidence for, "
+        "not a measured or causal result."
+    )
+    value = load_metric("value_sizing.json")
+    roles = load_metric("product_roles.json")
+    attribution = load_metric("constraint_attribution.json")
+    if not value:
+        missing("The value sizing", "python scripts/size_value.py")
+        return
+
+    rng, base = value["range"], value["baseline"]
+    c1, c2, c3 = st.columns(3)
+    c1.metric(
+        "Estimated annual gross-profit gain",
+        f"${rng['low_annual_usd'] / 1e3:,.0f}k - ${rng['high_annual_usd'] / 1e3:,.0f}k",
+        help="Low and high ends of the elasticity scenarios below.",
+    )
+    c2.metric("As a share of category gross profit",
+              f"{100 * rng['low_uplift_pct']:+.1f}% to {100 * rng['high_uplift_pct']:+.1f}%")
+    c3.metric("Category gross profit today (per year)",
+              f"${base['annual_category_gross_profit_usd'] / 1e6:,.2f}M",
+              help=f"{base['stores']} stores, observed weeks scaled to 52.")
+
+    st.subheader("The same recommended prices, under every evidenced demand response")
+    scen = pd.DataFrame(value["scenarios"])
+    scen["label"] = [
+        f"assumed elasticity {e}" if str(name).startswith("sensitivity") else f"{name} ({e})"
+        for name, e in zip(scen["scenario"], scen["assumed_elasticity"], strict=True)
+    ]
+    scen["kind"] = np.where(scen["scenario"].str.startswith("engine"), "engine's own estimate",
+                            "re-scored scenario")
+    scen = scen.sort_values("annual_gross_profit_usd")
+    fig = px.bar(
+        scen, x="annual_gross_profit_usd", y="label", orientation="h", color="kind",
+        labels={"annual_gross_profit_usd": "estimated annual gross-profit gain ($)", "label": "",
+                "kind": ""},
+    )
+    fig.update_yaxes(categoryorder="total ascending")
+    fig.update_layout(height=320, margin=dict(t=10, b=10))
+    st.plotly_chart(fig, use_container_width=True)
+    st.caption(
+        "Most recommended changes are price increases, so the more price-sensitive buyers "
+        "really are, the less the recommendations are worth. Only the store-randomised "
+        "pilot in docs/PRICING_EXPERIMENT.md can say which bar is right."
+    )
+
+    if attribution:
+        st.subheader("What actually sets the price")
+        det = pd.Series(attribution["final_determinant_counts"]).sort_values()
+        fig = px.bar(x=det.to_numpy(), y=det.index, orientation="h",
+                     labels={"x": "decision contexts", "y": ""})
+        fig.update_layout(height=280, margin=dict(t=10, b=10))
+        st.plotly_chart(fig, use_container_width=True)
+        st.info(
+            f"Only **{100 * attribution['share_determined_by_learned_signal']:.1f}%** of final "
+            "recommendations come from the model's own best price. Business guardrails set "
+            "the size of most changes; the model mainly sets their direction. Describe this "
+            "as rule-bounded pricing with a learned direction, not as AI-set prices."
+        )
+
+    if roles:
+        st.subheader("By product role")
+        tab = pd.DataFrame(roles["roles"])
+        show = tab[["role", "products", "revenue_share", "share_actionable",
+                    "share_increases_among_actionable", "share_of_estimated_gain"]].copy()
+        for col in ("revenue_share", "share_actionable", "share_increases_among_actionable",
+                    "share_of_estimated_gain"):
+            show[col] = (100 * show[col]).round(1).astype(str) + "%"
+        show.columns = ["role", "products", "revenue share", "get a price change",
+                        "of which increases", "share of estimated gain"]
+        st.dataframe(show, hide_index=True, use_container_width=True)
+        w = roles["traffic_cap_what_if"]
+        st.warning(
+            f"Traffic drivers are the products shoppers judge prices by. Capping their "
+            f"increases at +{100 * w['cap']:.0f}% would give up "
+            f"{100 * w['share_of_gain_given_up']:.0f}% of the estimated gain "
+            f"({100 * w['uplift_full_pct']:+.1f}% -> {100 * w['uplift_capped_pct']:+.1f}%). "
+            "That is a price-image decision for the category manager, not the model."
+        )
+
+    st.subheader("Recommended next step")
+    st.markdown(
+        "1. **Pilot, don't roll out.** Randomise stores, apply the engine's actionable "
+        "prices on a block of cereal products in treatment stores, compare gross profit per "
+        "store-week (design: `docs/PRICING_EXPERIMENT.md`).\n"
+        "2. **Staff the review queue.** "
+        f"{100 * value['share_review_required']:.0f}% of decisions need a person; the "
+        "*Review queue* page is the tool for it.\n"
+        "3. **Decide the traffic-driver policy** before the pilot, and stratify the pilot "
+        "by product role."
+    )
+    with st.expander("Glossary"):
+        for term, meaning in GLOSSARY.items():
+            st.markdown(f"**{term}.** {meaning}")
+
+
 def page_overview() -> None:
     st.title("Executive overview")
     st.caption(DISCLAIMER)
@@ -512,7 +629,7 @@ def page_recommendation(panel: pd.DataFrame, stats: pd.DataFrame, model) -> None
     log_path = CFG.path("recommendation_log")
     if log_path.exists():
         with st.expander("Recommendation audit log (most recent 200 rows)"):
-            st.dataframe(pd.read_csv(log_path).tail(200), height=320)
+            st.dataframe(RecommendationLog(log_path).read().tail(200), height=320)
 
 
 def page_review_queue() -> None:
@@ -803,22 +920,37 @@ def page_methodology() -> None:
 # main
 # ---------------------------------------------------------------------------
 PAGES = {
-    "1. Executive overview": "overview",
-    "2. Product / store explorer": "explorer",
-    "3. Pricing & demand": "pricing",
-    "4. Elasticity analysis": "elasticity",
-    "5. Price simulator": "simulator",
-    "6. Recommendation engine": "recommendation",
-    "7. Model performance": "model",
-    "8. Data quality": "quality",
-    "9. Methodology & limitations": "methodology",
-    "10. Review queue": "review_queue",
+    "1. Business impact": "business",
+    "2. Executive overview": "overview",
+    "3. Product / store explorer": "explorer",
+    "4. Pricing & demand": "pricing",
+    "5. Elasticity analysis": "elasticity",
+    "6. Price simulator": "simulator",
+    "7. Recommendation engine": "recommendation",
+    "8. Model performance": "model",
+    "9. Data quality": "quality",
+    "10. Methodology & limitations": "methodology",
+    "11. Review queue": "review_queue",
 }
+
+
+def data_banner() -> None:
+    """Persistent provenance label: synthetic demo data is never unlabelled."""
+    if CFG.is_synthetic:
+        st.error(
+            f"**{CFG.data_label}.** This public demo runs the unchanged engine on a "
+            "generated panel with known elasticities, because the Dominick's licence "
+            "forbids redistributing the real data. Numbers here describe the synthetic "
+            "panel only; the real results are in the repository's reports."
+        )
 
 
 def main() -> None:
     st.sidebar.title("Pricing engine")
-    st.sidebar.caption("Dominick's Finer Foods - Cereals\nKilts Center, Chicago Booth")
+    if CFG.is_synthetic:
+        st.sidebar.error(CFG.data_label)
+    else:
+        st.sidebar.caption("Dominick's Finer Foods - Cereals\nKilts Center, Chicago Booth")
     choice = st.sidebar.radio("Page", list(PAGES))
     st.sidebar.divider()
     st.sidebar.warning(
@@ -827,8 +959,11 @@ def main() -> None:
         "those contexts are gated to REVIEW_REQUIRED by default."
     )
 
+    data_banner()
     key = PAGES[choice]
-    if key == "overview":
+    if key == "business":
+        page_business()
+    elif key == "overview":
         page_overview()
     elif key == "explorer":
         page_explorer(load_panel())

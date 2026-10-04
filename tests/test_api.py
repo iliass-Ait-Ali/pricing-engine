@@ -1,11 +1,14 @@
 """Phase I tests: API contract, validation and model-loading behaviour.
 
-These tests need the trained artifact and the feature table, so they skip
-cleanly on a fresh clone (and in CI, which never downloads the licensed data).
+The contract is tested against the real Dominick's artifacts when they exist
+locally. On a fresh clone, and in CI (which never downloads the licensed data),
+the same tests run against the synthetic public demo built by
+``scripts/make_demo.py --fast``, so the API is always exercised end to end.
 """
 
 from __future__ import annotations
 
+import os
 import sys
 from pathlib import Path
 
@@ -20,19 +23,31 @@ fastapi_testclient = pytest.importorskip("fastapi.testclient")
 
 from pricing_engine.config import load_config  # noqa: E402
 
-cfg = load_config()
+REAL_CONFIG = REPO_ROOT / "configs" / "config.yaml"
+_real = load_config(REAL_CONFIG)
+#: PRICING_ENGINE_TEST_FORCE_DEMO=1 reproduces CI locally (demo even when real data exists).
 ARTIFACTS_READY = (
-    (cfg.path("models_dir") / "demand_model.joblib").exists() and cfg.path("features_table").exists()
-)
-
-pytestmark = pytest.mark.skipif(
-    not ARTIFACTS_READY,
-    reason="requires the trained model and feature table (run make data && make train)",
+    (_real.path("models_dir") / "demand_model.joblib").exists()
+    and _real.path("features_table").exists()
+    and os.environ.get("PRICING_ENGINE_TEST_FORCE_DEMO") != "1"
 )
 
 
 @pytest.fixture(scope="module")
-def client():
+def api_config(request) -> Path:
+    """Real artifacts when present, otherwise the synthetic demo build."""
+    path = REAL_CONFIG if ARTIFACTS_READY else request.getfixturevalue("demo_config")
+    previous = os.environ.get("PRICING_ENGINE_CONFIG")
+    os.environ["PRICING_ENGINE_CONFIG"] = str(path)
+    yield path
+    if previous is None:
+        os.environ.pop("PRICING_ENGINE_CONFIG", None)
+    else:
+        os.environ["PRICING_ENGINE_CONFIG"] = previous
+
+
+@pytest.fixture(scope="module")
+def client(api_config):
     from api.main import app
 
     with fastapi_testclient.TestClient(app) as c:
@@ -40,13 +55,20 @@ def client():
 
 
 @pytest.fixture(scope="module")
-def sample_key(client):
+def sample_key(client, api_config):
     """A UPC x store that the service actually serves."""
     from api.state import build_state
 
-    state = build_state()
+    state = build_state(load_config(api_config))
     row = state.contexts.sort_values("week").iloc[-1]
     return int(row["upc"]), int(row["store"])
+
+
+def test_health_reports_which_data_it_serves(client, api_config):
+    r = client.get("/health")
+    expected = load_config(api_config).data_mode
+    assert r.json()["data_mode"] == expected
+    assert r.headers["X-Data-Mode"] == expected
 
 
 # ---------------------------------------------------------------------------

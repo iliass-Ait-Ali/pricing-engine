@@ -20,20 +20,17 @@ TIMEOUT = 300
 
 
 def main() -> int:
+    import ast
+
     from streamlit.testing.v1 import AppTest
 
-    pages = [
-        "1. Executive overview",
-        "2. Product / store explorer",
-        "3. Pricing & demand",
-        "4. Elasticity analysis",
-        "5. Price simulator",
-        "6. Recommendation engine",
-        "7. Model performance",
-        "8. Data quality",
-        "9. Methodology & limitations",
-        "10. Review queue",
-    ]
+    # Read the page list from the app itself, so a new page is always covered.
+    tree = ast.parse(APP.read_text(encoding="utf-8"))
+    pages = next(
+        [k.value for k in node.value.keys]
+        for node in tree.body
+        if isinstance(node, ast.Assign) and getattr(node.targets[0], "id", None) == "PAGES"
+    )
 
     failures = 0
     for i, page in enumerate(pages):

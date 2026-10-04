@@ -16,7 +16,7 @@ official Kilts Center files
   scripts/backtest.py                -> reports/06
   scripts/monitor.py                 -> reports/MONITORING_DESIGN.md
   api/main.py                        -> FastAPI service
-  dashboard/app.py                   -> Streamlit, 9 pages
+  dashboard/app.py                   -> Streamlit, 11 pages
 ```
 
 ## Package layout
@@ -36,7 +36,7 @@ src/pricing_engine/
 api/                   main.py, schemas.py, state.py, routes/
 dashboard/             app.py
 scripts/               one CLI per pipeline stage
-tests/                 538 tests
+tests/                 the test suite (count generated into README section 2)
 ```
 
 ## Key design decisions
@@ -133,7 +133,7 @@ Measured on the development machine (Windows, Python 3.13):
 | price-response validation | 300 contexts x 25 prices | ~30 s |
 | batch recommendations | 3,000 contexts | 144 s |
 | backtest | 10 weeks x ~390 contexts x 4 policies | ~7 min |
-| test suite | 538 tests | 11 s |
+| test suite | full suite (count in README section 2) | ~2 min, incl. a ~1 min synthetic demo build |
 
 The batch optimizer calls `optimize_price` per context (each doing one batched
 prediction over its grid). `simulation.simulate_many` exists for the fully

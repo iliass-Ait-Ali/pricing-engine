@@ -96,8 +96,25 @@ def raw_audit(movement: pd.DataFrame, upc_meta: pd.DataFrame) -> dict[str, Any]:
     return audit
 
 
-def validate_processed(df: pd.DataFrame) -> list[Check]:
-    """Re-derive documented formulas and structural invariants on the canonical table."""
+#: Dominick's covers 1989-1997; a date outside this window means a calendar bug.
+DEFAULT_PLAUSIBLE_DATES = ("1989-01-01", "1998-12-31")
+
+
+def validate_processed(
+    df: pd.DataFrame, date_range: tuple[str, str] | None = None
+) -> list[Check]:
+    """Re-derive documented formulas and structural invariants on the canonical table.
+
+    ``date_range`` defaults to ``data.plausible_date_range`` from the active
+    config (the Dominick's window unless a config such as the synthetic demo
+    sets its own).
+    """
+    if date_range is None:
+        from pricing_engine.config import load_config
+
+        date_range = tuple(
+            load_config().get("data.plausible_date_range", list(DEFAULT_PLAUSIBLE_DATES))
+        )
     checks: list[Check] = []
 
     def add(name: str, passed: bool, detail: str) -> None:
@@ -161,7 +178,7 @@ def validate_processed(df: pd.DataFrame) -> list[Check]:
     )
     add(
         "date_range_plausible",
-        bool(dates.min() >= pd.Timestamp("1989-01-01") and dates.max() <= pd.Timestamp("1998-12-31")),
+        bool(dates.min() >= pd.Timestamp(date_range[0]) and dates.max() <= pd.Timestamp(date_range[1])),
         f"{dates.min().date()} .. {dates.max().date()}",
     )
 

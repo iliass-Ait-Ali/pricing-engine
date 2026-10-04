@@ -10,3 +10,8 @@ __pycache__/
 notebooks/
 .pytest_cache/
 .ruff_cache/
+artifacts_demo/
+.github/
+reports/*.pdf
+reports/*.docx
+artifacts/report_figures/

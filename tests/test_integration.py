@@ -21,6 +21,7 @@ import pytest
 
 from pricing_engine.audit import LIFECYCLE_STATES, RecommendationLog
 from pricing_engine.data.cleaning import build_canonical
+from pricing_engine.data.synthetic import SyntheticSpec, generate_panel
 from pricing_engine.data.validator import validate_processed
 from pricing_engine.economics.metrics import price_variation_summary
 from pricing_engine.features.build import build_feature_table, temporal_split, training_frame
@@ -32,41 +33,19 @@ from pricing_engine.simulation.counterfactual import simulate_price_grid
 
 @pytest.fixture(scope="module")
 def synthetic_raw() -> tuple[pd.DataFrame, pd.DataFrame]:
-    """A small Dominick's-shaped panel with a known price response."""
-    rng = np.random.default_rng(7)
-    rows = []
-    for upc in (1000000001, 1000000002, 1000000003):
-        for store in (2, 5, 8):
-            base_price = {1000000001: 3.0, 1000000002: 4.5, 1000000003: 2.0}[upc]
-            for week in range(1, 121):
-                promo = int(rng.random() < 0.12)
-                price = base_price * (1.0 + 0.12 * np.sin(week / 5.0) - 0.15 * promo)
-                units = np.exp(3.2 - 1.6 * np.log(price) + 0.35 * promo + rng.normal(0, 0.12))
-                rows.append(
-                    {
-                        "store": store,
-                        "upc": upc,
-                        "week": week,
-                        "move": float(max(1.0, round(units))),
-                        "qty": 1.0,
-                        "price": round(price, 2),
-                        "sale": "B" if promo else None,
-                        "profit": 25.0 + rng.normal(0, 1.0),
-                        "ok": 1,
-                    }
-                )
-    movement = pd.DataFrame(rows)
-    meta = pd.DataFrame(
-        {
-            "com_code": [311, 311, 311],
-            "upc": [1000000001, 1000000002, 1000000003],
-            "descrip": ["SYNTH FLAKES", "SYNTH OATS", "SYNTH PUFFS"],
-            "size": ["12 OZ", "18 OZ", "10 OZ"],
-            "case": [12, 12, 12],
-            "nitem": [1, 2, 3],
-        }
+    """A small Dominick's-shaped panel with a known price response.
+
+    Built by the same generator as the public demo
+    (:mod:`pricing_engine.data.synthetic`), without its deliberate data-quality
+    noise so every raw row survives cleaning.
+    """
+    panel = generate_panel(
+        SyntheticSpec(
+            n_upcs=3, n_stores=3, n_weeks=120, seed=7,
+            late_entry_share=0.0, multipack_share=0.0, bad_row_share=0.0,
+        )
     )
-    return movement, meta
+    return panel.movement, panel.upc_meta
 
 
 def test_full_pipeline(synthetic_raw, cfg, tmp_path):

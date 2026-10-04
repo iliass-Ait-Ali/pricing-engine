@@ -28,7 +28,7 @@ from pricing_engine.config import load_config  # noqa: E402
 from pricing_engine.economics.elasticity_store import build_elasticity_table  # noqa: E402
 from pricing_engine.features.build import temporal_split, training_frame  # noqa: E402
 from pricing_engine.models.demand_model import load_model  # noqa: E402
-from pricing_engine.utils.io import write_json  # noqa: E402
+from pricing_engine.utils.io import display_path, write_json  # noqa: E402
 
 
 def main() -> int:
@@ -81,7 +81,7 @@ def main() -> int:
         ),
         "n_clipped": int(prods["clipped"].sum()),
         "runtime_seconds": round(time.time() - t0, 1),
-        "output": str(out.relative_to(REPO_ROOT)),
+        "output": display_path(out, REPO_ROOT),
     }
     write_json(cfg.path("metrics_dir") / "elasticity_estimation.json", summary)
 

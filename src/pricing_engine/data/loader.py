@@ -47,6 +47,11 @@ def _raw_dir(cfg: Config | None = None) -> Path:
     return cfg.path("raw_dir")
 
 
+def _raw_name(key: str, default: str, cfg: Config | None) -> str:
+    """Raw file name from ``data.<key>``; defaults are the Cereals file names."""
+    return str((cfg or load_config()).get(f"data.{key}", default))
+
+
 def _require(path: Path) -> Path:
     if not path.exists():
         raise RawDataMissingError(
@@ -59,7 +64,7 @@ def _require(path: Path) -> Path:
 
 def load_movement(path: str | Path | None = None, *, cfg: Config | None = None) -> pd.DataFrame:
     """Load the raw Cereals weekly movement table (``wcer.csv``)."""
-    csv_path = Path(path) if path else _raw_dir(cfg) / "wcer.csv"
+    csv_path = Path(path) if path else _raw_dir(cfg) / _raw_name("movement_file", "wcer.csv", cfg)
     _require(csv_path)
 
     header = pd.read_csv(csv_path, nrows=0, encoding=ENCODING)
@@ -91,7 +96,7 @@ def load_movement(path: str | Path | None = None, *, cfg: Config | None = None) 
 
 def load_upc_metadata(path: str | Path | None = None, *, cfg: Config | None = None) -> pd.DataFrame:
     """Load the raw Cereals UPC metadata table (``upccer.csv``)."""
-    csv_path = Path(path) if path else _raw_dir(cfg) / "upccer.csv"
+    csv_path = Path(path) if path else _raw_dir(cfg) / _raw_name("upc_file", "upccer.csv", cfg)
     _require(csv_path)
 
     df = pd.read_csv(
