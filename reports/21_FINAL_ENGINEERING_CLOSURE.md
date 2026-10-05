@@ -568,8 +568,8 @@ $ git rev-parse v1.0.0^{commit}
 
 The annotated tag `v1.0.0` was created **after** the full verification gauntlet
 below passed, on the final commit of this repository. The verification in §9
-was executed at commit `32f4653`
-(`32f4653159846dc78804d2dadd032eda0f7a25ff`); this record is the
+was executed at commit `7fbc49a`
+(`7fbc49a23f7993e915ca59f3c800b18d924837dd`) (commit ids were regenerated when the history was re-authored under the repository owner's GitHub identity before publication; the tree of this commit is byte-identical to the one verified); this record is the
 commit that follows it, and the tag was moved onto it so that the tagged tree
 contains its own release record.
 
