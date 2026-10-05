@@ -54,6 +54,9 @@ artifacts/metrics/price_variation_upc_store.csv
 artifacts/recommendation_log.csv
 artifacts/recommendation_log__schema_*.csv
 artifacts/recommendation_transitions.csv
+# One row per pending recommendation (UPC x store, with the store's price for
+# every decision that keeps it): a projection of the recommendation log above.
+artifacts/metrics/review_queue.json
 
 # Vendored third-party library, fetched once by scripts/render_mermaid.py
 artifacts/report_figures/mermaid/mermaid.min.js

@@ -1,6 +1,6 @@
 # AI Pricing & Revenue Optimization Engine
 
-[![CI](https://github.com/CharikatDajaj/pricing-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/CharikatDajaj/pricing-engine/actions/workflows/ci.yml)
+[![CI](https://github.com/iliass-Ait-Ali/pricing-engine/actions/workflows/ci.yml/badge.svg)](https://github.com/iliass-Ait-Ali/pricing-engine/actions/workflows/ci.yml)
 
 **What price should a grocer charge for each product, in each store, this week,
 to earn more gross profit without taking risks it cannot defend?** This project
