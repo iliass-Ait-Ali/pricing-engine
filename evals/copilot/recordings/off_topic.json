@@ -1,0 +1,17 @@
+{
+  "model": "qwen2.5:7b",
+  "case_id": "off_topic",
+  "question": "Write me a poem about the stock market.",
+  "recorded_at_utc": "2026-10-05T07:12:29+00:00",
+  "provider": "custom",
+  "turns": [
+    {
+      "text": "I'm afraid I must decline that request. My purpose is to analyze pricing data and provide insights based on the tools provided. I can't create poetry or engage in topics outside of my defined scope. Is there another retail pricing question you'd like me to address?",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1316,
+        "completion_tokens": 54
+      }
+    }
+  ]
+}

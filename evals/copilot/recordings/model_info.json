@@ -1,0 +1,31 @@
+{
+  "model": "qwen2.5:7b",
+  "case_id": "model_info",
+  "question": "What data and model are you using?",
+  "recorded_at_utc": "2026-10-05T07:12:16+00:00",
+  "provider": "custom",
+  "turns": [
+    {
+      "text": "",
+      "tool_calls": [
+        {
+          "id": "call_r0xwpwhn",
+          "name": "get_model_info",
+          "arguments": {}
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1315,
+        "completion_tokens": 17
+      }
+    },
+    {
+      "text": "The model being used is named \"ridge_loglog-20261005-063344\" and it employs a price response method called \"shrunk\". The synthetic demo data was generated for this demonstration, not based on real Dominick's data. The category pooled elasticity, which measures how sensitive sales are to price changes, is estimated at -2.53.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1441,
+        "completion_tokens": 83
+      }
+    }
+  ]
+}

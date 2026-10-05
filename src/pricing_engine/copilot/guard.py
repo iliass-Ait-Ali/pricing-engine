@@ -6,7 +6,11 @@
    model therefore cannot invent, compute or misround a figure.
 2. **Wording.** The project's claim rules (`scripts/audit_claims.py`) apply to
    the copilot too: no causal or guaranteed-outcome language unless it is
-   negated, and any mention of a gain must carry "model-internal".
+   negated, and any mention of a gain must carry "model-internal". A gain is
+   recognised by its wording *or by its value*: quoting a percentage that a
+   tool returned as a model-internal estimated uplift needs the label however
+   the sentence is phrased (the first live run wrote "increase the gross
+   profit by 43.7%", which no word list would have caught).
 3. **Decision.** If a recommendation was retrieved, its decision state must be
    quoted verbatim, so "REVIEW_REQUIRED" can never be paraphrased into "raise
    the price".
@@ -46,6 +50,9 @@ NEGATION = re.compile(
     r"rather than|instead of)\b", re.I
 )
 GAIN = re.compile(r"\b(?:uplift|gain|more profit|extra profit|profit increase)\b", re.I)
+#: Tool-result keys whose values are model-internal estimated gains.
+UPLIFT_KEY = "model_internal_estimated"
+_PERCENT = re.compile(r"(?<![A-Za-z_\d.])(\d+(?:\.\d+)?)\s?%")
 
 
 @dataclass
@@ -113,11 +120,32 @@ def unsupported_numbers(answer: str, allowed: list[float]) -> list[str]:
     return bad
 
 
+def uplift_values(payload: Any) -> Iterable[float]:
+    """Non-zero numbers stored under a model-internal estimated uplift key."""
+    if isinstance(payload, dict):
+        for key, value in payload.items():
+            if UPLIFT_KEY in str(key) and isinstance(value, int | float) and not isinstance(value, bool):
+                if value:
+                    yield float(value)
+            else:
+                yield from uplift_values(value)
+    elif isinstance(payload, list | tuple):
+        for item in payload:
+            yield from uplift_values(item)
+
+
+def quotes_an_uplift(answer: str, tool_results: Iterable[Any]) -> bool:
+    """True when the answer states, as a percentage, a value a tool returned as an uplift."""
+    uplifts = [v for r in tool_results for v in uplift_values(r)]
+    return bool(uplifts) and any(_supported(m.group(1), uplifts) for m in _PERCENT.finditer(answer))
+
+
 def _sentences(text: str) -> list[str]:
     return [s for s in re.split(r"(?<=[.!?])\s+|\n+", text) if s.strip()]
 
 
-def check_language(answer: str) -> tuple[list[str], list[str]]:
+def check_language(answer: str, quotes_uplift: bool = False) -> tuple[list[str], list[str]]:
+    answer = answer.replace("\u2019", "'")   # a typographic apostrophe still negates
     forbidden = []
     for sentence in _sentences(answer):
         if NEGATION.search(sentence):
@@ -126,7 +154,7 @@ def check_language(answer: str) -> tuple[list[str], list[str]]:
             if rx.search(sentence):
                 forbidden.append(f"{label}: \"{sentence.strip()[:80]}\"")
     missing = []
-    if GAIN.search(answer) and "model-internal" not in answer.lower():
+    if (GAIN.search(answer) or quotes_uplift) and "model-internal" not in answer.lower():
         missing.append('the words "model-internal estimated" next to any gain or uplift')
     return forbidden, missing
 
@@ -135,7 +163,7 @@ def check_answer(answer: str, question: str, tool_results: list[dict[str, Any]],
                  tool_args: list[dict[str, Any]] | None = None) -> GuardReport:
     allowed = allowed_numbers(question, [*tool_results, *(tool_args or [])])
     numbers = unsupported_numbers(answer, allowed)
-    forbidden, missing = check_language(answer)
+    forbidden, missing = check_language(answer, quotes_an_uplift(answer, tool_results))
     decisions = {r.get("decision") for r in tool_results if isinstance(r, dict) and r.get("decision")}
     for decision in sorted(decisions):
         if decision not in answer:

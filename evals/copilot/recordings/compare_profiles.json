@@ -1,0 +1,42 @@
+{
+  "model": "qwen2.5:7b",
+  "case_id": "compare_profiles",
+  "question": "Compare the conservative, standard and aggressive policies for Brightmorn Rice Puffs in store 904.",
+  "recorded_at_utc": "2026-10-05T07:12:01+00:00",
+  "provider": "custom",
+  "turns": [
+    {
+      "text": "",
+      "tool_calls": [
+        {
+          "id": "call_hq11lbua",
+          "name": "compare_policies",
+          "arguments": {
+            "product": "Brightmorn Rice Puffs",
+            "store": 904
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1329,
+        "completion_tokens": 34
+      }
+    },
+    {
+      "text": "For Brightmorn Rice Puffs in store 904:\n\n- **Conservative Policy**: Recommends increasing the price from $4.09 to $4.29 (4.9% increase), with a low risk level and an estimated profit uplift of 2.2%.\n- **Standard Policy**: Recommends increasing the price to $4.48 (9.5% increase), with a low risk level and an estimated profit uplift of 3.0%.\n- **Aggressive Policy**: Recommends increasing the price to $4.57 (11.7% increase), with a low risk level and an estimated profit uplift of 3.1%.\n\nAll policies recommend a price increase, with the aggressive policy suggesting the highest price and the most significant profit uplift.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1663,
+        "completion_tokens": 165
+      }
+    },
+    {
+      "text": "For Brightmorn Rice Puffs in store 904:\n\n- **Conservative Policy**: Recommends increasing the price from $4.09 to $4.29 (4.9% increase), with a low risk level and a model-internal estimated profit uplift of 2.2%.\n- **Standard Policy**: Recommends increasing the price to $4.48 (9.5% increase), with a low risk level and a model-internal estimated profit uplift of 3.0%.\n- **Aggressive Policy**: Recommends increasing the price to $4.57 (11.7% increase), with a low risk level and a model-internal estimated profit uplift of 3.1%.\n\nAll policies recommend a price increase, with the aggressive policy suggesting the highest price and the most significant model-internal estimated profit uplift.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1869,
+        "completion_tokens": 178
+      }
+    }
+  ]
+}

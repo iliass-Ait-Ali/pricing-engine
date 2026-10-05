@@ -116,7 +116,7 @@ estimator against known truth, and a safe GenAI interface.
 | Value range in dollars | `reports/23_BUSINESS_VALUE.md` | `VALIDATED` |
 | Product roles (traffic drivers, margin builders) | `reports/24_PRODUCT_ROLES.md` | `VALIDATED` |
 | Executive summary, Business impact page, README front door | `docs/EXECUTIVE_SUMMARY.md`, dashboard page 1 | `VALIDATED` |
-| Pricing Copilot (LLM tool calling + deterministic guard) | `docs/COPILOT_CARD.md`, `tests/test_copilot_*.py` | `TESTED` (live evaluation pending) |
+| Pricing Copilot (LLM tool calling + deterministic guard) | `docs/COPILOT_CARD.md`, `tests/test_copilot_*.py`, `evals/copilot/results.json` | `VALIDATED` (`LIMITED`: one local model, 17 of 20 cases) |
 | Ground-truth recovery study | `reports/25_GROUND_TRUTH_STUDY.md`, `tests/test_ground_truth_study.py` | `VALIDATED` (`LIMITED`: synthetic) |
 | Interview pack | `docs/INTERVIEW_PITCH.md` | `VALIDATED` |
 
@@ -127,9 +127,12 @@ estimator against known truth, and a safe GenAI interface.
 2. **Deploy the demo.** Add the `HF_TOKEN` secret and the `HF_SPACE` variable,
    run "Deploy demo", put the Space link in the README, and optionally add a
    `GROQ_API_KEY` (free tier) as a Space secret to switch the copilot on.
-3. **Record the copilot evaluation.** Run `python scripts/eval_copilot.py --mode record`
-   with a key, commit `evals/copilot/recordings/` and `results.json`, and
-   report the pass rate in `docs/COPILOT_CARD.md`.
+3. **Done on 2026-10-05, with a local model:** the copilot evaluation is
+   recorded (`evals/copilot/`, `docs/COPILOT_CARD.md`): 17 of 20 cases pass
+   on a small open-weights model, after the first run (8 of 20) exposed
+   invented product codes and a guard gap. Still open: re-record with the
+   default hosted model (`python scripts/eval_copilot.py --mode record` with
+   a free `GROQ_API_KEY`), and write new questions for a held-out score.
 4. **Done after v1.1.0:** the risk bands were checked against out-of-time
    prediction error (`reports/26_RISK_CALIBRATION.md`). They separate error
    only weakly; extrapolation carries the signal.

@@ -78,6 +78,28 @@ def test_gain_without_model_internal_label_is_flagged():
     assert missing == []
 
 
+def test_an_uplift_figure_needs_the_label_however_it_is_phrased():
+    """From the first live run: a gain stated without any of the gain words."""
+    unlabelled = "RECOMMEND_CHANGE: this is estimated to increase the gross profit by 12.4%."
+    report = check_answer(unlabelled, "q", [TOOL])
+    assert not report.passed and any("model-internal" in m for m in report.missing_required)
+    rounded = "RECOMMEND_CHANGE: the model estimates a 12% increase in gross profit."
+    assert not check_answer(rounded, "q", [TOOL]).passed
+    labelled = "RECOMMEND_CHANGE: a model-internal estimated 12.4% increase in gross profit."
+    assert check_answer(labelled, "q", [TOOL]).passed
+    # Other percentages do not need the label, and a zero uplift is not a gain.
+    assert check_answer("RECOMMEND_CHANGE: the price changes by 8.6%.", "q", [TOOL]).passed
+    flat = {**TOOL, "model_internal_estimated_profit_uplift_percent": 0.0, "price_change_percent": 0.0}
+    assert check_answer("RECOMMEND_CHANGE: the price changes by 0.0%.", "q", [flat]).passed
+    nested = {"policies": [{"model_internal_estimated_profit_uplift_percent": 3.1}]}
+    assert not check_answer("Profit rises 3.1% under the aggressive policy.", "q", [nested]).passed
+
+
+def test_a_typographic_apostrophe_still_negates():
+    forbidden, _ = check_language("I can’t prove that from this data.")
+    assert forbidden == []
+
+
 def test_decision_state_must_be_quoted():
     good = ("Decision RECOMMEND_CHANGE: the price moves from $3.49 to $3.79, a model-internal "
             "estimated uplift of 12.4%.")

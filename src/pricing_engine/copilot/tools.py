@@ -7,6 +7,12 @@ rejects any number it did not receive from a tool.
 
 Each tool wraps :class:`pricing_engine.serving.AppState`, the same object the
 API serves, so the copilot and the API give identical answers.
+
+Product codes are resolved in code, not by the model. The first live
+evaluation (``evals/copilot/history``) showed a small model calling the right
+tool with a UPC it had invented, so the price tools take a product *name* and
+look the code up themselves, and an unknown code comes back as an error that
+says how to recover.
 """
 
 from __future__ import annotations
@@ -79,6 +85,43 @@ def get_model_info(state: AppState) -> dict[str, Any]:
     }
 
 
+def resolve_upc(state: AppState, store: int, upc: int | None = None,
+                product: str | None = None) -> int:
+    """The served UPC for a store, from a code the caller gave or from a product name.
+
+    A code is used only if it is served in that store; otherwise the name
+    decides. Nothing is guessed: no match and several matches are both errors
+    that tell the caller what to do next.
+    """
+    prods = state.products()
+    here = prods[prods["store"] == int(store)]
+    if here.empty:
+        stores = sorted(int(s) for s in prods["store"].unique())
+        shown = ", ".join(map(str, stores[:15])) + (", ..." if len(stores) > 15 else "")
+        raise ServingError(f"No decision context for store {store}: it is not served. "
+                           f"Served stores: {shown}.")
+    if upc is not None and (here["upc"] == int(upc)).any():
+        return int(upc)
+    name = str(product).strip() if product else ""
+    if name and "descrip" in here:
+        hit = here[here["descrip"].astype(str).str.contains(name, case=False, regex=False)]
+        found = hit.drop_duplicates("upc")
+        if len(found) == 1:
+            return int(found["upc"].iloc[0])
+        if len(found) > 1:
+            options = "; ".join(f"{r.descrip} (UPC {int(r.upc)})" for r in found.head(8).itertuples())
+            raise ServingError(f"{len(found)} served products in store {store} match {name!r}: "
+                               f"{options}. Ask which one is meant.")
+        raise ServingError(f"No served product in store {store} matches {name!r}. "
+                           "Call list_products to see the served names.")
+    if upc is None:
+        raise ServingError("Give the product's name as `product`, or its code as `upc`.")
+    raise ServingError(
+        f"No decision context for UPC {upc} at store {store}: that code is not served there. "
+        "Product codes must come from the user or from list_products, never from memory. "
+        "If the user named the product, call this tool again with `product` set to that name.")
+
+
 def _recommendation(state: AppState, upc: int, store: int, policy_profile: str,
                     objective: str) -> dict[str, Any]:
     rec = state.recommend(int(upc), int(store), policy_profile=policy_profile,
@@ -114,16 +157,21 @@ def _recommendation(state: AppState, upc: int, store: int, policy_profile: str,
     }
 
 
-def recommend_price(state: AppState, upc: int, store: int, policy_profile: str = "standard",
+def recommend_price(state: AppState, store: int, upc: int | None = None,
+                    product: str | None = None, policy_profile: str = "standard",
                     objective: str = "gross_profit") -> dict[str, Any]:
-    return _recommendation(state, upc, store, policy_profile, objective)
+    return _recommendation(state, resolve_upc(state, store, upc, product), store,
+                           policy_profile, objective)
 
 
-def simulate_prices(state: AppState, upc: int, store: int, min_price: float, max_price: float,
+def simulate_prices(state: AppState, store: int, min_price: float, max_price: float,
+                    upc: int | None = None, product: str | None = None,
                     step: float | None = None) -> dict[str, Any]:
     min_price, max_price = float(min_price), float(max_price)
-    if not 0 < min_price < max_price:
-        raise ServingError("min_price must be positive and below max_price")
+    if not 0 < min_price <= max_price:
+        raise ServingError("min_price must be positive and not above max_price "
+                           "(set both to the same value to simulate a single price)")
+    upc = resolve_upc(state, store, upc, product)
     step = float(step) if step else max(0.05, round((max_price - min_price) / 10, 2))
     if (max_price - min_price) / step + 1 > MAX_SIM_POINTS:
         step = round((max_price - min_price) / (MAX_SIM_POINTS - 1), 2) + 0.01
@@ -133,27 +181,33 @@ def simulate_prices(state: AppState, upc: int, store: int, min_price: float, max
          "revenue": money(p["expected_revenue"]), "gross_profit": money(p["expected_gross_profit"])}
         for p in sim["curve"]
     ]
-    best = max((c for c in curve if c["gross_profit"] is not None),
-               key=lambda c: c["gross_profit"], default=None)
-    return {
+    out = {
         "upc": sim["upc"], "store": sim["store"], "week": sim["week"],
         "unit_cost": money(sim["unit_cost_used"]),
         "elasticity_used": num(sim["elasticity_used"], 2) if sim["elasticity_used"] is not None else None,
+        "units_are": "predicted units per week; revenue and gross_profit are weekly totals, not per unit",
         "curve": curve,
-        "highest_gross_profit_on_this_grid": best,
-        "note": "Model-internal estimates. The grid ignores the business guardrails; "
-                "use recommend_price for a price the policy allows.",
     }
+    if len(curve) > 1:   # "the highest on this grid" means nothing for a single price
+        out["highest_gross_profit_on_this_grid"] = max(
+            (c for c in curve if c["gross_profit"] is not None),
+            key=lambda c: c["gross_profit"], default=None)
+    out["note"] = ("Model-internal estimates. The grid ignores the business guardrails; "
+                   "use recommend_price for a price the policy allows.")
+    return out
 
 
-def compare_policies(state: AppState, upc: int, store: int) -> dict[str, Any]:
+def compare_policies(state: AppState, store: int, upc: int | None = None,
+                     product: str | None = None) -> dict[str, Any]:
+    upc = resolve_upc(state, store, upc, product)
     out = []
     for profile in POLICY_PROFILES:
         r = _recommendation(state, upc, store, profile, "gross_profit")
         out.append({k: r[k] for k in (
             "policy_profile", "decision", "recommended_price", "price_change_percent", "risk_level",
             "model_internal_estimated_profit_uplift_percent", "reason_codes")})
-    return {"upc": int(upc), "store": int(store), "current_price": r["current_price"], "policies": out}
+    return {"upc": int(upc), "store": int(store), "product": r["product"],
+            "current_price": r["current_price"], "policies": out}
 
 
 def explain_reason_codes(state: AppState, codes: list[str]) -> dict[str, Any]:
@@ -202,14 +256,19 @@ def portfolio_summary(state: AppState, policy_profile: str = "standard",
 # ---------------------------------------------------------------------------
 # registry
 # ---------------------------------------------------------------------------
-_ID = {"upc": {"type": "integer", "description": "Product code (UPC)"},
-       "store": {"type": "integer", "description": "Store number"}}
+_ID = {"store": {"type": "integer", "description": "Store number"},
+       "product": {"type": "string",
+                   "description": "Product name or part of it, as the user wrote it. The engine "
+                                  "looks up the code. Use this whenever the user names a product."},
+       "upc": {"type": "integer",
+               "description": "Product code (UPC). Only when the user gave the code or "
+                              "list_products returned it. Never guess a code."}}
 _PROFILE = {"type": "string", "enum": list(POLICY_PROFILES),
             "description": "Guardrail profile; standard is the default policy"}
 
 TOOLS: dict[str, Tool] = {t.name: t for t in (
     Tool("list_products", "Find served products by (part of) their name; returns UPC, store and "
-         "description. Use it to turn a product name into a UPC and store.",
+         "description. Use it to browse what is served or to check whether a product exists.",
          {"type": "object", "properties": {"query": {"type": "string"},
                                            "limit": {"type": "integer"}}}, list_products),
     Tool("get_model_info", "Which data, model version and price-response method are being served.",
@@ -219,16 +278,17 @@ TOOLS: dict[str, Tool] = {t.name: t for t in (
          {"type": "object", "properties": {**_ID, "policy_profile": _PROFILE,
                                            "objective": {"type": "string",
                                                          "enum": ["gross_profit", "revenue"]}},
-          "required": ["upc", "store"]}, recommend_price),
+          "required": ["store"]}, recommend_price),
     Tool("simulate_prices", "Estimated units, revenue and gross profit at a range of candidate "
-         "prices for one product in one store (at most 25 points; ignores guardrails).",
+         "prices for one product in one store (at most 25 points; ignores guardrails). For a "
+         "single price, set min_price and max_price to the same value.",
          {"type": "object", "properties": {**_ID, "min_price": {"type": "number"},
                                            "max_price": {"type": "number"},
                                            "step": {"type": "number"}},
-          "required": ["upc", "store", "min_price", "max_price"]}, simulate_prices),
+          "required": ["store", "min_price", "max_price"]}, simulate_prices),
     Tool("compare_policies", "The recommendation under the conservative, standard and aggressive "
          "guardrail profiles side by side.",
-         {"type": "object", "properties": _ID, "required": ["upc", "store"]}, compare_policies),
+         {"type": "object", "properties": _ID, "required": ["store"]}, compare_policies),
     Tool("explain_reason_codes", "Plain-English meaning of reason codes or decision states.",
          {"type": "object", "properties": {"codes": {"type": "array", "items": {"type": "string"}}},
           "required": ["codes"]}, explain_reason_codes),

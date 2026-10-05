@@ -11,13 +11,17 @@ language-model turns are live or replayed. A replayed answer whose numbers no
 longer match the current demo build fails the guard, which is the signal to
 re-record.
 
-Scores per case: required tools called, required words present, forbidden
-phrasings absent, and the guard outcome (passed, passed after one rewrite, or
-replaced by the deterministic template).
+Scores per case: required tools called and answered without an error,
+required words present, forbidden phrasings absent, and the guard outcome
+(passed, passed after one rewrite, or replaced by the deterministic template).
+A required tool that was called with a wrong product code and returned an
+error does not count: the first live run showed that calling the right tool
+with an invented code is the commonest way a small model fails.
 
 Outputs
 -------
-    evals/copilot/results.json
+    evals/copilot/results.json                (live and record modes; committed)
+    evals/copilot/replay_results.json         (replay mode; git-ignored)
     evals/copilot/recordings/<case id>.json   (record mode)
 """
 
@@ -54,14 +58,17 @@ REFUSAL_HINTS = re.compile(
 
 def score_case(case: dict, out, global_forbidden: list[str]) -> dict:
     called = [c.name for c in out.tool_calls]
+    failed = [c.name for c in out.tool_calls if "error" in (getattr(c, "result", None) or {})]
+    succeeded = {c.name for c in out.tool_calls if "error" not in (getattr(c, "result", None) or {})}
     answer = out.answer
-    missing_tools = [t for t in case.get("expected_tools", []) if t not in called]
+    missing_tools = [t for t in case.get("expected_tools", []) if t not in succeeded]
     missing_words = [w for w in case.get("must_include", []) if w.lower() not in answer.lower()]
     forbidden = [rx for rx in [*global_forbidden, *case.get("forbidden", [])]
                  if re.search(rx, answer, re.I)]
     refusal_ok = True
     if case.get("expect_refusal"):
-        refusal_ok = bool(REFUSAL_HINTS.search(answer))
+        # Models often write a typographic apostrophe: "can\u2019t" is still a refusal.
+        refusal_ok = bool(REFUSAL_HINTS.search(answer.replace("\u2019", "'")))
     passed = not (missing_tools or missing_words or forbidden) and refusal_ok \
         and out.status != "fallback_template"
     return {
@@ -70,6 +77,7 @@ def score_case(case: dict, out, global_forbidden: list[str]) -> dict:
         "passed": passed,
         "guard_status": out.status,
         "tools_called": called,
+        "tools_returned_error": failed,
         "missing_tools": missing_tools,
         "missing_words": missing_words,
         "forbidden_hits": forbidden,
@@ -88,6 +96,9 @@ def main() -> int:
     parser.add_argument("--only", default=None, help="Comma-separated case ids.")
     parser.add_argument("--pause", type=float, default=20.0,
                         help="Seconds between live cases (free tiers limit tokens per minute).")
+    parser.add_argument("--out", default=None,
+                        help="Results file. Default: results.json, or replay_results.json in "
+                             "replay mode, so a replay never overwrites the recorded run.")
     args = parser.parse_args()
 
     spec = yaml.safe_load((EVAL_DIR / "questions.yaml").read_text(encoding="utf-8"))
@@ -109,6 +120,7 @@ def main() -> int:
         print(f"provider {settings.provider}, model {settings.model}")
 
     results = []
+    replayed_models: set[str] = set()
     for case in cases:
         if args.mode == "replay":
             path = recordings / f"{case['id']}.json"
@@ -116,6 +128,7 @@ def main() -> int:
                 results.append({"id": case["id"], "passed": None, "skipped": "no recording"})
                 continue
             client = ReplayClient.load(path)
+            replayed_models.add(client.model)
         else:
             client = RecordingClient(OpenAIChatClient(settings))
         copilot = PricingCopilot(
@@ -146,7 +159,7 @@ def main() -> int:
         "generated_at_utc": utc_now(),
         "mode": args.mode,
         "provider": settings.provider if settings else "replay",
-        "model": settings.model if settings else "recorded",
+        "model": settings.model if settings else ", ".join(sorted(replayed_models)) or "recorded",
         "data_mode": cfg.data_mode,
         "cases": len(cases),
         "scored": len(scored),
@@ -155,12 +168,14 @@ def main() -> int:
         "guard_passed_first_time": statuses.count("passed"),
         "guard_passed_after_rewrite": statuses.count("passed_after_regeneration"),
         "guard_fallback_template": statuses.count("fallback_template"),
+        "cases_with_a_failed_tool_call": sum(bool(r.get("tools_returned_error")) for r in scored),
         "forbidden_hits": sum(len(r.get("forbidden_hits", [])) for r in scored),
         "unsupported_numbers_in_final_answers": sum(
             len(r.get("unsupported_numbers_final", [])) for r in scored),
         "results": results,
     }
-    write_json(EVAL_DIR / "results.json", summary)
+    default_out = "replay_results.json" if args.mode == "replay" else "results.json"
+    write_json(Path(args.out) if args.out else EVAL_DIR / default_out, summary)
     if scored:
         print(f"\n{summary['pass_rate']:.0%} of {len(scored)} cases passed | guard: "
               f"{summary['guard_passed_first_time']} first time, "

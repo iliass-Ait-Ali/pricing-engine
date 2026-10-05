@@ -38,7 +38,9 @@ Booth).
 * **A GenAI layer that cannot invent a number.** A tool-calling LLM copilot
   (any OpenAI-compatible model; Groq's free tier by default) answers
   questions by calling the engine; a deterministic guard
-  rejects any figure the engine did not return.
+  rejects any figure the engine did not return. Evaluated on 20 fixed
+  questions with a small local model: 17 pass, and no ungrounded number
+  was shown in any run. The first run passed 8 and is published too.
   [`docs/COPILOT_CARD.md`](docs/COPILOT_CARD.md)
 * **Why trust it.** Strict chronological validation, leakage tests, robust
   standard errors, out-of-time checks on 154,899 unseen price changes, a claim
@@ -196,7 +198,7 @@ Native ML price-response validation on 300 decision contexts (`artifacts/metrics
 
 | metric | value |
 | --- | --- |
-| tests collected | **651** |
+| tests collected | **657** |
 | batch scoring, 3,000 contexts | per-context loop 122.0s → vectorised **2.4s** (50× on this machine) |
 | batch equivalence (discrete fields exact, floats ≤ 1e-09) | PASS on 3,000 recommendations |
 
@@ -373,7 +375,8 @@ startup.
 Twelve pages: business impact, executive overview, product/store explorer,
 pricing & demand, elasticity, price simulator, recommendation engine, model
 performance, data quality, methodology & limitations, review queue, and the
-Pricing Copilot (needs a model key, free on Groq; see `docs/COPILOT_CARD.md`).
+Pricing Copilot (needs a model: a free Groq key, or a local model with no
+account; see `docs/COPILOT_CARD.md`).
 
 ## 9. Tests
 

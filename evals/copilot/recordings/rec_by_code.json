@@ -1,0 +1,43 @@
+{
+  "model": "qwen2.5:7b",
+  "case_id": "rec_by_code",
+  "question": "Recommend a price for UPC 9900000002 at store 905 under the standard policy.",
+  "recorded_at_utc": "2026-10-05T07:11:21+00:00",
+  "provider": "custom",
+  "turns": [
+    {
+      "text": "",
+      "tool_calls": [
+        {
+          "id": "call_hin8kkgg",
+          "name": "recommend_price",
+          "arguments": {
+            "upc": 9900000002,
+            "policy_profile": "standard",
+            "store": 905
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1334,
+        "completion_tokens": 45
+      }
+    },
+    {
+      "text": "The engine recommends changing the price of Northfield Corn Flakes at store 905 from $4.59 to $4.98, a 8.5% increase. This change is within the allowed price range and can be applied without further approval. The model estimates a slight profit uplift of 1.1%. The price change is based on historical data and is considered low risk.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1668,
+        "completion_tokens": 83
+      }
+    },
+    {
+      "text": "The engine recommends changing the price of Northfield Corn Flakes at store 905 from $4.59 to $4.98, a 8.5% increase. This change is within the allowed price range and the decision state is RECOMMEND_CHANGE. The model-internal estimated profit uplift is 1.1%. The price change is based on historical data and is considered low risk.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1802,
+        "completion_tokens": 85
+      }
+    }
+  ]
+}

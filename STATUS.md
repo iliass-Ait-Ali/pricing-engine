@@ -56,14 +56,14 @@ Statuses: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `TESTED` | `VALIDATED`
 | Review/approval workflow (Phase O) | `VALIDATED` | `pytest tests/test_review_workflow.py` -> 9 passed; `scripts/review.py` CLI + dashboard "Review queue" page; `recommendation_transitions.csv` (append-only, never rewrites `recommendation_log.csv`) | Gives a human the tool to review/approve/reject/publish a recommendation; does not staff, schedule or SLA the queue itself |
 | CLI + Makefile + demo | `VALIDATED` | `make demo` produces a real recommendation on real data | - |
 | Documentation | `VALIDATED` | 15 docs + 23 reports, all numbers generated from execution | **v1.0: README headline metrics are generated** (`scripts/update_readme_metrics.py`) and a cross-document numeric audit (`scripts/audit_metric_consistency.py`, 212 statements, 0 mismatches) is test-enforced |
-| Test suite | `VALIDATED` | **651 tests collected**; full run: 0 failed, 2 skipped by design (copilot replay needs recordings; the live-count check skips on subsets) | Decision-critical paths prioritised over coverage percentage |
+| Test suite | `VALIDATED` | **657 tests collected**; full run: 0 failed, 1 skipped by design (the live-count check skips on subsets) | Decision-critical paths prioritised over coverage percentage |
 | Lint | `VALIDATED` | `ruff check .` - All checks passed | - |
 | CI workflow | `VALIDATED` | `.github/workflows/ci.yml`: lint, smoke import, README-metrics check and tests on Python 3.11, 3.12 and 3.13; a `demo` job builds the synthetic demo, renders every dashboard page and builds both Docker images. First hosted run green on 2026-10-05 ([run](https://github.com/iliass-Ait-Ali/pricing-engine/actions/runs/37248266778)) | CI never sees the licensed data: real-data tests skip there, and the API contract runs on the synthetic demo |
 | Docker | `VALIDATED` | **built and run**: `docker build -t pricing-engine:local .` (1.66 GB), container serves `/health`, `/model/info` and a real `/recommend-price` identical to the local run, runs as non-root `appuser` (uid 1000); image contains no data files | Model and processed data are **mounted read-only**, never baked in (Dominick's licence); the image is not hardened, load-tested or deployed |
 | v1.1 public demo (synthetic) | `VALIDATED` | `configs/demo.yaml`, `scripts/make_demo.py`, `Dockerfile.demo` built and served locally (dashboard + `/api`); `tests/test_demo_config.py` (demo paths never touch real artifacts), `tests/test_demo_e2e.py` | Not yet deployed: the Hugging Face Space needs the owner's token (`.github/workflows/deploy-demo.yml`) |
 | v1.1 business value + product roles | `VALIDATED` | `reports/23_BUSINESS_VALUE.md` (+4.1% to +9.4%, model-internal), `reports/24_PRODUCT_ROLES.md`; headline numbers checked by `audit_metric_consistency.py` | Same circularity as every uplift: a range, not a measurement |
 | v1.1 ground-truth recovery study | `VALIDATED` (`LIMITED`) | `reports/25_GROUND_TRUTH_STUDY.md`, 7 scenarios x 5 seeds, `tests/test_ground_truth_study.py` | Synthetic; the demand form matches the engine's, which flatters it; not evidence about Dominick's |
-| v1.1 Pricing Copilot | `TESTED` | `src/pricing_engine/copilot/`, `POST /copilot/ask`, dashboard page; guard, agent, API and eval-scoring tests run offline | No live evaluation recorded yet (needs `OPENAI_API_KEY`): no accuracy figure is claimed |
+| v1.1 Pricing Copilot | `VALIDATED` (`LIMITED`) | `src/pricing_engine/copilot/`, `POST /copilot/ask`, dashboard page; live evaluation recorded on 2026-10-05 with a local open-weights model (`qwen2.5:7b`): 17 of 20 cases pass, 0 ungrounded numbers shown in any run; the first run (8 of 20) exposed invented product codes and a guard gap, both fixed (`docs/COPILOT_CARD.md`) | One small model, one run, 20 questions, and the fixes were made on the same questions: a development-set figure. The default hosted model has not been run. The guard checks form, not meaning |
 | Second category (crackers) | `VALIDATED` (`LIMITED`) | `reports/27_SECOND_CATEGORY.md`: unchanged pipeline and settings on 2,228,269 crackers rows; 7 of 8 headline findings point the same way (1.4% of final prices from the model's own optimum; a no-model rule within one grid step 91.6% of the time) | One retailer, one decade: a robustness check, not proof of generality. In crackers the model-internal value range is -0.1% to +3.8%, so its low end is not positive |
 | Randomised experiment | `NOT STARTED` (by design) | `docs/PRICING_EXPERIMENT.md` designs it | Would be required for any causal claim |
 
@@ -126,9 +126,9 @@ Ranked by how much they should change what you claim about the project.
     transcript in the full report carries that marker. The captured output
     itself is unchanged. v1.1 also fixed an intermittent review-workflow
     failure: `rec_id` values that look like numbers were parsed as floats.
-14. **The copilot has not been evaluated against a live model yet.** The
-    20-case evaluation set, the scoring and the replay harness are tested
-    offline. Until `scripts/eval_copilot.py --mode record` is run with an
-    model key (free on Groq), no copilot accuracy figure exists, and none is claimed.
+14. **The copilot has been evaluated against one small local model only.**
+    `qwen2.5:7b` passes 17 of the 20 cases after the fixes its first run prompted
+    (8 of 20 before). That is a development-set figure on one model. The
+    default hosted model (free on Groq) has not been run; re-recording needs a key.
 15. **The public demo is built and runs locally but is not deployed.** The
     Hugging Face Space needs the owner's token.

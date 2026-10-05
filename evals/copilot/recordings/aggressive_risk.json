@@ -1,0 +1,42 @@
+{
+  "model": "qwen2.5:7b",
+  "case_id": "aggressive_risk",
+  "question": "Is the aggressive profile safe to use for Sunvale Oat Rings in store 910?",
+  "recorded_at_utc": "2026-10-05T07:12:07+00:00",
+  "provider": "custom",
+  "turns": [
+    {
+      "text": "",
+      "tool_calls": [
+        {
+          "id": "call_jijats82",
+          "name": "compare_policies",
+          "arguments": {
+            "store": 910,
+            "product": "Sunvale Oat Rings"
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1327,
+        "completion_tokens": 33
+      }
+    },
+    {
+      "text": "The aggressive profile recommends changing the price for Sunvale Oat Rings in store 910 to $3.33, a 19.4% increase from the current price of $2.79. This recommendation is marked as \"RECOMMEND_CHANGE\" but comes with a high risk level. The model estimates a 16.7% increase in profit uplift, but this is based on internal estimates and does not prove a causal effect. Given the high risk, it would be prudent to review this recommendation carefully before implementing it.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1677,
+        "completion_tokens": 113
+      }
+    },
+    {
+      "text": "The aggressive profile recommends changing the price for Sunvale Oat Rings in store 910 to $3.33, a 19.4% increase from the current price of $2.79. This recommendation is marked as \"RECOMMEND_CHANGE\" but comes with a high risk level. The model-internal estimated profit uplift is 16.7%. Given the high risk, it would be prudent to review this recommendation carefully before implementing it.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1831,
+        "completion_tokens": 97
+      }
+    }
+  ]
+}

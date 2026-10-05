@@ -1,0 +1,44 @@
+{
+  "model": "qwen2.5:7b",
+  "case_id": "rec_by_name",
+  "question": "What price do you recommend for Sunvale Oat Rings in store 901?",
+  "recorded_at_utc": "2026-10-05T07:11:16+00:00",
+  "provider": "custom",
+  "turns": [
+    {
+      "text": "",
+      "tool_calls": [
+        {
+          "id": "call_rwn1eovs",
+          "name": "recommend_price",
+          "arguments": {
+            "policy_profile": "standard",
+            "product": "Sunvale Oat Rings",
+            "store": 901,
+            "objective": "gross_profit"
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1325,
+        "completion_tokens": 46
+      }
+    },
+    {
+      "text": "The pricing engine recommends changing the price of Sunvale Oat Rings in store 901 from $2.39 to $2.59. This change is estimated to increase the gross profit by 43.7% to $2.15 per unit, while keeping the risk level low. The price change is within the allowed range of $2.24 to $2.63 and does not require further approval.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1662,
+        "completion_tokens": 92
+      }
+    },
+    {
+      "text": "The pricing engine recommends changing the price of Sunvale Oat Rings in store 901 from $2.39 to $2.59. This RECOMMEND_CHANGE is estimated to increase the gross profit by 43.7% to $2.15 per unit, which is a model-internal estimated figure. The price change is within the allowed range of $2.24 to $2.63 and does not require further approval.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1805,
+        "completion_tokens": 97
+      }
+    }
+  ]
+}

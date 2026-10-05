@@ -1,0 +1,36 @@
+{
+  "model": "qwen2.5:7b",
+  "case_id": "unknown_product",
+  "question": "What price do you recommend for Chocolate Moon Pops in store 901?",
+  "recorded_at_utc": "2026-10-05T07:12:28+00:00",
+  "provider": "custom",
+  "turns": [
+    {
+      "text": "",
+      "tool_calls": [
+        {
+          "id": "call_3b2i2mfw",
+          "name": "recommend_price",
+          "arguments": {
+            "objective": "gross_profit",
+            "policy_profile": "standard",
+            "product": "Chocolate Moon Pops",
+            "store": 901
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1324,
+        "completion_tokens": 45
+      }
+    },
+    {
+      "text": "I couldn't find a product matching \"Chocolate Moon Pops\" in store 901. Please check the available products using the `list_products` tool or provide the exact product name as it appears in the system.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1409,
+        "completion_tokens": 46
+      }
+    }
+  ]
+}

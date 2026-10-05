@@ -1,0 +1,36 @@
+{
+  "model": "qwen2.5:7b",
+  "case_id": "explain_codes",
+  "question": "What do PRICE_CHANGE_LIMIT and POOLED_ELASTICITY_FALLBACK mean?",
+  "recorded_at_utc": "2026-10-05T07:11:44+00:00",
+  "provider": "custom",
+  "turns": [
+    {
+      "text": "",
+      "tool_calls": [
+        {
+          "id": "call_iv49upt3",
+          "name": "explain_reason_codes",
+          "arguments": {
+            "codes": [
+              "PRICE_CHANGE_LIMIT",
+              "POOLED_ELASTICITY_FALLBACK"
+            ]
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1324,
+        "completion_tokens": 35
+      }
+    },
+    {
+      "text": "The reason code **PRICE_CHANGE_LIMIT** indicates that the maximum weekly price change rule (such as \u00b110% under the standard policy) has capped the recommended price adjustment. The model suggested a different change but was limited by the guardrail.\n\nThe code **POOLED_ELASTICITY_FALLBACK** means there's no reliable price sensitivity data for this specific product, so the model uses the category-wide estimate instead. Recommendations with this code are never rated as LOW risk.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1454,
+        "completion_tokens": 97
+      }
+    }
+  ]
+}

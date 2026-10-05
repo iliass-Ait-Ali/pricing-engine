@@ -1,0 +1,42 @@
+{
+  "model": "qwen2.5:7b",
+  "case_id": "rec_review_required",
+  "question": "What does the engine say about Sunvale Oat Rings in store 910, and can I apply it right away?",
+  "recorded_at_utc": "2026-10-05T07:11:27+00:00",
+  "provider": "custom",
+  "turns": [
+    {
+      "text": "",
+      "tool_calls": [
+        {
+          "id": "call_knq9t6rn",
+          "name": "recommend_price",
+          "arguments": {
+            "product": "Sunvale Oat Rings",
+            "store": 910
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1333,
+        "completion_tokens": 32
+      }
+    },
+    {
+      "text": "The engine recommends changing the price of Sunvale Oat Rings in store 910 from $2.79 to $3.06, which is a 9.7% increase. However, the decision state is REVIEW_REQUIRED, meaning a person must approve this change first. The reason codes indicate high risk and low confidence, with a price change limit in place. The model estimates a 11.8% increase in gross profit, but given the high risk, it's best to review this recommendation carefully before applying it.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1668,
+        "completion_tokens": 111
+      }
+    },
+    {
+      "text": "The engine recommends changing the price of Sunvale Oat Rings in store 910 from $2.79 to $3.06, which is a 9.7% increase. However, the decision state is REVIEW_REQUIRED, meaning a person must approve this change first. The reason codes indicate high risk and low confidence, with a price change limit in place. The model-internal estimated gain in gross profit is 11.8%. Given the high risk, it's best to review this recommendation carefully before applying it.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1820,
+        "completion_tokens": 111
+      }
+    }
+  ]
+}

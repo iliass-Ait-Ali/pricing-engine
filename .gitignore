@@ -79,3 +79,7 @@ artifacts_demo/
 # Second-category run (configs/crackers.yaml): row-level licensed data and
 # everything built from it. Only the cross-category comparison is committed.
 artifacts_crackers/
+
+# Copilot evaluation: a replay of the recorded model turns, rewritten by every
+# test run. The recorded run itself (results.json, recordings/) is committed.
+evals/copilot/replay_results.json

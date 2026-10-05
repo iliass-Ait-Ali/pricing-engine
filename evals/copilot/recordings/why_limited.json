@@ -1,0 +1,42 @@
+{
+  "model": "qwen2.5:7b",
+  "case_id": "why_limited",
+  "question": "Why didn't the engine move the price further for Sunvale Oat Rings in store 901?",
+  "recorded_at_utc": "2026-10-05T07:11:41+00:00",
+  "provider": "custom",
+  "turns": [
+    {
+      "text": "",
+      "tool_calls": [
+        {
+          "id": "call_9ulxgfmo",
+          "name": "recommend_price",
+          "arguments": {
+            "product": "Sunvale Oat Rings",
+            "store": 901
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1329,
+        "completion_tokens": 32
+      }
+    },
+    {
+      "text": "The engine recommended changing the price of Sunvale Oat Rings in store 901 from $2.39 to $2.59, which is an 8.4% increase. However, the price change was limited to the range of $2.24 to $2.63 due to guardrails, specifically the \"PRICE_CHANGE_LIMIT\" reason code. Despite this, the model estimates a positive profit uplift of 43.7%. The current price is constrained by margin requirements, and the price elasticity is -2.48, indicating that a price increase would lead to a decrease in units sold.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1656,
+        "completion_tokens": 130
+      }
+    },
+    {
+      "text": "The engine recommended changing the price of Sunvale Oat Rings in store 901 from $2.39 to $2.59, which is a RECOMMEND_CHANGE decision state. The model-internal estimated profit uplift is 43.7%. However, the price change was limited to the range of $2.24 to $2.63 due to guardrails, specifically the \"PRICE_CHANGE_LIMIT\" reason code. Despite this, the model-internal estimated profit uplift is 43.7%. The current price is constrained by margin requirements, and the price elasticity is -2.48, indicating that a price increase would lead to a decrease in units sold.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1837,
+        "completion_tokens": 144
+      }
+    }
+  ]
+}

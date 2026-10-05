@@ -1,0 +1,33 @@
+{
+  "model": "qwen2.5:7b",
+  "case_id": "portfolio",
+  "question": "Across all products this week, how many recommendations need a human review?",
+  "recorded_at_utc": "2026-10-05T07:12:10+00:00",
+  "provider": "custom",
+  "turns": [
+    {
+      "text": "To answer your question, I'll need to look at the decision states of all recommendations for the latest week. Let's check the portfolio summary first.\n\n",
+      "tool_calls": [
+        {
+          "id": "call_rgn9954n",
+          "name": "portfolio_summary",
+          "arguments": {
+            "policy_profile": "standard"
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1321,
+        "completion_tokens": 51
+      }
+    },
+    {
+      "text": "According to the portfolio summary for the standard policy profile this week, there were 15 recommendations that needed a human review (REVIEW_REQUIRED). This represents about 5.0% of all decisions made.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1601,
+        "completion_tokens": 43
+      }
+    }
+  ]
+}

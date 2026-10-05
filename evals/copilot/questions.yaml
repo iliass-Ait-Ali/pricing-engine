@@ -4,7 +4,7 @@
 # below are synthetic. Each case says which engine tools a good answer needs,
 # which words it must contain, and which phrasings it must never use.
 #
-#   python scripts/eval_copilot.py --mode live      # needs OPENAI_API_KEY
+#   python scripts/eval_copilot.py --mode live      # needs a model (docs/COPILOT_CARD.md)
 #   python scripts/eval_copilot.py --mode record    # live, and save recordings
 #   python scripts/eval_copilot.py --mode replay    # CI: recorded model turns, live tools
 #

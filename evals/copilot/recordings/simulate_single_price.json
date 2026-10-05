@@ -1,0 +1,37 @@
+{
+  "model": "qwen2.5:7b",
+  "case_id": "simulate_single_price",
+  "question": "What would happen to units if Golden Acre Muesli in store 902 were priced at $4.00?",
+  "recorded_at_utc": "2026-10-05T07:11:53+00:00",
+  "provider": "custom",
+  "turns": [
+    {
+      "text": "",
+      "tool_calls": [
+        {
+          "id": "call_lvkxnaee",
+          "name": "simulate_prices",
+          "arguments": {
+            "store": 902,
+            "min_price": 4,
+            "max_price": 4,
+            "product": "Golden Acre Muesli",
+            "step": 0.25
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1334,
+        "completion_tokens": 60
+      }
+    },
+    {
+      "text": "At store 902, if Golden Acre Muesli is priced at $4.00, the model estimates selling 3.6 units per week. This price point would generate a weekly revenue of $14.55 and a gross profit of $6.96. Note that this simulation ignores the business guardrails, so you should use `recommend_price` to get a price that complies with the current policy.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1541,
+        "completion_tokens": 92
+      }
+    }
+  ]
+}

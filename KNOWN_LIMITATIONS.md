@@ -273,7 +273,11 @@ own limits.
     process, not accuracy on real data.
 52. **The copilot guard checks form, not meaning.** A correct number attached
     to the wrong label passes. The tool results are always shown beside the
-    answer. The copilot has not been evaluated against a live model yet
+    answer. The live evaluation showed it happening: "$2.15 per unit" for a
+    weekly gross profit passed. The evaluation itself is small: one local
+    7-billion-parameter model, one run, 20 questions, 17 passed, and the
+    tools and guard were improved on those same questions after the first
+    run (8 passed), so the figure is not a held-out score
     (`docs/COPILOT_CARD.md`).
 53. **Generality rests on two categories from one retailer.** The findings
     were re-checked on crackers with nothing re-tuned (`reports/27`), and

@@ -1,10 +1,10 @@
 {
   "n_files_scanned": 73,
-  "n_occurrences": 427,
+  "n_occurrences": 429,
   "counts": {
     "UNSUPPORTED": 0,
-    "NEEDS QUALIFICATION": 56,
-    "SAFE": 371
+    "NEEDS QUALIFICATION": 57,
+    "SAFE": 372
   },
   "unsupported": [],
   "needs_qualification": [
@@ -19,7 +19,7 @@
     },
     {
       "file": "docs/COPILOT_CARD.md",
-      "line": 43,
+      "line": 45,
       "pattern": "\\bguarantee[sd]?\\b",
       "declared_verdict": "NEEDS QUALIFICATION",
       "negated_context": false,
@@ -37,7 +37,7 @@
     },
     {
       "file": "README.md",
-      "line": 86,
+      "line": 88,
       "pattern": "\\bvalidated\\b",
       "declared_verdict": "NEEDS QUALIFICATION",
       "negated_context": false,
@@ -46,7 +46,7 @@
     },
     {
       "file": "README.md",
-      "line": 337,
+      "line": 339,
       "pattern": "\\bguarantee[sd]?\\b",
       "declared_verdict": "NEEDS QUALIFICATION",
       "negated_context": false,
@@ -451,6 +451,15 @@
     },
     {
       "file": "ROADMAP.md",
+      "line": 119,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| Pricing Copilot (LLM tool calling + deterministic guard) | `docs/COPILOT_CARD.md`, `tests/test_copilot_*.py`, `evals/copilot/results.json` | `VALIDATED` (`LIM",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "ROADMAP.md",
       "line": 120,
       "pattern": "\\bvalidated\\b",
       "declared_verdict": "NEEDS QUALIFICATION",
@@ -496,7 +505,7 @@
     },
     {
       "file": "src/pricing_engine/copilot/guard.py",
-      "line": 38,
+      "line": 42,
       "pattern": "\\bguarantee[sd]?\\b",
       "declared_verdict": "NEEDS QUALIFICATION",
       "negated_context": false,
@@ -513,5 +522,5 @@
       "verdict": "NEEDS QUALIFICATION"
     }
   ],
-  "runtime_seconds": 1.7
+  "runtime_seconds": 0.7
 }

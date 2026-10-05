@@ -1,0 +1,41 @@
+{
+  "model": "qwen2.5:7b",
+  "case_id": "portfolio_direction",
+  "question": "Is the engine mostly raising or cutting prices this week?",
+  "recorded_at_utc": "2026-10-05T07:12:14+00:00",
+  "provider": "custom",
+  "turns": [
+    {
+      "text": "",
+      "tool_calls": [
+        {
+          "id": "call_szwkz6il",
+          "name": "portfolio_summary",
+          "arguments": {
+            "policy_profile": "standard"
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 1318,
+        "completion_tokens": 21
+      }
+    },
+    {
+      "text": "This week, the engine is mostly recommending price changes, with 89.3% of recommendations being to change prices. Of these changes, 99.6% are increases, indicating a focus on raising prices. The model estimates an overall uplift of 11.4% across all products and stores.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1587,
+        "completion_tokens": 65
+      }
+    },
+    {
+      "text": "This week, the engine is mostly recommending price changes, with 89.3% of recommendations being to change prices. Of these changes, 99.6% are increases, indicating a focus on raising prices. The model-internal estimated overall uplift is 11.4% across all products and stores.",
+      "tool_calls": [],
+      "usage": {
+        "prompt_tokens": 1693,
+        "completion_tokens": 66
+      }
+    }
+  ]
+}

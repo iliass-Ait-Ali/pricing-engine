@@ -114,6 +114,42 @@ def test_unknown_tool_and_unknown_product_come_back_as_data(state):
     assert out.status == "passed"
 
 
+def test_a_product_name_is_resolved_in_code(state, key, rec):
+    """The model never has to copy a product code: a name gives the same answer."""
+    name = rec["product"]
+    by_name = run_tool(state, "recommend_price", {"product": name.lower(), "store": key[1]})
+    assert by_name == rec
+    compared = run_tool(state, "compare_policies", {"product": name, "store": key[1]})
+    assert compared["upc"] == key[0] and len(compared["policies"]) == 3
+
+
+def test_an_invented_code_never_reaches_the_engine(state, key, rec):
+    """Seen in the first live run: the right tool, called with a made-up UPC."""
+    invented = 7190123456789
+    with_name = run_tool(state, "recommend_price",
+                         {"upc": invented, "product": rec["product"], "store": key[1]})
+    assert with_name == rec                       # the name wins over an unserved code
+    alone = run_tool(state, "recommend_price", {"upc": invented, "store": key[1]})
+    assert "never from memory" in alone["error"] and "`product`" in alone["error"]
+    unknown = run_tool(state, "recommend_price", {"product": "Chocolate Moon Pops", "store": key[1]})
+    assert "No served product" in unknown["error"]
+    neither = run_tool(state, "recommend_price", {"store": key[1]})
+    assert "error" in neither
+    no_store = run_tool(state, "recommend_price", {"product": rec["product"], "store": 1})
+    assert "not served" in no_store["error"]
+
+
+def test_a_single_price_can_be_simulated(state, key, rec):
+    price = rec["current_price"]
+    sim = run_tool(state, "simulate_prices",
+                   {"product": rec["product"], "store": key[1], "min_price": price, "max_price": price})
+    assert [p["price"] for p in sim["curve"]] == [price]
+    assert "highest_gross_profit_on_this_grid" not in sim   # one price has no "highest"
+    backwards = run_tool(state, "simulate_prices",
+                         {"upc": key[0], "store": key[1], "min_price": 4.0, "max_price": 3.0})
+    assert "error" in backwards
+
+
 def test_copilot_imports_without_the_openai_sdk():
     code = ("import sys; sys.modules['openai'] = None; "
             "import pricing_engine.copilot as c; print('ok')")
