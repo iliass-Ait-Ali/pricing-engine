@@ -56,7 +56,7 @@ Statuses: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `TESTED` | `VALIDATED`
 | Review/approval workflow (Phase O) | `VALIDATED` | `pytest tests/test_review_workflow.py` -> 9 passed; `scripts/review.py` CLI + dashboard "Review queue" page; `recommendation_transitions.csv` (append-only, never rewrites `recommendation_log.csv`) | Gives a human the tool to review/approve/reject/publish a recommendation; does not staff, schedule or SLA the queue itself |
 | CLI + Makefile + demo | `VALIDATED` | `make demo` produces a real recommendation on real data | - |
 | Documentation | `VALIDATED` | 15 docs + 23 reports, all numbers generated from execution | **v1.0: README headline metrics are generated** (`scripts/update_readme_metrics.py`) and a cross-document numeric audit (`scripts/audit_metric_consistency.py`, 212 statements, 0 mismatches) is test-enforced |
-| Test suite | `VALIDATED` | **626 tests collected**; full run: 0 failed, 2 skipped by design (copilot replay needs recordings; the live-count check skips on subsets) | Decision-critical paths prioritised over coverage percentage |
+| Test suite | `VALIDATED` | **633 tests collected**; full run: 0 failed, 2 skipped by design (copilot replay needs recordings; the live-count check skips on subsets) | Decision-critical paths prioritised over coverage percentage |
 | Lint | `VALIDATED` | `ruff check .` - All checks passed | - |
 | CI workflow | `VALIDATED` | `.github/workflows/ci.yml`: lint, smoke import, README-metrics check and tests on Python 3.11, 3.12 and 3.13; a `demo` job builds the synthetic demo, renders every dashboard page and builds both Docker images. First hosted run green on 2026-10-05 ([run](https://github.com/iliass-Ait-Ali/pricing-engine/actions/runs/37248266778)) | CI never sees the licensed data: real-data tests skip there, and the API contract runs on the synthetic demo |
 | Docker | `VALIDATED` | **built and run**: `docker build -t pricing-engine:local .` (1.66 GB), container serves `/health`, `/model/info` and a real `/recommend-price` identical to the local run, runs as non-root `appuser` (uid 1000); image contains no data files | Model and processed data are **mounted read-only**, never baked in (Dominick's licence); the image is not hardened, load-tested or deployed |
@@ -128,6 +128,6 @@ Ranked by how much they should change what you claim about the project.
 14. **The copilot has not been evaluated against a live model yet.** The
     20-case evaluation set, the scoring and the replay harness are tested
     offline. Until `scripts/eval_copilot.py --mode record` is run with an
-    OpenAI key, no copilot accuracy figure exists, and none is claimed.
+    model key (free on Groq), no copilot accuracy figure exists, and none is claimed.
 15. **The public demo is built and runs locally but is not deployed.** The
     Hugging Face Space needs the owner's token.

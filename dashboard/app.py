@@ -637,7 +637,7 @@ def page_recommendation(panel: pd.DataFrame, stats: pd.DataFrame, model) -> None
 
 @st.cache_resource(show_spinner="Starting the pricing copilot ...")
 def load_copilot():
-    """The live copilot, or None when no OPENAI_API_KEY / genai extra is available."""
+    """The live copilot, or None when no model key / genai extra is available."""
     from pricing_engine.copilot.agent import build_copilot
     from pricing_engine.serving import build_state
 
@@ -668,8 +668,9 @@ def page_copilot() -> None:
     copilot = load_copilot()
     if copilot is None:
         st.info(
-            "The copilot is switched off here: it needs an OpenAI API key "
-            "(`OPENAI_API_KEY`) and `pip install -e \".[genai]\"`. Everything else in this "
+            "The copilot is switched off here: it needs a model key (`GROQ_API_KEY` "
+            "from Groq's free tier, or `OPENAI_API_KEY`) and "
+            "`pip install -e \".[genai]\"`. Everything else in this "
             "dashboard works without it."
         )
         st.markdown("**Questions it is built and evaluated for:**\n"

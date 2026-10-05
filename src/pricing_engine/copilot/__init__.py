@@ -7,7 +7,8 @@ that every number in the answer appears in a tool result and that the wording
 follows the project's claim rules; an answer that fails twice is replaced by a
 template built from the tool results alone.
 
-The package imports without the ``openai`` SDK; only
+The model is reached through any OpenAI-compatible endpoint (Groq's free tier
+by default). The package imports without the ``openai`` SDK; only
 :class:`pricing_engine.copilot.client.OpenAIChatClient` needs it.
 """
 

@@ -15,9 +15,11 @@ pytestmark = pytest.mark.demo
 
 @pytest.fixture(scope="module")
 def app_client(demo_config):
-    previous = {k: os.environ.get(k) for k in ("PRICING_ENGINE_CONFIG", "OPENAI_API_KEY")}
+    keys = ("PRICING_ENGINE_CONFIG", "OPENAI_API_KEY", "GROQ_API_KEY", "COPILOT_API_KEY")
+    previous = {k: os.environ.get(k) for k in keys}
     os.environ["PRICING_ENGINE_CONFIG"] = str(demo_config)
-    os.environ.pop("OPENAI_API_KEY", None)
+    for k in keys[1:]:
+        os.environ[k] = ""  # empty = "no key", and it stops a local .env from supplying one
     from api.main import app
 
     with fastapi_testclient.TestClient(app) as client:
@@ -33,7 +35,7 @@ def test_copilot_is_disabled_without_a_key(app_client):
     app, client = app_client
     assert app.state.copilot is None
     r = client.post("/copilot/ask", json={"question": "What should Cheerios cost?"})
-    assert r.status_code == 503 and "OPENAI_API_KEY" in r.json()["detail"]
+    assert r.status_code == 503 and "GROQ_API_KEY" in r.json()["detail"]
 
 
 def test_empty_or_huge_questions_are_rejected(app_client):

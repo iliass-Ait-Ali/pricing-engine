@@ -1,6 +1,6 @@
 """Evaluate the Pricing Copilot on a fixed question set.
 
-    python scripts/eval_copilot.py --mode live      # OpenAI, needs OPENAI_API_KEY
+    python scripts/eval_copilot.py --mode live      # needs GROQ_API_KEY (free) or OPENAI_API_KEY
     python scripts/eval_copilot.py --mode record    # live, and save each case's model turns
     python scripts/eval_copilot.py --mode replay    # recorded model turns (no key), live tools
 
@@ -24,9 +24,9 @@ Outputs
 from __future__ import annotations
 
 import argparse
-import os
 import re
 import sys
+import time
 from pathlib import Path
 
 import yaml
@@ -37,7 +37,12 @@ if str(REPO_ROOT / "src") not in sys.path:
 
 from pricing_engine.config import load_config  # noqa: E402
 from pricing_engine.copilot.agent import PricingCopilot  # noqa: E402
-from pricing_engine.copilot.client import RecordingClient, ReplayClient  # noqa: E402
+from pricing_engine.copilot.client import (  # noqa: E402
+    OpenAIChatClient,
+    RecordingClient,
+    ReplayClient,
+    resolve_llm_settings,
+)
 from pricing_engine.serving import build_state  # noqa: E402
 from pricing_engine.utils.io import utc_now, write_json  # noqa: E402
 
@@ -81,6 +86,8 @@ def main() -> int:
     parser.add_argument("--mode", choices=["live", "record", "replay"], default="replay")
     parser.add_argument("--config", default=str(REPO_ROOT / "configs" / "demo.yaml"))
     parser.add_argument("--only", default=None, help="Comma-separated case ids.")
+    parser.add_argument("--pause", type=float, default=20.0,
+                        help="Seconds between live cases (free tiers limit tokens per minute).")
     args = parser.parse_args()
 
     spec = yaml.safe_load((EVAL_DIR / "questions.yaml").read_text(encoding="utf-8"))
@@ -93,8 +100,13 @@ def main() -> int:
     state = build_state(cfg)
     recordings = EVAL_DIR / "recordings"
 
-    if args.mode in ("live", "record") and not os.environ.get("OPENAI_API_KEY"):
-        raise SystemExit("OPENAI_API_KEY is not set; use --mode replay or set the key.")
+    settings = None
+    if args.mode in ("live", "record"):
+        settings = resolve_llm_settings(cfg.get("copilot.model"), env_file=REPO_ROOT / ".env")
+        if settings is None:
+            raise SystemExit("No model key found. Put GROQ_API_KEY=... (free) or OPENAI_API_KEY=... "
+                             "in .env, or use --mode replay.")
+        print(f"provider {settings.provider}, model {settings.model}")
 
     results = []
     for case in cases:
@@ -105,15 +117,12 @@ def main() -> int:
                 continue
             client = ReplayClient.load(path)
         else:
-            from pricing_engine.copilot.client import OpenAIChatClient
-
-            client = RecordingClient(OpenAIChatClient(
-                model=os.environ.get("OPENAI_MODEL") or cfg.get("copilot.model")))
+            client = RecordingClient(OpenAIChatClient(settings))
         copilot = PricingCopilot(
             client, state,
             max_tool_rounds=int(cfg.get("copilot.max_tool_rounds", 5)),
             max_regenerations=int(cfg.get("copilot.max_regenerations", 1)),
-            max_output_tokens=int(cfg.get("copilot.max_output_tokens", 600)),
+            max_output_tokens=int(cfg.get("copilot.max_output_tokens", 1500)),
         )
         try:
             out = copilot.ask(case["question"])
@@ -122,7 +131,10 @@ def main() -> int:
             continue
         if args.mode == "record":
             client.save(recordings / f"{case['id']}.json", case_id=case["id"],
-                        question=case["question"], recorded_at_utc=utc_now())
+                        question=case["question"], recorded_at_utc=utc_now(),
+                        provider=settings.provider)
+        if args.mode != "replay" and case is not cases[-1]:
+            time.sleep(args.pause)
         row = score_case(case, out, spec.get("global_forbidden", []))
         results.append(row)
         mark = "PASS" if row["passed"] else "FAIL"
@@ -133,7 +145,8 @@ def main() -> int:
     summary = {
         "generated_at_utc": utc_now(),
         "mode": args.mode,
-        "model": os.environ.get("OPENAI_MODEL") or cfg.get("copilot.model"),
+        "provider": settings.provider if settings else "replay",
+        "model": settings.model if settings else "recorded",
         "data_mode": cfg.data_mode,
         "cases": len(cases),
         "scored": len(scored),
@@ -156,7 +169,7 @@ def main() -> int:
               f"{summary['forbidden_hits']} | unsupported numbers shown "
               f"{summary['unsupported_numbers_in_final_answers']}")
     else:
-        print("no recordings to replay: run --mode record with OPENAI_API_KEY set")
+        print("no recordings to replay: run --mode record with a model key in .env")
     return 0
 
 

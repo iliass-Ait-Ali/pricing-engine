@@ -112,7 +112,7 @@ before the pilot."*
   with a learned direction. Sized the value at +4.1% to +9.4% of category
   gross profit as a scenario range and designed the randomised pilot to
   measure it.
-* Built a tool-grounded LLM pricing copilot (OpenAI tool calling) with a
+* Built a tool-grounded LLM pricing copilot (tool calling, provider-agnostic) with a
   deterministic guard that rejects any number not returned by the engine,
   plus an adversarial evaluation set (causal bait, fabrication, prompt
   injection).

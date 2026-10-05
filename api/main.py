@@ -67,7 +67,8 @@ async def lifespan(app: FastAPI):
     except FileNotFoundError as exc:  # keep /health informative instead of crashing
         app.state.engine = None
         app.state.startup_error = str(exc)
-    # Optional: only when OPENAI_API_KEY is set and the genai extra is installed.
+    # Optional: only when a model key (GROQ_API_KEY, OPENAI_API_KEY or
+    # COPILOT_API_KEY) is set and the genai extra is installed.
     app.state.copilot = build_copilot(app.state.engine)
     app.state.copilot_limiter = RateLimiter(
         int(app.state.cfg.get("copilot.rate_limit_per_client_per_hour", 20)),

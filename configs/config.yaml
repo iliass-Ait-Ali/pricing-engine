@@ -184,15 +184,17 @@ monitoring:
     recorded_promotion_flag: int
 
 # ---------------------------------------------------------------------------
-# Pricing Copilot (optional, needs `pip install -e ".[genai]"` and
-# OPENAI_API_KEY). The model chooses engine tools and writes the answer; a
-# deterministic guard rejects any number not returned by a tool.
+# Pricing Copilot (optional, needs `pip install -e ".[genai]"` and a model
+# key). Any OpenAI-compatible endpoint works: GROQ_API_KEY (free tier, the
+# default), OPENAI_API_KEY, or COPILOT_API_KEY + COPILOT_BASE_URL. The model
+# chooses engine tools and writes the answer; a deterministic guard rejects
+# any number not returned by a tool.
 # ---------------------------------------------------------------------------
 copilot:
-  model: gpt-4o-mini              # override with OPENAI_MODEL
+  model: null                     # null = the provider's default; override with COPILOT_MODEL
   max_tool_rounds: 5
   max_regenerations: 1
-  max_output_tokens: 600
+  max_output_tokens: 1500          # includes a reasoning model's thinking tokens
   max_question_chars: 1000
   rate_limit_per_client_per_hour: 20
   daily_limit: 300

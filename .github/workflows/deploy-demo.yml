@@ -4,7 +4,7 @@ name: Deploy demo
 # Manual or on a version tag. Needs:
 #   secret   HF_TOKEN  - a Hugging Face write token
 #   variable HF_SPACE  - the Space id, e.g. "your-name/pricing-engine-demo"
-# Optional secret OPENAI_API_KEY is NOT sent from here: set it in the Space's
+# A model key (GROQ_API_KEY, free tier) is NOT sent from here: set it in the Space's
 # own settings, where it stays.
 
 on:

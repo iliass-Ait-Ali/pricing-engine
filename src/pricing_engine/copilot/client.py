@@ -1,7 +1,8 @@
 """LLM clients behind one small interface.
 
-* :class:`OpenAIChatClient` - the live client (OpenAI chat completions with
-  tool calling). The only code that imports ``openai``.
+* :class:`OpenAIChatClient` - the live client: chat completions with tool
+  calling on any OpenAI-compatible endpoint (Groq's free tier by default, or
+  OpenAI, or a custom base URL). The only code that imports the ``openai`` SDK.
 * :class:`ScriptedClient` - returns a fixed list of turns; unit tests.
 * :class:`RecordingClient` / :class:`ReplayClient` - record live turns to JSON
   and replay them, so the evaluation set runs in CI without an API key.
@@ -51,14 +52,78 @@ class LLMClient(Protocol):
         ...
 
 
-class OpenAIChatClient:
-    """OpenAI chat completions with tool calling, temperature 0."""
+#: Providers with an OpenAI-compatible chat-completions API and tool calling,
+#: tried in this order. Groq comes first because its free tier needs no card.
+PROVIDERS: dict[str, dict[str, str | None]] = {
+    "groq": {"key_env": "GROQ_API_KEY", "base_url": "https://api.groq.com/openai/v1",
+             "model": "openai/gpt-oss-120b"},
+    "openai": {"key_env": "OPENAI_API_KEY", "base_url": None, "model": "gpt-4o-mini"},
+}
 
-    def __init__(self, model: str | None = None, api_key: str | None = None) -> None:
+
+@dataclass(frozen=True)
+class LLMSettings:
+    provider: str
+    api_key: str
+    base_url: str | None
+    model: str
+
+
+def load_env_file(path: str | Path) -> list[str]:
+    """Read ``KEY=VALUE`` lines from a git-ignored ``.env`` into the environment.
+
+    Variables that are already set win, so a real environment variable always
+    overrides the file. Returns the names it set (never the values).
+    """
+    path = Path(path)
+    if not path.exists():
+        return []
+    loaded = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, value = line.split("=", 1)
+        key, value = key.strip(), value.strip().strip("'\"")
+        if key and value and key not in os.environ:
+            os.environ[key] = value
+            loaded.append(key)
+    return loaded
+
+
+def resolve_llm_settings(default_model: str | None = None,
+                         env_file: str | Path | None = None) -> LLMSettings | None:
+    """Which model endpoint to use, or None when no key is configured.
+
+    Order: an explicit ``COPILOT_API_KEY`` (with ``COPILOT_BASE_URL``), then the
+    first provider in :data:`PROVIDERS` whose key is set. ``COPILOT_MODEL``
+    overrides the model for any provider.
+    """
+    if env_file is not None:
+        load_env_file(env_file)
+    model_override = os.environ.get("COPILOT_MODEL") or default_model
+    explicit = os.environ.get("COPILOT_API_KEY")
+    if explicit:
+        base_url = os.environ.get("COPILOT_BASE_URL") or None
+        return LLMSettings("custom", explicit, base_url, model_override or "gpt-4o-mini")
+    for name, spec in PROVIDERS.items():
+        key = os.environ.get(str(spec["key_env"]))
+        if key:
+            return LLMSettings(name, key, spec["base_url"], model_override or str(spec["model"]))
+    return None
+
+
+class OpenAIChatClient:
+    """Chat completions with tool calling on any OpenAI-compatible endpoint, temperature 0."""
+
+    def __init__(self, settings: LLMSettings) -> None:
         from openai import OpenAI  # optional dependency: pip install -e ".[genai]"
 
-        self.model = model or os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
-        self._client = OpenAI(api_key=api_key or os.environ.get("OPENAI_API_KEY"))
+        self.model = settings.model
+        self.provider = settings.provider
+        # Free tiers rate-limit per minute; the SDK backs off and retries on 429.
+        self._client = OpenAI(api_key=settings.api_key, base_url=settings.base_url,
+                              max_retries=6, timeout=90)
 
     def complete(self, messages: list[dict], tools: list[dict], *, max_tokens: int) -> LLMTurn:
         response = self._client.chat.completions.create(
@@ -66,7 +131,7 @@ class OpenAIChatClient:
             messages=messages,
             tools=tools or None,
             temperature=0,
-            max_tokens=max_tokens,
+            max_completion_tokens=max_tokens,
         )
         message = response.choices[0].message
         calls = [

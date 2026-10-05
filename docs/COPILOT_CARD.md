@@ -58,12 +58,29 @@ The synthetic-data label is appended by code, not by the model.
 * **The guard checks form, not judgement.** A grounded answer can still
   emphasise the wrong thing. The tool trace is always shown so a person can
   check it.
-* **Cost and abuse.** On the public demo: per-client and daily request caps,
-  a token cap per answer, and a small model. Set a hard spending limit on the
-  OpenAI project as well.
+* **Cost and abuse.** On the public demo: per-client and daily request caps
+  and a token cap per answer. The default provider is Groq's free tier, which
+  cannot run up a bill; with a paid provider, set a hard spending limit too.
 * **Model drift.** CI replays recorded model turns. Re-record
   (`scripts/eval_copilot.py --mode record`) when the model or the demo data
   changes; stale recordings fail the guard on purpose.
+
+## Which model
+
+The copilot talks to any endpoint that speaks the OpenAI chat-completions
+format with tool calling. It picks the first key it finds:
+
+| key | provider | default model | cost |
+| --- | --- | --- | --- |
+| `COPILOT_API_KEY` + `COPILOT_BASE_URL` | anything compatible (a local Ollama server, OpenRouter, ...) | set `COPILOT_MODEL` | yours |
+| `GROQ_API_KEY` | Groq | `openai/gpt-oss-120b` (open weights) | free tier, no card |
+| `OPENAI_API_KEY` | OpenAI | `gpt-4o-mini` | paid |
+
+Keys are read from the environment or from a git-ignored `.env` file in the
+repository root. `COPILOT_MODEL` overrides the model for any provider. The
+guard does not depend on the model: a weaker model fails the checks more often
+and falls back to the template more often, but it still cannot show an
+ungrounded number.
 
 ## Evaluation (`evals/copilot/questions.yaml`)
 
@@ -75,7 +92,7 @@ never use.
 
 ```bash
 python scripts/make_demo.py                       # the demo the cases refer to
-python scripts/eval_copilot.py --mode record      # needs OPENAI_API_KEY
+python scripts/eval_copilot.py --mode record      # needs a model key in .env (free: GROQ_API_KEY)
 python scripts/eval_copilot.py --mode replay      # offline, what CI runs
 ```
 
@@ -87,7 +104,7 @@ accuracy figure.
 
 ```bash
 pip install -e ".[api,dashboard,genai]"
-export OPENAI_API_KEY=...            # optional OPENAI_MODEL (default in configs/config.yaml)
+echo GROQ_API_KEY=... > .env         # git-ignored; or OPENAI_API_KEY=...
 uvicorn api.main:app                 # POST /copilot/ask {"question": "..."}
 streamlit run dashboard/app.py       # page "Pricing Copilot"
 ```

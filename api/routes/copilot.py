@@ -69,7 +69,8 @@ def ask(payload: CopilotRequest, request: Request) -> CopilotResponse:
     if copilot is None:
         raise HTTPException(
             status_code=503,
-            detail="The copilot is disabled: set OPENAI_API_KEY and install the genai extra.",
+            detail="The copilot is disabled: set GROQ_API_KEY (free) or OPENAI_API_KEY, and "
+                   "install the genai extra.",
         )
     limiter: RateLimiter | None = getattr(request.app.state, "copilot_limiter", None)
     if limiter is not None and not limiter.allow(_client_id(request)):

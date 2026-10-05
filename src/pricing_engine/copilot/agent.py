@@ -148,21 +148,27 @@ def fallback_answer(calls: list[ExecutedCall]) -> str:
 
 
 def build_copilot(state: AppState | None) -> PricingCopilot | None:
-    """A live copilot when the OpenAI SDK and an API key are available, else None."""
-    import os
+    """A live copilot when a model key and the ``openai`` SDK are available, else None.
 
-    if state is None or not os.environ.get("OPENAI_API_KEY"):
+    Keys are read from the environment or from a git-ignored ``.env`` in the
+    repository root: ``GROQ_API_KEY`` (free tier), ``OPENAI_API_KEY``, or
+    ``COPILOT_API_KEY`` with ``COPILOT_BASE_URL`` for any other compatible host.
+    """
+    from pricing_engine.copilot.client import OpenAIChatClient, resolve_llm_settings
+
+    if state is None:
+        return None
+    cfg = state.cfg
+    settings = resolve_llm_settings(cfg.get("copilot.model"), env_file=cfg.root / ".env")
+    if settings is None:
         return None
     try:
-        from pricing_engine.copilot.client import OpenAIChatClient
-
-        cfg = state.cfg
-        client = OpenAIChatClient(model=os.environ.get("OPENAI_MODEL") or cfg.get("copilot.model"))
+        client = OpenAIChatClient(settings)
     except ImportError:
         return None
     return PricingCopilot(
         client, state,
         max_tool_rounds=int(cfg.get("copilot.max_tool_rounds", 5)),
         max_regenerations=int(cfg.get("copilot.max_regenerations", 1)),
-        max_output_tokens=int(cfg.get("copilot.max_output_tokens", 600)),
+        max_output_tokens=int(cfg.get("copilot.max_output_tokens", 1500)),
     )

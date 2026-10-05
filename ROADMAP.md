@@ -116,7 +116,7 @@ estimator against known truth, and a safe GenAI interface.
 | Value range in dollars | `reports/23_BUSINESS_VALUE.md` | `VALIDATED` |
 | Product roles (traffic drivers, margin builders) | `reports/24_PRODUCT_ROLES.md` | `VALIDATED` |
 | Executive summary, Business impact page, README front door | `docs/EXECUTIVE_SUMMARY.md`, dashboard page 1 | `VALIDATED` |
-| Pricing Copilot (OpenAI tool calling + deterministic guard) | `docs/COPILOT_CARD.md`, `tests/test_copilot_*.py` | `TESTED` (live evaluation pending) |
+| Pricing Copilot (LLM tool calling + deterministic guard) | `docs/COPILOT_CARD.md`, `tests/test_copilot_*.py` | `TESTED` (live evaluation pending) |
 | Ground-truth recovery study | `reports/25_GROUND_TRUTH_STUDY.md`, `tests/test_ground_truth_study.py` | `VALIDATED` (`LIMITED`: synthetic) |
 | Interview pack | `docs/INTERVIEW_PITCH.md` | `VALIDATED` |
 
@@ -125,8 +125,8 @@ estimator against known truth, and a safe GenAI interface.
 1. ~~**Publish.**~~ **Done on 2026-10-05:** <https://github.com/iliass-Ait-Ali/pricing-engine>, first hosted CI run
    green on Python 3.11, 3.12, 3.13 and the demo job.
 2. **Deploy the demo.** Add the `HF_TOKEN` secret and the `HF_SPACE` variable,
-   run "Deploy demo", put the Space link in the README, and optionally add an
-   OpenAI key with a hard spending cap as a Space secret.
+   run "Deploy demo", put the Space link in the README, and optionally add a
+   `GROQ_API_KEY` (free tier) as a Space secret to switch the copilot on.
 3. **Record the copilot evaluation.** Run `python scripts/eval_copilot.py --mode record`
    with a key, commit `evals/copilot/recordings/` and `results.json`, and
    report the pass rate in `docs/COPILOT_CARD.md`.

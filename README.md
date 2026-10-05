@@ -30,8 +30,9 @@ Booth).
   clean. It cannot remove unrecorded promotions or pricing on unseen demand
   shocks, which is why the next step is a pilot.
   [`reports/25_GROUND_TRUTH_STUDY.md`](reports/25_GROUND_TRUTH_STUDY.md)
-* **A GenAI layer that cannot invent a number.** An OpenAI tool-calling
-  copilot answers questions by calling the engine; a deterministic guard
+* **A GenAI layer that cannot invent a number.** A tool-calling LLM copilot
+  (any OpenAI-compatible model; Groq's free tier by default) answers
+  questions by calling the engine; a deterministic guard
   rejects any figure the engine did not return.
   [`docs/COPILOT_CARD.md`](docs/COPILOT_CARD.md)
 * **Why trust it.** Strict chronological validation, leakage tests, robust
@@ -190,7 +191,7 @@ Native ML price-response validation on 300 decision contexts (`artifacts/metrics
 
 | metric | value |
 | --- | --- |
-| tests collected | **626** |
+| tests collected | **633** |
 | batch scoring, 3,000 contexts | per-context loop 122.0s → vectorised **2.4s** (50× on this machine) |
 | batch equivalence (discrete fields exact, floats ≤ 1e-09) | PASS on 3,000 recommendations |
 
@@ -367,7 +368,7 @@ startup.
 Twelve pages: business impact, executive overview, product/store explorer,
 pricing & demand, elasticity, price simulator, recommendation engine, model
 performance, data quality, methodology & limitations, review queue, and the
-Pricing Copilot (needs an OpenAI key; see `docs/COPILOT_CARD.md`).
+Pricing Copilot (needs a model key, free on Groq; see `docs/COPILOT_CARD.md`).
 
 ## 9. Tests
 
