@@ -112,7 +112,7 @@ estimator against known truth, and a safe GenAI interface.
 | Documentation drift, generation briefs moved to `docs/process/` | `KNOWN_LIMITATIONS.md` 17-18, `docs/process/README.md` | `VALIDATED` |
 | Synthetic generator + demo config + `make_demo.py` | `tests/test_synthetic.py`, `tests/test_demo_config.py`, `tests/test_demo_e2e.py` | `VALIDATED` |
 | Shared serving layer (`pricing_engine.serving`), data-mode labels | API and demo tests | `VALIDATED` |
-| CI runs the API and dashboard end to end on the demo; demo Docker image | `.github/workflows/ci.yml` (`demo` job), `Dockerfile.demo` built and run locally | `IMPLEMENTED` (hosted run pending) |
+| CI runs the API and dashboard end to end on the demo; demo Docker image | `.github/workflows/ci.yml` (`demo` job), `Dockerfile.demo` built and run locally | `VALIDATED` (first hosted run green, 2026-10-05) |
 | Value range in dollars | `reports/23_BUSINESS_VALUE.md` | `VALIDATED` |
 | Product roles (traffic drivers, margin builders) | `reports/24_PRODUCT_ROLES.md` | `VALIDATED` |
 | Executive summary, Business impact page, README front door | `docs/EXECUTIVE_SUMMARY.md`, dashboard page 1 | `VALIDATED` |
@@ -122,9 +122,8 @@ estimator against known truth, and a safe GenAI interface.
 
 ## Next (owner actions first)
 
-1. **Publish.** Create the GitHub repository, push `master` and the tags, and
-   confirm the first hosted CI run is green. The README badge assumes the
-   repository name `pricing-engine`; adjust it if the name differs.
+1. ~~**Publish.**~~ **Done on 2026-10-05:** <https://github.com/iliass-Ait-Ali/pricing-engine>, first hosted CI run
+   green on Python 3.11, 3.12, 3.13 and the demo job.
 2. **Deploy the demo.** Add the `HF_TOKEN` secret and the `HF_SPACE` variable,
    run "Deploy demo", put the Space link in the README, and optionally add an
    OpenAI key with a hard spending cap as a Space secret.

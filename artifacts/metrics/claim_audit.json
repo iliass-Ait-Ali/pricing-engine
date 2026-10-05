@@ -1,10 +1,10 @@
 {
   "n_files_scanned": 67,
-  "n_occurrences": 416,
+  "n_occurrences": 418,
   "counts": {
     "UNSUPPORTED": 0,
-    "NEEDS QUALIFICATION": 54,
-    "SAFE": 362
+    "NEEDS QUALIFICATION": 55,
+    "SAFE": 363
   },
   "unsupported": [],
   "needs_qualification": [
@@ -406,6 +406,15 @@
     },
     {
       "file": "ROADMAP.md",
+      "line": 115,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "| CI runs the API and dashboard end to end on the demo; demo Docker image | `.github/workflows/ci.yml` (`demo` job), `Dockerfile.demo` built and run locally | `",
+      "verdict": "NEEDS QUALIFICATION"
+    },
+    {
+      "file": "ROADMAP.md",
       "line": 116,
       "pattern": "\\bvalidated\\b",
       "declared_verdict": "NEEDS QUALIFICATION",
@@ -495,5 +504,5 @@
       "verdict": "NEEDS QUALIFICATION"
     }
   ],
-  "runtime_seconds": 1.3
+  "runtime_seconds": 1.6
 }

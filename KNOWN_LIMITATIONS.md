@@ -214,7 +214,9 @@ engineering closure could and could not establish.
     behaviour at millions of SKUs, on other hardware, or under concurrency, and
     no such claim is made anywhere in the repository.
 
-43. **The GitHub-hosted CI run has never executed.** `.github/workflows/ci.yml`
+43. *(Resolved on 2026-10-05: the repository is public and the first hosted
+    run passed. Kept for the record; what remains true is that CI never runs
+    on the licensed data.)* **The GitHub-hosted CI run has never executed.** `.github/workflows/ci.yml`
     exists and every step in it - install, lint, smoke imports, README-metrics
     check, pytest, Docker build - was reproduced locally and passes. But no Git
     remote is configured and none was created, so "CI is green on GitHub" is

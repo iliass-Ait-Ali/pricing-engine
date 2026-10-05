@@ -166,7 +166,8 @@ project is and must stay labelled **model-internal estimated**.
 * **Run the GitHub-hosted CI.** The workflow exists and every step has been
   reproduced locally, but it has never executed on GitHub because no remote is
   configured. **Not attempted in Phase O** - out of scope by explicit user
-  decision (no remote/push).
+  decision (no remote/push). **Done on 2026-10-05:** published, first hosted
+  run green.
 * **Scale testing.** The batch path was vectorised in v1.0 and measured once, on
   one machine: 3,000 contexts, 122.0 s → 2.4 s. That is a local measurement, not
   a scalability claim; a real claim needs a fixed harness across catalogue sizes
@@ -189,8 +190,9 @@ project is and must stay labelled **model-internal estimated**.
   be justified as a policy change.
 * **A public synthetic demo, a value range in dollars, and a guarded LLM
   copilot.** All engineering; no new science.
-* **Still open from section 3:** the GitHub-hosted CI run and the hosted demo.
-  Both are ready and need only the owner's GitHub login and Hugging Face token.
+* **Still open from section 3:** the hosted demo. It is ready and needs only
+  the owner's Hugging Face token. (The GitHub-hosted CI run passed on
+  2026-10-05.)
 
 ## 4. What will not be added
 
