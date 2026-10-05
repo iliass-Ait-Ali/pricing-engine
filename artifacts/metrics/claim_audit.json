@@ -1,13 +1,22 @@
 {
-  "n_files_scanned": 67,
-  "n_occurrences": 418,
+  "n_files_scanned": 73,
+  "n_occurrences": 427,
   "counts": {
     "UNSUPPORTED": 0,
-    "NEEDS QUALIFICATION": 55,
-    "SAFE": 363
+    "NEEDS QUALIFICATION": 56,
+    "SAFE": 371
   },
   "unsupported": [],
   "needs_qualification": [
+    {
+      "file": "artifacts_crackers/reports/01_DATA_AUDIT.md",
+      "line": 4,
+      "pattern": "\\bvalidated\\b",
+      "declared_verdict": "NEEDS QUALIFICATION",
+      "negated_context": false,
+      "text": "**Status:** VALIDATED",
+      "verdict": "NEEDS QUALIFICATION"
+    },
     {
       "file": "docs/COPILOT_CARD.md",
       "line": 43,
@@ -28,7 +37,7 @@
     },
     {
       "file": "README.md",
-      "line": 81,
+      "line": 86,
       "pattern": "\\bvalidated\\b",
       "declared_verdict": "NEEDS QUALIFICATION",
       "negated_context": false,
@@ -37,7 +46,7 @@
     },
     {
       "file": "README.md",
-      "line": 332,
+      "line": 337,
       "pattern": "\\bguarantee[sd]?\\b",
       "declared_verdict": "NEEDS QUALIFICATION",
       "negated_context": false,
@@ -504,5 +513,5 @@
       "verdict": "NEEDS QUALIFICATION"
     }
   ],
-  "runtime_seconds": 2.2
+  "runtime_seconds": 1.7
 }

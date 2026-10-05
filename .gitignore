@@ -75,3 +75,7 @@ artifacts/report_figures/mermaid/mermaid.min.js
 # ---------------------------------------------------------------------------
 data/demo/
 artifacts_demo/
+
+# Second-category run (configs/crackers.yaml): row-level licensed data and
+# everything built from it. Only the cross-category comparison is committed.
+artifacts_crackers/

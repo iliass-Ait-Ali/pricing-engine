@@ -133,8 +133,10 @@ estimator against known truth, and a safe GenAI interface.
 4. **Done after v1.1.0:** the risk bands were checked against out-of-time
    prediction error (`reports/26_RISK_CALIBRATION.md`). They separate error
    only weakly; extrapolation carries the signal.
-5. **Then, as interest allows:** replicate on a second Dominick's category,
-   fit the risk thresholds to the error evidence (a policy change), add
+5. **Done on 2026-10-05:** replicated on a second Dominick's category
+   (crackers, nothing re-tuned): 7 of 8 headline findings point the same
+   way (`reports/27_SECOND_CATEGORY.md`).
+6. **Then, as interest allows:** fit the risk thresholds to the error evidence (a policy change), add
    role-based guardrails as an explicit policy option, and move to
    cross-price effects (`FUTURE_WORK.md` 1.1).
 

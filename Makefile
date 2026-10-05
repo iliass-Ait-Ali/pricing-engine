@@ -190,3 +190,8 @@ eval-copilot:
 
 v11: value roles audit-risk ground-truth
 	@echo "v1.1 analyses complete - see reports/23..26"
+
+category-crackers:
+	$(PY) scripts/download_dominicks.py --category crackers
+	$(PY) scripts/run_category.py --config configs/crackers.yaml
+	$(PY) scripts/compare_categories.py --config configs/crackers.yaml

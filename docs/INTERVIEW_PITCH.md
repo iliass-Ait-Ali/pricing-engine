@@ -116,6 +116,9 @@ before the pilot."*
   deterministic guard that rejects any number not returned by the engine,
   plus an adversarial evaluation set (causal bait, fabrication, prompt
   injection).
+* Re-ran the unchanged pipeline on a second product category with nothing
+  re-tuned: 7 of 8 headline findings replicated, and the one that did
+  not is reported as such.
 * Validated the estimators on synthetic panels with known elasticities. This
   measured which confounders the design removes and how far the engine's
   self-scored uplift differs from the truth.

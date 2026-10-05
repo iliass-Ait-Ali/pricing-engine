@@ -194,6 +194,14 @@ project is and must stay labelled **model-internal estimated**.
   the owner's Hugging Face token. (The GitHub-hosted CI run passed on
   2026-10-05.)
 
+## 3c. Done after v1.1.0
+
+* **Second-category replication** (`reports/27_SECOND_CATEGORY.md`): the
+  unchanged pipeline on Dominick's crackers. 7 of 8 headline findings
+  replicate. The one that does not (a value range that stays positive at its
+  low end) is reported as such. More categories, or another retailer, would
+  be the next step up in evidence.
+
 ## 4. What will not be added
 
 For the avoidance of doubt, and because these are the usual suggestions:

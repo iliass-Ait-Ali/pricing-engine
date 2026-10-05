@@ -158,3 +158,23 @@ def test_missing_required_column_raises_domain_error():
     with pytest.raises(SchemaError) as excinfo:
         assert_required_columns(["store", "upc"], ("store", "upc", "week"), "wcer.csv")
     assert "week" in str(excinfo.value)
+
+
+def test_blank_export_rows_are_counted_and_dropped(raw_movement, raw_upc_meta, cfg):
+    """A row with only a UPC (as in the official Crackers file) must not break the build."""
+
+    from pricing_engine.data.cleaning import build_canonical
+
+    clean, _ = build_canonical(raw_movement, raw_upc_meta, cfg=cfg)
+    with_blank = raw_movement.reset_index(drop=True).reindex(range(len(raw_movement) + 1))
+    with_blank.loc[len(raw_movement), "upc"] = int(raw_movement["upc"].iloc[0])
+    for col, dtype in (("store", "Int32"), ("week", "Int32"), ("ok", "Int8"), ("upc", "Int64")):
+        with_blank[col] = with_blank[col].astype(dtype)   # what the loader produces
+
+    out, audit = build_canonical(with_blank, raw_upc_meta, cfg=cfg)
+    rules = {e["rule"]: e["rows_removed"] for e in audit["exclusions"]}
+    assert rules["blank_key_rows"] == 1
+    assert len(out) == len(clean)
+    assert str(out["store"].dtype) == "int32" and str(out["week"].dtype) == "int32"
+    assert "blank_key_rows" not in {e["rule"] for e in build_canonical(
+        raw_movement, raw_upc_meta, cfg=cfg)[1]["exclusions"]}

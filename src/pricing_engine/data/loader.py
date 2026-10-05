@@ -25,16 +25,21 @@ from pricing_engine.data.schema import (
 #: contain non-UTF-8 bytes), so the encoding is pinned explicitly.
 ENCODING = "latin-1"
 
+#: Integer columns are read as pandas NULLABLE integers. Some official files
+#: (Crackers has 200 such rows; Cereals has none) contain blank export rows
+#: with only a UPC, and a plain int dtype makes the whole read fail on them.
+#: ``cleaning.build_canonical`` counts those rows, drops them and restores the
+#: plain dtypes, so a file without blank rows produces exactly the same table.
 MOVEMENT_DTYPES: dict[str, str] = {
-    "store": "int32",
-    "upc": "int64",
-    "week": "int32",
+    "store": "Int32",
+    "upc": "Int64",
+    "week": "Int32",
     "move": "float64",
     "qty": "float64",
     "price": "float64",
     "sale": "string",
     "profit": "float64",
-    "ok": "int8",
+    "ok": "Int8",
 }
 
 

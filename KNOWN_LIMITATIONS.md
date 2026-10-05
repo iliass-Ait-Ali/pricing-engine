@@ -275,3 +275,9 @@ own limits.
     to the wrong label passes. The tool results are always shown beside the
     answer. The copilot has not been evaluated against a live model yet
     (`docs/COPILOT_CARD.md`).
+53. **Generality rests on two categories from one retailer.** The findings
+    were re-checked on crackers with nothing re-tuned (`reports/27`), and
+    7 of 8 point the same way. That is a robustness check, not proof.
+    In crackers the model-internal value range is -0.1% to +3.8%: under
+    the steepest evidenced elasticity the recommendations are worth nothing
+    there, so "positive even in the worst case" holds for cereal only.

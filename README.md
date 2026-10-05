@@ -30,6 +30,11 @@ Booth).
   clean. It cannot remove unrecorded promotions or pricing on unseen demand
   shocks, which is why the next step is a pilot.
   [`reports/25_GROUND_TRUTH_STUDY.md`](reports/25_GROUND_TRUTH_STUDY.md)
+* **It is not just cereal.** The unchanged pipeline on a second category
+  (crackers, nothing re-tuned) reproduces 7 of 8 headline findings,
+  including the central one. The exception is honest: in crackers the value
+  range reaches zero at its low end.
+  [`reports/27_SECOND_CATEGORY.md`](reports/27_SECOND_CATEGORY.md)
 * **A GenAI layer that cannot invent a number.** A tool-calling LLM copilot
   (any OpenAI-compatible model; Groq's free tier by default) answers
   questions by calling the engine; a deterministic guard
@@ -191,7 +196,7 @@ Native ML price-response validation on 300 decision contexts (`artifacts/metrics
 
 | metric | value |
 | --- | --- |
-| tests collected | **633** |
+| tests collected | **651** |
 | batch scoring, 3,000 contexts | per-context loop 122.0s → vectorised **2.4s** (50× on this machine) |
 | batch equivalence (discrete fields exact, floats ≤ 1e-09) | PASS on 3,000 recommendations |
 
@@ -447,6 +452,7 @@ causal question: `docs/PRICING_EXPERIMENT.md`.
 | `reports/24_PRODUCT_ROLES.md` | traffic drivers, core, margin builders, tail: what the engine does to each |
 | `reports/25_GROUND_TRUTH_STUDY.md` | the unchanged engine on synthetic panels with known elasticities: which confounders it removes |
 | `reports/26_RISK_CALIBRATION.md` | do the risk bands track out-of-time prediction error? (weakly; extrapolation matters most) |
+| `reports/27_SECOND_CATEGORY.md` | the same pipeline on Dominick's crackers, side by side with cereal |
 | `docs/COPILOT_CARD.md` | the LLM copilot: tools, the guard that rejects ungrounded numbers, known limits, evaluation |
 | `docs/INTERVIEW_PITCH.md` | 30-second and 2-minute pitch, STAR stories, a mock case, CV lines |
 | `reports/22_POST_FREEZE_ENGINEERING.md` | post-freeze (Phase O) engineering: review/approval workflow, monitoring history + local alerts, batch scale sweep - no science changed |

@@ -1,0 +1,40 @@
+# ---------------------------------------------------------------------------
+# Second category: the UNCHANGED pipeline on Dominick's Crackers.
+#
+#   python scripts/download_dominicks.py --category crackers
+#   python scripts/run_category.py --config configs/crackers.yaml
+#
+# Purpose: check whether the cereal findings (how much the guardrails decide,
+# how well a rule-only policy matches the engine, the size of the value range)
+# are properties of the method or of one category. Nothing is re-tuned: every
+# model setting, guardrail, policy profile and risk threshold is inherited from
+# config.yaml. Only the input files and the output folders change.
+#
+# Outputs go to data/processed/ and artifacts_crackers/ (both git-ignored:
+# they hold row-level licensed data). Only the cross-category comparison
+# (reports/27, artifacts/metrics/second_category.json) is committed.
+# ---------------------------------------------------------------------------
+extends: config.yaml
+
+project:
+  category: crackers
+  data_label: "Dominick's Finer Foods - Crackers (Kilts Center, Chicago Booth)"
+
+paths:
+  raw_dir: data/raw/dominicks/crackers
+  processed_table: data/processed/dominicks_crackers.parquet
+  features_table: data/processed/dominicks_crackers_features.parquet
+  artifacts_dir: artifacts_crackers
+  models_dir: artifacts_crackers/models
+  metrics_dir: artifacts_crackers/metrics
+  figures_dir: artifacts_crackers/figures
+  reports_dir: artifacts_crackers/reports
+  recommendation_log: artifacts_crackers/recommendation_log.csv
+  recommendation_transitions_log: artifacts_crackers/recommendation_transitions.csv
+
+data:
+  movement_file: wcra.csv
+  upc_file: upccra.csv
+
+pricing_response:
+  elasticity_table: artifacts_crackers/models/elasticity_table.csv

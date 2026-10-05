@@ -172,6 +172,33 @@ def apply_validity_filters(df: pd.DataFrame, cfg: Config, log: ExclusionLog) -> 
     return out.copy()
 
 
+#: Plain numpy dtype for each nullable integer dtype the loader reads.
+_PLAIN_INT = {"Int8": "int8", "Int16": "int16", "Int32": "int32", "Int64": "int64"}
+
+
+def drop_blank_key_rows(df: pd.DataFrame, log: ExclusionLog) -> pd.DataFrame:
+    """Drop rows with no store or week, then restore plain integer dtypes.
+
+    Some official movement files carry blank export rows (a UPC and nothing
+    else). They identify no observation, so they are removed first and counted
+    in the exclusion log under their own rule. A file without such rows passes
+    through unchanged apart from the dtype restoration, which is a no-op for
+    frames that never used nullable integers.
+    """
+    keys = [c for c in GRAIN if c in df.columns]
+    blank = df[keys].isna().any(axis=1) if keys else pd.Series(False, index=df.index)
+    removed = int(blank.sum())
+    if removed:
+        log.record("blank_key_rows", removed,
+                   "blank export rows with no store or week; they identify no observation")
+        df = df.loc[~blank].copy()
+    for col in df.columns:
+        plain = _PLAIN_INT.get(str(df[col].dtype))
+        if plain and not df[col].isna().any():
+            df[col] = df[col].astype(plain)
+    return df
+
+
 def flag_suspicious(df: pd.DataFrame) -> pd.DataFrame:
     """Flag (but do not drop) observations whose accounting values look odd."""
     out = df.copy()
@@ -243,6 +270,7 @@ def build_canonical(
 
     df = movement.copy()
     df.columns = [c.strip().lower() for c in df.columns]
+    df = drop_blank_key_rows(df, log)
 
     exact_dupes = int(df.duplicated().sum())
     audit["raw_exact_duplicate_rows"] = exact_dupes

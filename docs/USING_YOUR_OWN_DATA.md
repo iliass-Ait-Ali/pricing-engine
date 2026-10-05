@@ -84,3 +84,20 @@ The three policy profiles are **DEMO settings**, not industry benchmarks.
 - [ ] cost held fixed across the candidate price grid
 - [ ] price-response curves inspected before optimizing
 - [ ] uplift described as model-estimated until an experiment says otherwise
+
+## Worked example: another Dominick's category
+
+Another category from the same source needs no code change, only a config:
+
+```bash
+python scripts/download_dominicks.py --category crackers
+python scripts/run_category.py --config configs/crackers.yaml
+python scripts/compare_categories.py --config configs/crackers.yaml
+```
+
+`configs/crackers.yaml` extends `config.yaml` and changes only the input file
+names and the output folders, so the run is like for like with cereal
+(`tests/test_category_config.py` enforces that). The result is
+`reports/27_SECOND_CATEGORY.md`. One thing the first run surfaced: the
+crackers file contains 200 blank export rows, which the loader and the
+cleaning step now handle and count.
