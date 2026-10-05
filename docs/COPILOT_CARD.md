@@ -55,7 +55,9 @@ The synthetic-data label is appended by code, not by the model.
 ## Known limits
 
 * **Right number, wrong label.** "The cost is $3.49", when $3.49 is the price,
-  passes the number check. Mitigation: the dashboard shows the raw tool results
+  passes the number check, and so does a weekly total described as "per
+  unit". The guard verifies where a number comes from, not the unit or
+  meaning the sentence gives it. Mitigation: the dashboard shows the raw tool results
   next to every answer, and the evaluation set checks attribution on its
   cases. This is the guard's main blind spot.
 * **The guard checks form, not judgement.** A grounded answer can still
@@ -155,6 +157,9 @@ All three runs are scored by the same, final scorer. Every result file is in
   requires the word "approve". Right in substance, scored as a failure.
 * `unknown_product`: the answer correctly says no such product is served, but
   the case requires a `list_products` check that the model skipped.
+
+These three are left as they are for this release: no further change to the
+model, the prompt, the tools or the guard was made to turn them green.
 
 **How far to trust the figure**
 

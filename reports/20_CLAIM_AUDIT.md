@@ -61,8 +61,8 @@ Why each pattern is watched:
 | `artifacts_crackers/reports/01_DATA_AUDIT.md:4` | **Status:** VALIDATED | validated out of time on unseen price-change episodes |
 | `docs/COPILOT_CARD.md:45` | 2. **Wording.** Claims that are causal, guaranteed, proven or "realised", or | the optimizer never returns a price outside the feasible interval |
 | `docs/INTERVIEW_PITCH.md:63` | re-derived them with clustered errors and validated against statsmodels. | validated out of time on unseen price-change episodes |
-| `README.md:88` | -> validated canonical panel (4,707,776 UPC x store x week rows) | validated out of time on unseen price-change episodes |
-| `README.md:339` | make features        # modelling table with decision-time guarantees | the optimizer never returns a price outside the feasible interval |
+| `README.md:90` | -> validated canonical panel (4,707,776 UPC x store x week rows) | validated out of time on unseen price-change episodes |
+| `README.md:341` | make features        # modelling table with decision-time guarantees | the optimizer never returns a price outside the feasible interval |
 | `reports/01_DATA_AUDIT.md:4` | **Status:** VALIDATED | validated out of time on unseen price-change episodes |
 | `reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md:131` | → validated canonical panel (4,707,776 UPC × store × week rows) | validated out of time on unseen price-change episodes |
 | `reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md:203` | materiality threshold. The optimizer is validated against closed-form optima | validated out of time on unseen price-change episodes |

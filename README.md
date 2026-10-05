@@ -40,7 +40,9 @@ Booth).
   questions by calling the engine; a deterministic guard
   rejects any figure the engine did not return. Evaluated on 20 fixed
   questions with a small local model: 17 pass, and no ungrounded number
-  was shown in any run. The first run passed 8 and is published too.
+  was shown in any run. The first run passed 8 and is published too. The
+  same questions were used while fixing it, so 17 of 20 is a development
+  figure, not a held-out score.
   [`docs/COPILOT_CARD.md`](docs/COPILOT_CARD.md)
 * **Why trust it.** Strict chronological validation, leakage tests, robust
   standard errors, out-of-time checks on 154,899 unseen price changes, a claim

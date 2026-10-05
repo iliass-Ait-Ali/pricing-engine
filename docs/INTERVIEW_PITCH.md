@@ -118,8 +118,9 @@ before the pilot."*
   injection).
 * Evaluated the LLM copilot on a fixed 20-question set with a small local
   model: the first run passed 8 of 20 and exposed invented product codes and
-  a guard gap; after fixing the tools and the guard it passed 17 of 20, with
-  no ungrounded number shown in any run.
+  a guard gap; after fixing the tools and the guard it passed 17 of 20 (a
+  development figure on the same questions, not a held-out score), with no
+  ungrounded number shown in any run.
 * Re-ran the unchanged pipeline on a second product category with nothing
   re-tuned: 7 of 8 headline findings replicated, and the one that did
   not is reported as such.

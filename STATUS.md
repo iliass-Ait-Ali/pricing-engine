@@ -63,7 +63,7 @@ Statuses: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `TESTED` | `VALIDATED`
 | v1.1 public demo (synthetic) | `VALIDATED` | `configs/demo.yaml`, `scripts/make_demo.py`, `Dockerfile.demo` built and served locally (dashboard + `/api`); `tests/test_demo_config.py` (demo paths never touch real artifacts), `tests/test_demo_e2e.py` | Not yet deployed: the Hugging Face Space needs the owner's token (`.github/workflows/deploy-demo.yml`) |
 | v1.1 business value + product roles | `VALIDATED` | `reports/23_BUSINESS_VALUE.md` (+4.1% to +9.4%, model-internal), `reports/24_PRODUCT_ROLES.md`; headline numbers checked by `audit_metric_consistency.py` | Same circularity as every uplift: a range, not a measurement |
 | v1.1 ground-truth recovery study | `VALIDATED` (`LIMITED`) | `reports/25_GROUND_TRUTH_STUDY.md`, 7 scenarios x 5 seeds, `tests/test_ground_truth_study.py` | Synthetic; the demand form matches the engine's, which flatters it; not evidence about Dominick's |
-| v1.1 Pricing Copilot | `VALIDATED` (`LIMITED`) | `src/pricing_engine/copilot/`, `POST /copilot/ask`, dashboard page; live evaluation recorded on 2026-10-05 with a local open-weights model (`qwen2.5:7b`): 17 of 20 cases pass, 0 ungrounded numbers shown in any run; the first run (8 of 20) exposed invented product codes and a guard gap, both fixed (`docs/COPILOT_CARD.md`) | One small model, one run, 20 questions, and the fixes were made on the same questions: a development-set figure. The default hosted model has not been run. The guard checks form, not meaning |
+| v1.1 Pricing Copilot | `VALIDATED` (`LIMITED`) | `src/pricing_engine/copilot/`, `POST /copilot/ask`, dashboard page. Exercised end to end on 2026-10-05 with a local Qwen2.5-7B model (`qwen2.5:7b`, run through Docker): 17 of 20 cases pass in a development evaluation, after the tool and guardrail fixes that its first run (8 of 20) prompted; 0 ungrounded numbers shown in any of the three recorded runs (`docs/COPILOT_CARD.md`, `evals/copilot/`) | Not a held-out or unbiased score: the same 20 questions were used during development. One small model, one run per stage. The numeric guard verifies that every number comes from an engine output; it does not yet verify that the answer gives that number the right unit or meaning ("$2.15 per unit" for a weekly gross profit passed). Three cases still fail; they are documented and left as they are for this release |
 | Second category (crackers) | `VALIDATED` (`LIMITED`) | `reports/27_SECOND_CATEGORY.md`: unchanged pipeline and settings on 2,228,269 crackers rows; 7 of 8 headline findings point the same way (1.4% of final prices from the model's own optimum; a no-model rule within one grid step 91.6% of the time) | One retailer, one decade: a robustness check, not proof of generality. In crackers the model-internal value range is -0.1% to +3.8%, so its low end is not positive |
 | Randomised experiment | `NOT STARTED` (by design) | `docs/PRICING_EXPERIMENT.md` designs it | Would be required for any causal claim |
 
@@ -126,9 +126,15 @@ Ranked by how much they should change what you claim about the project.
     transcript in the full report carries that marker. The captured output
     itself is unchanged. v1.1 also fixed an intermittent review-workflow
     failure: `rec_id` values that look like numbers were parsed as floats.
-14. **The copilot has been evaluated against one small local model only.**
-    `qwen2.5:7b` passes 17 of the 20 cases after the fixes its first run prompted
-    (8 of 20 before). That is a development-set figure on one model. The
-    default hosted model (free on Groq) has not been run; re-recording needs a key.
+14. **The copilot's result is a development evaluation, not a benchmark.** It
+    has been exercised end to end with a local Qwen2.5-7B model run through
+    Docker: 17 of the 20 cases pass, after the tool and guardrail fixes that
+    its first run prompted (8 of 20 before). The same 20 questions were used
+    during development, so this is not a held-out or unbiased score. The
+    numeric guard checks that every number comes from an engine output; it
+    does not yet check that the answer gives the number the right unit or
+    meaning. The three remaining failures are documented in
+    `docs/COPILOT_CARD.md` and are left as they are for this release. A run
+    on a hosted model and a held-out question set are optional follow-ups.
 15. **The public demo is built and runs locally but is not deployed.** The
     Hugging Face Space needs the owner's token.

@@ -271,9 +271,11 @@ own limits.
     the same constant-elasticity form the engine assumes, and each scenario
     isolates one mechanism at a time. It measures recovery under a known
     process, not accuracy on real data.
-52. **The copilot guard checks form, not meaning.** A correct number attached
-    to the wrong label passes. The tool results are always shown beside the
-    answer. The live evaluation showed it happening: "$2.15 per unit" for a
+52. **The copilot guard checks form, not meaning.** The numeric guard
+    verifies that every number comes from a real engine output. It does not
+    yet verify that the answer gives that number the right unit or meaning:
+    a correct number attached to the wrong label passes. The tool results
+    are always shown beside the answer. The live evaluation showed it happening: "$2.15 per unit" for a
     weekly gross profit passed. The evaluation itself is small: one local
     7-billion-parameter model, one run, 20 questions, 17 passed, and the
     tools and guard were improved on those same questions after the first

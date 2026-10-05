@@ -37,7 +37,7 @@
     },
     {
       "file": "README.md",
-      "line": 88,
+      "line": 90,
       "pattern": "\\bvalidated\\b",
       "declared_verdict": "NEEDS QUALIFICATION",
       "negated_context": false,
@@ -46,7 +46,7 @@
     },
     {
       "file": "README.md",
-      "line": 339,
+      "line": 341,
       "pattern": "\\bguarantee[sd]?\\b",
       "declared_verdict": "NEEDS QUALIFICATION",
       "negated_context": false,
