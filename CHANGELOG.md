@@ -19,7 +19,8 @@ decision policy) is frozen: every later version adds layers around it.
   not a held-out score. No ungrounded number was shown in any run. All three
   runs are published in `evals/copilot/`, with `docs/COPILOT_CARD.md`.
 * **An MIT licence** for the code and documentation. The Dominick's data is not
-  covered by it and is not included.
+  covered by it and is not included (stated in the README, not in `LICENSE`, so
+  that GitHub recognises the standard MIT text).
 * A practice sheet for explaining the project without notes (`docs/INTERVIEW_DRILL.md`).
 * This changelog.
 
