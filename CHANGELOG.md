@@ -20,6 +20,7 @@ decision policy) is frozen: every later version adds layers around it.
   runs are published in `evals/copilot/`, with `docs/COPILOT_CARD.md`.
 * **An MIT licence** for the code and documentation. The Dominick's data is not
   covered by it and is not included.
+* A practice sheet for explaining the project without notes (`docs/INTERVIEW_DRILL.md`).
 * This changelog.
 
 ### Changed

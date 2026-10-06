@@ -1,6 +1,6 @@
 {
   "n_checks": 31,
-  "n_statements_verified": 214,
+  "n_statements_verified": 222,
   "n_mismatches": 0,
   "documents_scanned": [
     "DECISIONS.md",
@@ -11,6 +11,7 @@
     "STATUS.md",
     "docs/BUSINESS_CASE.md",
     "docs/EXECUTIVE_SUMMARY.md",
+    "docs/INTERVIEW_DRILL.md",
     "docs/INTERVIEW_GUIDE.md",
     "docs/INTERVIEW_PITCH.md",
     "docs/INTERVIEW_RED_TEAM.md",
@@ -83,10 +84,11 @@
       "expected": 0.45649432400768286,
       "unit": "",
       "tolerance": 0.0001,
-      "statements_found": 8,
-      "statements_agreeing": 8,
+      "statements_found": 9,
+      "statements_agreeing": 9,
       "files": [
         "README.md",
+        "docs/INTERVIEW_DRILL.md",
         "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md"
       ]
     },
@@ -134,10 +136,11 @@
       "expected": 239.0,
       "unit": "",
       "tolerance": 0.5,
-      "statements_found": 12,
-      "statements_agreeing": 12,
+      "statements_found": 13,
+      "statements_agreeing": 13,
       "files": [
         "README.md",
+        "docs/INTERVIEW_DRILL.md",
         "reports/AI_PRICING_REVENUE_OPTIMIZATION_FULL_REPORT.md"
       ]
     },
@@ -398,12 +401,13 @@
       "expected": 4.1134673393950605,
       "unit": "",
       "tolerance": 0.06,
-      "statements_found": 6,
-      "statements_agreeing": 6,
+      "statements_found": 9,
+      "statements_agreeing": 9,
       "files": [
         "README.md",
         "STATUS.md",
         "docs/EXECUTIVE_SUMMARY.md",
+        "docs/INTERVIEW_DRILL.md",
         "docs/INTERVIEW_PITCH.md"
       ]
     },
@@ -413,12 +417,13 @@
       "expected": 9.448966379498902,
       "unit": "",
       "tolerance": 0.06,
-      "statements_found": 6,
-      "statements_agreeing": 6,
+      "statements_found": 9,
+      "statements_agreeing": 9,
       "files": [
         "README.md",
         "STATUS.md",
         "docs/EXECUTIVE_SUMMARY.md",
+        "docs/INTERVIEW_DRILL.md",
         "docs/INTERVIEW_PITCH.md"
       ]
     },
