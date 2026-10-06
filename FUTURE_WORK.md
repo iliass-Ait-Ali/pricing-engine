@@ -190,9 +190,9 @@ project is and must stay labelled **model-internal estimated**.
   be justified as a policy change.
 * **A public synthetic demo, a value range in dollars, and a guarded LLM
   copilot.** All engineering; no new science.
-* **Still open from section 3:** the hosted demo. It is ready and needs only
-  the owner's Hugging Face token. (The GitHub-hosted CI run passed on
-  2026-10-05.)
+* **The hosted demo was decided against** (2026-10-05): in a local test the demo container needed about 570 MB of memory for one visitor and was killed at a 512 MB limit, which is what free hosting tiers offer.
+  The demo stays a one-command local Docker run with a tour GIF, and the
+  GitHub-hosted CI run passes on it.
 
 ## 3c. Done after v1.1.0
 

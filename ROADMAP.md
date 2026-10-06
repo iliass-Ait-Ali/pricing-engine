@@ -124,9 +124,11 @@ estimator against known truth, and a safe GenAI interface.
 
 1. ~~**Publish.**~~ **Done on 2026-10-05:** <https://github.com/iliass-Ait-Ali/pricing-engine>, first hosted CI run
    green on Python 3.11, 3.12, 3.13 and the demo job.
-2. **Deploy the demo.** Add the `HF_TOKEN` secret and the `HF_SPACE` variable,
-   run "Deploy demo", put the Space link in the README, and optionally add a
-   `GROQ_API_KEY` (free tier) as a Space secret to switch the copilot on.
+2. **Decided on 2026-10-05: the demo is not hosted.** in a local test the demo container needed about 570 MB of memory for one visitor and was killed at a 512 MB limit, which is what free hosting tiers offer,
+   and Hugging Face Docker Spaces need a paid plan. The project is presented
+   with the tour GIF and a one-command local Docker run. Nothing was changed to
+   fit a free tier. `deploy-demo.yml` stays, manual only, for anyone who wants
+   to host it.
 3. **Done on 2026-10-05, with a local model:** the copilot evaluation is
    recorded (`evals/copilot/`, `docs/COPILOT_CARD.md`): 17 of 20 cases pass
    on a small open-weights model, after the first run (8 of 20) exposed

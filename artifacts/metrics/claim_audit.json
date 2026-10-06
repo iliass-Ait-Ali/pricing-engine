@@ -37,7 +37,7 @@
     },
     {
       "file": "README.md",
-      "line": 90,
+      "line": 94,
       "pattern": "\\bvalidated\\b",
       "declared_verdict": "NEEDS QUALIFICATION",
       "negated_context": false,
@@ -46,7 +46,7 @@
     },
     {
       "file": "README.md",
-      "line": 341,
+      "line": 346,
       "pattern": "\\bguarantee[sd]?\\b",
       "declared_verdict": "NEEDS QUALIFICATION",
       "negated_context": false,
@@ -522,5 +522,5 @@
       "verdict": "NEEDS QUALIFICATION"
     }
   ],
-  "runtime_seconds": 0.7
+  "runtime_seconds": 3.6
 }

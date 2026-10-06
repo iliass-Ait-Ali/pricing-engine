@@ -70,6 +70,10 @@ docker run --rm -p 7860:7860 pricing-engine-demo
 or without Docker: `python scripts/make_demo.py`, then
 `PRICING_ENGINE_CONFIG=configs/demo.yaml streamlit run dashboard/app.py`.
 
+There is no hosted link on purpose. In a local test the demo needed about
+570 MB of memory for one visitor and was killed at a 512 MB limit, which is
+what free hosting tiers offer. The tour below shows every page.
+
 ![A tour of the demo: business impact, a recommendation, the price simulator, the review queue and the copilot page](artifacts/report_figures/demo_tour.gif)
 
 *The synthetic demo: business impact, one recommendation, the price simulator,
@@ -319,7 +323,8 @@ Reason codes: `KEEP_CURRENT_OPTIMAL`, `LOW_CONFIDENCE`, `INSUFFICIENT_HISTORY`,
 The Dominick's data are provided by the **Kilts Center for Marketing,
 University of Chicago Booth School of Business** for **academic research**, and
 users are asked to acknowledge the Kilts Center in publications. Raw and
-processed data are git-ignored and never redistributed here.
+processed data are git-ignored and never redistributed here. The MIT licence
+(`LICENSE`) covers this repository's code and documentation only, not the data.
 
 ```bash
 python scripts/download_dominicks.py     # official chicagobooth.edu URLs only

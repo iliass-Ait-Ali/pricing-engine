@@ -144,7 +144,7 @@ before the pilot."*
 >   blind spots;
 > - an LLM copilot that cannot invent a number.
 >
-> Code, live demo (synthetic data) and the full write-up: [link]
+> Code, a one-command demo on synthetic data, and the full write-up: [link]
 
 ## 7. Before any interview
 

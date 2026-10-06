@@ -1,11 +1,12 @@
 # Status
 
-**Version: 1.1.0** (2026-10-04). The v1.0 pricing engine (estimators,
-guardrails, decision policy) is unchanged. v1.1 adds layers around it: a
-synthetic public demo, a business-value and product-role analysis, a
+**Version: 1.2.0** (2026-10-06; see `CHANGELOG.md`). The v1.0 pricing engine
+(estimators, guardrails, decision policy) is unchanged. v1.1 added layers around
+it: a synthetic public demo, a business-value and product-role analysis, a
 ground-truth recovery study, and a guarded LLM copilot (see the "v1.1" rows
-below and `ROADMAP.md`, Phase P).
-Published on 2026-10-05 at <https://github.com/iliass-Ait-Ali/pricing-engine> (`master`, tags `v1.0.0` and `v1.1.0`).
+below and `ROADMAP.md`, Phase P). v1.2 adds a second-category replication and
+the copilot's first live evaluation, and an MIT licence for the code.
+Published on 2026-10-05 at <https://github.com/iliass-Ait-Ali/pricing-engine> (`master`, tags `v1.0.0`, `v1.1.0` and `v1.2.0`).
 The first GitHub-hosted CI run passed on Python 3.11, 3.12 and 3.13 plus the demo job.
 v1.0 verification: **2026-08-19**, the final engineering closure
 (`reports/21_FINAL_ENGINEERING_CLOSURE.md`), on top of the Phase M scientific
@@ -60,7 +61,7 @@ Statuses: `NOT STARTED` | `IN PROGRESS` | `IMPLEMENTED` | `TESTED` | `VALIDATED`
 | Lint | `VALIDATED` | `ruff check .` - All checks passed | - |
 | CI workflow | `VALIDATED` | `.github/workflows/ci.yml`: lint, smoke import, README-metrics check and tests on Python 3.11, 3.12 and 3.13; a `demo` job builds the synthetic demo, renders every dashboard page and builds both Docker images. First hosted run green on 2026-10-05 ([run](https://github.com/iliass-Ait-Ali/pricing-engine/actions/runs/37248266778)) | CI never sees the licensed data: real-data tests skip there, and the API contract runs on the synthetic demo |
 | Docker | `VALIDATED` | **built and run**: `docker build -t pricing-engine:local .` (1.66 GB), container serves `/health`, `/model/info` and a real `/recommend-price` identical to the local run, runs as non-root `appuser` (uid 1000); image contains no data files | Model and processed data are **mounted read-only**, never baked in (Dominick's licence); the image is not hardened, load-tested or deployed |
-| v1.1 public demo (synthetic) | `VALIDATED` | `configs/demo.yaml`, `scripts/make_demo.py`, `Dockerfile.demo` built and served locally (dashboard + `/api`); `tests/test_demo_config.py` (demo paths never touch real artifacts), `tests/test_demo_e2e.py` | Not yet deployed: the Hugging Face Space needs the owner's token (`.github/workflows/deploy-demo.yml`) |
+| v1.1 public demo (synthetic) | `VALIDATED` | `configs/demo.yaml`, `scripts/make_demo.py`, `Dockerfile.demo` built and served locally (dashboard + `/api`); `tests/test_demo_config.py` (demo paths never touch real artifacts), `tests/test_demo_e2e.py` | Not hosted, by decision (2026-10-05): in a local test the demo container needed about 570 MB of memory for one visitor and was killed at a 512 MB limit, which is what free hosting tiers offer. Presented as the tour GIF plus a one-command local Docker run. `.github/workflows/deploy-demo.yml` is kept, manual only |
 | v1.1 business value + product roles | `VALIDATED` | `reports/23_BUSINESS_VALUE.md` (+4.1% to +9.4%, model-internal), `reports/24_PRODUCT_ROLES.md`; headline numbers checked by `audit_metric_consistency.py` | Same circularity as every uplift: a range, not a measurement |
 | v1.1 ground-truth recovery study | `VALIDATED` (`LIMITED`) | `reports/25_GROUND_TRUTH_STUDY.md`, 7 scenarios x 5 seeds, `tests/test_ground_truth_study.py` | Synthetic; the demand form matches the engine's, which flatters it; not evidence about Dominick's |
 | v1.1 Pricing Copilot | `VALIDATED` (`LIMITED`) | `src/pricing_engine/copilot/`, `POST /copilot/ask`, dashboard page. Exercised end to end on 2026-10-05 with a local Qwen2.5-7B model (`qwen2.5:7b`, run through Docker): 17 of 20 cases pass in a development evaluation, after the tool and guardrail fixes that its first run (8 of 20) prompted; 0 ungrounded numbers shown in any of the three recorded runs (`docs/COPILOT_CARD.md`, `evals/copilot/`) | Not a held-out or unbiased score: the same 20 questions were used during development. One small model, one run per stage. The numeric guard verifies that every number comes from an engine output; it does not yet verify that the answer gives that number the right unit or meaning ("$2.15 per unit" for a weekly gross profit passed). Three cases still fail; they are documented and left as they are for this release |
@@ -136,5 +137,6 @@ Ranked by how much they should change what you claim about the project.
     meaning. The three remaining failures are documented in
     `docs/COPILOT_CARD.md` and are left as they are for this release. A run
     on a hosted model and a held-out question set are optional follow-ups.
-15. **The public demo is built and runs locally but is not deployed.** The
-    Hugging Face Space needs the owner's token.
+15. **The public demo is not hosted, by decision.** It is built, tested in CI
+    and runs locally with one Docker command. In a local test the demo container needed about 570 MB of memory for one visitor and was killed at a 512 MB limit, which is what free hosting tiers offer.
+    Nothing was changed to fit a free tier.

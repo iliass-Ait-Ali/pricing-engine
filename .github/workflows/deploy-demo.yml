@@ -1,7 +1,10 @@
 name: Deploy demo
 
 # Publishes the synthetic public demo to a Hugging Face Docker Space.
-# Manual or on a version tag. Needs:
+# NOT USED by this project (decided 2026-10-05: the demo is not hosted, see
+# STATUS.md issue 15). Kept for anyone who wants to host it, and manual only, so
+# pushing a version tag does not start a run that would fail without a token.
+# Needs:
 #   secret   HF_TOKEN  - a Hugging Face write token
 #   variable HF_SPACE  - the Space id, e.g. "your-name/pricing-engine-demo"
 # A model key (GROQ_API_KEY, free tier) is NOT sent from here: set it in the Space's
@@ -9,8 +12,6 @@ name: Deploy demo
 
 on:
   workflow_dispatch:
-  push:
-    tags: ["v*"]
 
 jobs:
   deploy:
